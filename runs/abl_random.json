@@ -1,0 +1,56 @@
+{
+ "args": {
+  "family": "random",
+  "R": 128,
+  "L": 6,
+  "K": 128,
+  "B": 16,
+  "T": 256,
+  "steps": 1000,
+  "minutes": 1000000000.0,
+  "lr": 0.006,
+  "phase_lr_mult": 5.0,
+  "domains": "prose,code,json",
+  "init": "",
+  "eval_domains": "prose,code,json",
+  "train": "all",
+  "eval_every": 1000,
+  "eval_n": 48,
+  "seed": 0,
+  "out": "runs/abl_random"
+ },
+ "params_total": 397313,
+ "params_trained": 397313,
+ "breakdown": {
+  "out_gain": 256,
+  "temp": 1,
+  "alpha": 1536,
+  "kappa": 196608,
+  "theta": 768,
+  "V": 196608,
+  "sigma": 1536
+ },
+ "curve": [
+  {
+   "step": 1000,
+   "minutes": 3.802626820405324,
+   "train_bpb_ema": 2.3917310256932067,
+   "prose": 2.733884602567649,
+   "code": 2.5364229512897163,
+   "json": 1.8300133279512254,
+   "avg3": 2.3667736272695303,
+   "uniform_random": 15.133603731644397
+  }
+ ],
+ "final": {
+  "step": 1000,
+  "minutes": 3.802626820405324,
+  "train_bpb_ema": 2.3917310256932067,
+  "prose": 2.733884602567649,
+  "code": 2.5364229512897163,
+  "json": 1.8300133279512254,
+  "avg3": 2.3667736272695303,
+  "uniform_random": 15.133603731644397
+ },
+ "steps_done": 1000
+}

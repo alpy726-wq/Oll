@@ -1,0 +1,56 @@
+{
+ "args": {
+  "family": "sqrt_p",
+  "R": 128,
+  "L": 6,
+  "K": 128,
+  "B": 16,
+  "T": 256,
+  "steps": 1000,
+  "minutes": 1000000000.0,
+  "lr": 0.006,
+  "phase_lr_mult": 5.0,
+  "domains": "prose,code,json",
+  "init": "",
+  "eval_domains": "prose,code,json",
+  "train": "all",
+  "eval_every": 1000,
+  "eval_n": 48,
+  "seed": 2,
+  "out": "runs/abl_sqrt_p_s2"
+ },
+ "params_total": 397313,
+ "params_trained": 397313,
+ "breakdown": {
+  "out_gain": 256,
+  "temp": 1,
+  "alpha": 1536,
+  "kappa": 196608,
+  "theta": 768,
+  "V": 196608,
+  "sigma": 1536
+ },
+ "curve": [
+  {
+   "step": 1000,
+   "minutes": 3.6757044712702434,
+   "train_bpb_ema": 2.4699274739786765,
+   "prose": 2.7791636789388567,
+   "code": 2.673262151327266,
+   "json": 1.9571933517132667,
+   "avg3": 2.4698730606597965,
+   "uniform_random": 11.111230841567615
+  }
+ ],
+ "final": {
+  "step": 1000,
+  "minutes": 3.6757044712702434,
+  "train_bpb_ema": 2.4699274739786765,
+  "prose": 2.7791636789388567,
+  "code": 2.673262151327266,
+  "json": 1.9571933517132667,
+  "avg3": 2.4698730606597965,
+  "uniform_random": 11.111230841567615
+ },
+ "steps_done": 1000
+}

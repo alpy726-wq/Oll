@@ -1,0 +1,10 @@
+{
+ "fixed+dt": {
+  "irregular": 0.7051402926445007,
+  "train_seconds": 395.8220474720001
+ },
+ "fixed": {
+  "irregular": 0.798981249332428,
+  "train_seconds": 392.3650588989258
+ }
+}

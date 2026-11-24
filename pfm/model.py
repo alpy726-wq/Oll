@@ -123,7 +123,8 @@ class PrimeSeqModel(nn.Module):
     def __init__(self, R=256, L=8, K=256, family="sqrt_p", n_out=256, alpha0=0.0, seed=0):
         super().__init__()
         self.R, self.L, self.K, self.family = R, L, K, family
-        self.embed = LearnedTable(R, n_out) if family == "table" else PrimeBasis(R, family)
+        self.embed = LearnedTable(R, n_out) if family == "table" else (
+            PrimeBasis(R, family[:-5], sigma=0.0) if family.endswith("_flat") else PrimeBasis(R, family))
         self.blocks = nn.ModuleList([RevBlock(R, K, seed * 1000 + i, alpha0) for i in range(L)])
         self.out_gain = nn.Parameter(torch.ones(2 * R))
         self.temp = nn.Parameter(torch.tensor(math.log(0.25)))

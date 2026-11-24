@@ -5,3 +5,4 @@ runs/*.pt
 __pycache__/
 runs/*.log
 runs/*.npy
+runs/*.done

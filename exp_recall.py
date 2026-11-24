@@ -72,4 +72,4 @@ def run(name):
 
 out = {w: run(w) for w in which.split(",")}
 out["chance"] = 1 / 64
-json.dump(out, open(f"runs/E8_recall{'_' + which if ',' not in which else ''}.json", "w"), indent=1)
+json.dump(out, open(f"runs/E8_recall{STEPS}{'_' + which if ',' not in which else ''}.json", "w"), indent=1)

@@ -1,0 +1,51 @@
+{
+ "params_total": 2107905,
+ "breakdown": {
+  "out_gain": 512,
+  "temp": 1,
+  "alpha": 4096,
+  "kappa": 1048576,
+  "theta": 2048,
+  "V": 1048576,
+  "sigma": 4096
+ },
+ "embedding_attention_ffn_positional_params": 0,
+ "inverse_rel_err_fp32": 0.008887077681720257,
+ "inverse_rel_err_fp64": 1.5292280383148164e-11,
+ "one_byte_change_min_output_distance_from_pos100": 0.18670493364334106,
+ "phase_filter_norm_ratio_min_max": [
+  1.0000007152557373,
+  1.0000009536743164
+ ],
+ "stream_vs_full_max_abs_logit_diff": 5.626678466796875e-05,
+ "stream_vs_full_rel": 1.2303351013542851e-06,
+ "stream_vs_full_same_argmax_frac": 1.0,
+ "state_bytes": 4194304,
+ "state_MiB": 4.0,
+ "receptive_field_bytes": 4081,
+ "length_extrapolation_bpb": {
+  "256": 1.9204868652294163,
+  "512": 1.9698622817064246,
+  "1024": 1.9892762566113216,
+  "2048": 2.162139057353696,
+  "4096": 1.9591538966055524
+ },
+ "base_eval": {
+  "prose": 2.432454164708522,
+  "code": 2.0068042411030813,
+  "json": 0.9254816829511517,
+  "avg3": 1.7882466962542518,
+  "uniform_random": 13.773882752560102
+ },
+ "sensitivity_25pct_noise_delta_bpb": {
+  "V": 0.573667379677907,
+  "theta": 1.3182276851470933,
+  "kappa": 0.10809644186133927
+ },
+ "zero_half_of_all_weights_delta_bpb": 10.354257587949194,
+ "delete_one_layer_delta_bpb": 1.1721858941083012,
+ "deleted_layer_fraction": 0.125,
+ "phase_memory_erase_max_abs_err": 1.1102230246251565e-16,
+ "phase_memory_unbind_top1": 201,
+ "phase_memory_unbind_expected": 201
+}

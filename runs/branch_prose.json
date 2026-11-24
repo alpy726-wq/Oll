@@ -1,0 +1,69 @@
+{
+ "args": {
+  "family": "sqrt_p",
+  "R": 256,
+  "L": 8,
+  "K": 256,
+  "B": 8,
+  "T": 512,
+  "steps": 300,
+  "minutes": 1000000000.0,
+  "lr": 0.002,
+  "phase_lr_mult": 5.0,
+  "domains": "prose",
+  "init": "runs/main",
+  "eval_domains": "prose,code,json,vimdoc,cheader",
+  "train": "all",
+  "eval_every": 300,
+  "eval_n": 32,
+  "seed": 0,
+  "out": "runs/branch_prose"
+ },
+ "params_total": 2107905,
+ "params_trained": 2107905,
+ "breakdown": {
+  "out_gain": 512,
+  "temp": 1,
+  "alpha": 4096,
+  "kappa": 1048576,
+  "theta": 2048,
+  "V": 1048576,
+  "sigma": 4096
+ },
+ "curve": [
+  {
+   "step": 300,
+   "minutes": 4.094432953993479,
+   "train_bpb_ema": 1.7115274877928133,
+   "prose": 2.414804789129028,
+   "code": 2.2150084160380823,
+   "json": 1.028422801534003,
+   "vimdoc": 4.069182440058018,
+   "cheader": 4.703509146923031,
+   "avg3": 1.886078668900371,
+   "uniform_random": 14.558328643814338
+  }
+ ],
+ "eval_init": {
+  "prose": 2.4324542506998474,
+  "code": 2.0068042411030813,
+  "json": 0.925481639955489,
+  "vimdoc": 3.8181966348163137,
+  "cheader": 4.214418521041294,
+  "avg3": 1.7882467105861393,
+  "uniform_random": 13.773882752560102
+ },
+ "final": {
+  "step": 300,
+  "minutes": 4.094432953993479,
+  "train_bpb_ema": 1.7115274877928133,
+  "prose": 2.414804789129028,
+  "code": 2.2150084160380823,
+  "json": 1.028422801534003,
+  "vimdoc": 4.069182440058018,
+  "cheader": 4.703509146923031,
+  "avg3": 1.886078668900371,
+  "uniform_random": 14.558328643814338
+ },
+ "steps_done": 300
+}
