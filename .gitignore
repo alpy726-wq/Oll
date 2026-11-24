@@ -3,3 +3,5 @@ data/*.val
 data/raw/
 runs/*.pt
 __pycache__/
+runs/*.log
+runs/*.npy
