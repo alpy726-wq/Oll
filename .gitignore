@@ -1,0 +1,5 @@
+data/*.train
+data/*.val
+data/raw/
+runs/*.pt
+__pycache__/
