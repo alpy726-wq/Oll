@@ -20,10 +20,10 @@ def main(args: list):
     print("corpus", json.dumps(build("/vol/big")), flush=True); vol.commit()
     os.makedirs("/vol/results", exist_ok=True)
     p = subprocess.Popen([sys.executable, "gpu/main_train.py", *args], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    tail = []
+    tail, n = [], 0
     for line in p.stdout:
-        print(line, end="", flush=True); tail = (tail + [line])[-200:]
-        if "step" in line and "'step': " in line and line.count("2000,"):
+        print(line, end="", flush=True); tail = (tail + [line])[-200:]; n += 1
+        if n % 5 == 0:  # progress.json is rewritten every 200 steps; make it visible to `fetch`
             vol.commit()
     p.wait(); vol.commit()
     return dict(returncode=p.returncode, tail="".join(tail[-60:]))

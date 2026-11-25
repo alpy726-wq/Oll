@@ -71,6 +71,8 @@ while (time.time() - t0) / 60 < a.minutes:
     if step % 200 == 0:
         log.append(dict(step=step, minutes=(time.time() - t0) / 60, **{k: round(v, 4) for k, v in ema.items()}))
         print(log[-1], flush=True)
+        json.dump(dict(params=params, last=log[-1], curve=log, skipped=globals().get("n_bad", 0)),
+                  open(os.path.join(os.path.dirname(a.out), "progress.json"), "w"))
     if step % 2000 == 0:
         torch.save(dict(model=m.state_dict(), opt=opt.state_dict(), step=step, log=log, spent=(time.time() - t0) / 60), a.ckpt + ".pt")
 torch.save(dict(model=m.state_dict(), opt=opt.state_dict(), step=step, log=log, spent=(time.time() - t0) / 60), a.ckpt + ".pt")
