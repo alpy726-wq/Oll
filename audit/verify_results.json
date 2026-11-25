@@ -21,11 +21,11 @@
  },
  "CT operator == sequential recurrence, regular (FFT path)": {
   "status": "PASS",
-  "rel_err": 6.622807222929355e-08
+  "rel_err": 7.063860926186843e-08
  },
  "CT operator == sequential recurrence, irregular incl. long gaps (chunked scan)": {
   "status": "PASS",
-  "rel_err": 3.9237492474485444e-08
+  "rel_err": 4.6361168832262434e-08
  },
  "CT operator finite values and gradients with 72-unit gaps (the NaN found by the smoke test)": {
   "status": "PASS"
