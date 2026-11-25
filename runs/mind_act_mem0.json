@@ -1,0 +1,92 @@
+{
+ "reference": {
+  "random": -0.8042261788330378,
+  "proportional": -0.0913918905849371
+ },
+ "curve": [
+  {
+   "update": 0,
+   "episodes_seen": 64,
+   "mean_reward": -0.9554817283222523,
+   "sec": 7.200028657913208
+  },
+  {
+   "update": 25,
+   "episodes_seen": 1664,
+   "mean_reward": -0.8359241507732967,
+   "sec": 56.174190521240234
+  },
+  {
+   "update": 50,
+   "episodes_seen": 3264,
+   "mean_reward": -0.8435859882874128,
+   "sec": 103.8243932723999
+  },
+  {
+   "update": 75,
+   "episodes_seen": 4864,
+   "mean_reward": -0.8183287104414175,
+   "sec": 151.8703088760376
+  },
+  {
+   "update": 100,
+   "episodes_seen": 6464,
+   "mean_reward": -0.8218147832940554,
+   "sec": 201.37647581100464
+  },
+  {
+   "update": 125,
+   "episodes_seen": 8064,
+   "mean_reward": -0.8017043159205951,
+   "sec": 252.1674144268036
+  },
+  {
+   "update": 150,
+   "episodes_seen": 9664,
+   "mean_reward": -0.7777870531621216,
+   "sec": 301.2780170440674
+  },
+  {
+   "update": 175,
+   "episodes_seen": 11264,
+   "mean_reward": -0.761817682802046,
+   "sec": 352.3805892467499
+  },
+  {
+   "update": 200,
+   "episodes_seen": 12864,
+   "mean_reward": -0.7416759419354945,
+   "sec": 400.7186436653137
+  },
+  {
+   "update": 225,
+   "episodes_seen": 14464,
+   "mean_reward": -0.7197968197906925,
+   "sec": 451.09657526016235
+  },
+  {
+   "update": 250,
+   "episodes_seen": 16064,
+   "mean_reward": -0.7187050405055017,
+   "sec": 500.91278862953186
+  },
+  {
+   "update": 275,
+   "episodes_seen": 17664,
+   "mean_reward": -0.6920906548709631,
+   "sec": 551.5663962364197
+  },
+  {
+   "update": 299,
+   "episodes_seen": 19200,
+   "mean_reward": -0.6770697842103489,
+   "sec": 600.9818017482758
+  }
+ ],
+ "env": {
+  "ACT_B": "64",
+  "ACT_LR": "3e-3",
+  "ACT_TAG": "_mem0",
+  "ACT_MEM0": "0"
+ }
+}

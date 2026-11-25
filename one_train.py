@@ -3,7 +3,7 @@ import argparse, json, math, os, time
 import numpy as np
 import torch
 from pfm.one import OneMachine
-from pfm.oneworld import STREAMS, batch
+from pfm.oneworld import STREAMS, batch, STREAMS_V3, batch_v3
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--steps", type=int, default=3000)
@@ -16,23 +16,27 @@ ap.add_argument("--family", default="sqrt_p")
 ap.add_argument("--seed", type=int, default=0)
 ap.add_argument("--threads", type=int, default=4)
 ap.add_argument("--out", default="runs/one/one_s0")
+ap.add_argument("--world", default="v2", choices=["v2", "v3"])
+ap.add_argument("--M", type=int, default=4)
+ap.add_argument("--RM", type=int, default=1024)
 a = ap.parse_args()
 torch.set_num_threads(a.threads)
 torch.manual_seed(a.seed)
 rng = np.random.default_rng(a.seed)
 os.makedirs(os.path.dirname(a.out), exist_ok=True)
-m = OneMachine(STREAMS, R=a.R, L=a.L, family=a.family, seed=a.seed)
+SS, BATCH = (STREAMS_V3, batch_v3) if a.world == "v3" else (STREAMS, batch)
+m = OneMachine(SS, R=a.R, L=a.L, M=a.M, RM=a.RM, family=a.family, seed=a.seed)
 opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
 log, t0 = [], time.time()
-groups = {"signal": lambda k: k not in ("fusion", "text") and not k.startswith("recall"), "fusion": lambda k: k == "fusion",
-          "recall": lambda k: k.startswith("recall"), "text": lambda k: k == "text"}
+groups = {"signal": lambda k: k not in ("fusion", "text", "rules") and not k.startswith("recall"), "fusion": lambda k: k == "fusion",
+          "recall": lambda k: k.startswith("recall"), "text": lambda k: k == "text", "rules": lambda k: k == "rules"}
 ema = {}
 for step in range(a.steps):
     for g in opt.param_groups:
         g["lr"] = a.lr * min(1, (step + 1) / 100) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * step / a.steps)))
-    b = batch(rng, a.B, a.T)
+    b = BATCH(rng, a.B, a.T)
     l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"]) * b["mask"]
-    loss = l.sum() / b["mask"].sum()
+    loss = (l.sum(1) / b["mask"].sum(1).clamp(min=1)).mean()  # every sequence weighs the same
     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
     with torch.no_grad():
         per = l.sum(1) / b["mask"].sum(1).clamp(min=1)

@@ -25,7 +25,26 @@ from .basis import frequencies, amplitudes, first_primes
 from .model import rms, PhaseFilter, Spectral
 from .continuous import CTConv
 
-PHASE_PARAMS = ("theta", "sigma", "alpha", "kq", "kp")
+PHASE_PARAMS = ("theta", "sigma", "alpha", "kq", "kp", "pl")
+
+
+class PhaseLinear(nn.Module):
+    """Per-prime real-linear map of the phasor (Re z_k, Im z_k): a learnable, invertible 2x2 matrix per prime.
+    Rotation by e^{i 2 pi c f_k} adds a constant c to the encoded value (group law); rotation by psi differences converts
+    a stream role into another; reflection (conjugation) negates the value. Born as the identity."""
+
+    def __init__(self, R):
+        super().__init__()
+        self.pl = nn.Parameter(torch.tensor([1.0, 0.0, 0.0, 1.0]).repeat(R, 1))  # (R, 4): [a b; c d]
+
+    def forward(self, x1, x2):
+        a, b, c, d = self.pl.unbind(-1)
+        return a * x1 + b * x2, c * x1 + d * x2
+
+    def inverse(self, y1, y2):
+        a, b, c, d = self.pl.unbind(-1)
+        det = a * d - b * c
+        return (d * y1 - b * y2) / det, (-c * y1 + a * y2) / det
 
 
 class Stream:
@@ -96,6 +115,7 @@ class OneMachine(nn.Module):
         self.register_buffer("perm", torch.randperm(R, generator=torch.Generator().manual_seed(12345)), persistent=False)
         self.F = nn.ModuleList([OneBranch(R, 2 * (seed * 100 + i), M) for i in range(L)])
         self.G = nn.ModuleList([OneBranch(R, 2 * (seed * 100 + i) + 1, M) for i in range(L)])
+        self.P = nn.ModuleList([PhaseLinear(R) for _ in range(L)])
         self.gain = nn.Parameter(torch.ones(2 * R))
         self.mem_beta = nn.Parameter(torch.ones(len(self.streams)))  # per input stream: how much memory read-out enters (born on)
         self.sym_logtemp = nn.Parameter(torch.zeros(len(self.streams)))  # discrete streams: p(c) ~ |s(c)|^(2 tau)
@@ -191,14 +211,16 @@ class OneMachine(nn.Module):
 
     def trunk_from(self, e, dt, q):
         x1, x2 = e[..., : self.R], e[..., self.R:]
-        for F, G in zip(self.F, self.G):
+        for F, G, P in zip(self.F, self.G, self.P):
             x1 = x1 + F(x2, dt, q)
             x2 = x2 + G(x1, dt, q)
+            x1, x2 = P(x1, x2)
         return torch.cat([x1, x2], -1)
 
     def inverse(self, h, dt, q):
         y1, y2 = h[..., : self.R], h[..., self.R:]
-        for F, G in zip(reversed(self.F), reversed(self.G)):
+        for F, G, P in zip(reversed(self.F), reversed(self.G), reversed(self.P)):
+            y1, y2 = P.inverse(y1, y2)
             y2 = y2 - G(y1, dt, q)
             y1 = y1 - F(y2, dt, q)
         return torch.cat([y1, y2], -1)
@@ -270,9 +292,10 @@ class OneMachine(nn.Module):
         M = M + st["prev"].conj()[:, :, None] * v[:, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]
         conv = []
-        for i, (F, G) in enumerate(zip(self.F, self.G)):
+        for i, (F, G, P) in enumerate(zip(self.F, self.G, self.P)):
             f_, s1 = F.step(x2, dt, q, st["conv"][2 * i]); x1 = x1 + f_
             g_, s2 = G.step(x1, dt, q, st["conv"][2 * i + 1]); x2 = x2 + g_
+            x1, x2 = P(x1, x2)
             conv += [s1, s2]
         return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=k)
 

@@ -85,3 +85,42 @@ def batch(rng, B, T, kinds=None, **kw):
     mask = torch.tensor(np.stack([q[3] for q in seqs]))
     return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask,
                 kinds=[q[4] for q in seqs])
+
+
+# ---------------------------------------------------------------------------------------------- v3: one brain, all tasks
+from .mind import rule_episode
+
+STREAMS_V3 = STREAMS + [
+    Stream("rule_x", "continuous", scale=2.0, window=(-1.5, 1.5)),   # 7: question of a hidden rule
+    Stream("rule_y", "continuous", scale=2.0, window=(-1.5, 1.5)),   # 8: its answer
+    Stream("obs", "continuous", scale=2.0, window=(-1.5, 1.5)),      # 9: agent observation
+    Stream("act", "continuous", scale=2.0, window=(-1.5, 1.5)),      # 10: agent action
+    Stream("rew", "continuous", scale=2.0, window=(-1.5, 1.5)),      # 11: agent reward
+]
+V3 = dict(RULE_X=7, RULE_Y=8, OBS=9, ACT=10, REW=11)
+
+
+def seq_rules(rng, T, n=None, rule=None):
+    n = n or int(rng.integers(1, 9))
+    x, s, mask, r = rule_episode(rng, n, rule)
+    s = np.where(s == 0, V3["RULE_X"], V3["RULE_Y"])
+    L = len(x)
+    pad = T + 1 - L
+    x = np.concatenate([x, np.zeros(pad)]); s = np.concatenate([s, np.full(pad, V3["RULE_X"])])
+    m = np.concatenate([mask, np.zeros(T - len(mask), bool)])
+    return x, s, np.ones(T + 1), m, "rules"
+
+
+MIX_V3 = (("signal", 0.25), ("fusion", 0.1), ("recall", 0.15), ("text", 0.25), ("rules", 0.25))
+
+
+def batch_v3(rng, B, T, kinds=None, **kw):
+    fns = {"signal": seq_signal, "fusion": seq_fusion, "recall": seq_recall, "text": seq_text, "rules": seq_rules}
+    kinds = kinds or [MIX_V3[i][0] for i in rng.choice(len(MIX_V3), B, p=[w for _, w in MIX_V3])]
+    seqs = [fns[k](rng, T, **kw) for k in kinds]
+    x = torch.tensor(np.stack([q[0] for q in seqs]), dtype=torch.float64)
+    s = torch.tensor(np.stack([q[1] for q in seqs]), dtype=torch.long)
+    dt = torch.tensor(np.stack([q[2] for q in seqs]), dtype=torch.float32)
+    mask = torch.tensor(np.stack([q[3] for q in seqs]))
+    return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask,
+                kinds=[q[4] for q in seqs])

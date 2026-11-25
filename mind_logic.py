@@ -23,7 +23,7 @@ for step in range(STEPS):
     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
     if step % 200 == 0:
         log.append(dict(step=step, nll=float(loss), sec=time.time() - t0)); print(log[-1], flush=True)
-torch.save(m.state_dict(), "runs/mind_logic.pt")
+torch.save(m.state_dict(), "runs/mind_logic%s.pt" % (sys.argv[3] if len(sys.argv) > 3 else ""))
 
 XS = torch.linspace(-1.5, 1.5, 1201, dtype=torch.float64)
 
@@ -60,5 +60,5 @@ unseen = {
 }
 for k, f in unseen.items():
     res["unseen_rules_8_examples"][k] = evaluate(None, 8, custom=f)
-json.dump(res, open("runs/mind_logic.json", "w"), indent=1)
+json.dump(res, open("runs/mind_logic%s.json" % (sys.argv[3] if len(sys.argv) > 3 else ""), "w"), indent=1)
 print(json.dumps({k: v for k, v in res.items() if k != "train_curve"}, indent=1))

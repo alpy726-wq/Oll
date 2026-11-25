@@ -12,10 +12,13 @@ from pfm.mind import MIND_STREAMS
 
 torch.set_num_threads(int(sys.argv[1]) if len(sys.argv) > 1 else 2)
 UPDATES = int(sys.argv[2]) if len(sys.argv) > 2 else 600
-B, STEPS = 32, 40
+import os
+B, STEPS = int(os.environ.get("ACT_B", 32)), 40
 torch.manual_seed(0)
 rng = np.random.default_rng(0)
 m = OneMachine(MIND_STREAMS, R=64, L=2, M=4, RM=256)
+with torch.no_grad():
+    m.mem_beta.fill_(float(os.environ.get("ACT_MEM0", 1.0)))  # memory gate at birth
 opt = torch.optim.Adam(m.parameters(), lr=float(__import__("os").environ.get("ACT_LR", "1e-2")))
 XS = torch.linspace(-1.5, 1.5, 601, dtype=torch.float64)
 OBS, ACT, REW = 2, 3, 4
@@ -95,5 +98,6 @@ for u in range(UPDATES):
         m.train()
         curve.append(dict(update=u, episodes_seen=(u + 1) * B, mean_reward=test, sec=time.time() - t0))
         print(curve[-1], "| random", round(ref["random"], 3), "| hand-made controller", round(ref["proportional"], 3), flush=True)
-torch.save(m.state_dict(), "runs/mind_act.pt")
-json.dump(dict(reference=ref, curve=curve), open("runs/mind_act.json", "w"), indent=1)
+tag = os.environ.get("ACT_TAG", "")
+torch.save(m.state_dict(), f"runs/mind_act{tag}.pt")
+json.dump(dict(reference=ref, curve=curve, env={k: v for k, v in os.environ.items() if k.startswith("ACT_")}), open(f"runs/mind_act{tag}.json", "w"), indent=1)
