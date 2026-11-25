@@ -24,3 +24,4 @@ runs/real/*.pt
 runs/real/queue.log
 data/drive/raw/
 data/drive/*.npz
+data/robot/raw/
