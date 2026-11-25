@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sequence Modelling Without a Vocabulary</title>
+<style>
+  @page { size: A4; margin: 22mm 20mm 22mm 20mm; }
+  :root { --ink:#1a1a1a; --muted:#555; --rule:#d9d9d9; --accent:#1f4e79; --tbl:#f4f6f8; }
+  body { font-family: "Georgia", "DejaVu Serif", serif; color: var(--ink); font-size: 10.6pt; line-height: 1.45; background:#fff; margin:0; }
+  h1 { font-size: 21pt; font-weight: normal; margin: 0 0 4pt 0; line-height:1.15; }
+  .subtitle { font-size: 11.5pt; font-weight: bold; margin: 0 0 8pt 0; font-family: "DejaVu Sans", sans-serif; }
+  .author { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; color: var(--muted); margin-bottom: 16pt; }
+  h2 { font-size: 14pt; font-weight: normal; margin: 18pt 0 6pt 0; border-bottom: 1px solid var(--rule); padding-bottom: 2pt; page-break-after: avoid; }
+  h3 { font-size: 11.3pt; font-weight: bold; margin: 12pt 0 4pt 0; page-break-after: avoid; font-family: "DejaVu Sans", sans-serif; }
+  p { margin: 0 0 7pt 0; text-align: justify; hyphens: auto; }
+  .abstract { border-left: 3px solid var(--accent); padding: 4pt 0 2pt 10pt; margin: 0 0 10pt 0; }
+  .abstract h2 { border: none; margin-top: 0; }
+  .eq { font-family: "DejaVu Serif", serif; background: var(--tbl); border-left: 3px solid #b8c4d0; padding: 5pt 10pt; margin: 6pt 0 9pt 0; }
+  .eq .n { float: right; color: var(--muted); }
+  b.lead { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; }
+  table { border-collapse: collapse; margin: 6pt 0 10pt 0; font-family: "DejaVu Sans", sans-serif; font-size: 8.6pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--rule); padding: 3pt 6pt; text-align: left; vertical-align: top; }
+  th { background: var(--tbl); font-weight: bold; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .caption { font-family: "DejaVu Sans", sans-serif; font-size: 8.6pt; color: var(--muted); margin: -4pt 0 10pt 0; }
+  figure { margin: 8pt 0 10pt 0; page-break-inside: avoid; }
+  figure img { width: 100%; }
+  ul, ol { margin: 0 0 8pt 0; padding-left: 18pt; }
+  li { margin-bottom: 3pt; text-align: justify; }
+  .tag { font-family: "DejaVu Sans", sans-serif; font-size: 7.8pt; padding: 0 4pt; border-radius: 3pt; color:#fff; white-space: nowrap; }
+  .ok { background:#2e7d32; } .part { background:#b26a00; } .no { background:#b3261e; }
+  .note { font-family: "DejaVu Sans", sans-serif; font-size: 8.8pt; background: #fbf7ec; border: 1px solid #ecdcb0; padding: 6pt 9pt; margin: 6pt 0 10pt 0; }
+  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.6pt; }
+  .small { font-size: 9pt; }
+  .pb { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>Sequence Modelling Without a Vocabulary</h1>
+<div class="subtitle">A frozen prime-frequency basis on ℝ, and a continuous-in-input, continuous-in-time, continuous-in-output machine built on it</div>
+<div class="author">Alptekin Keser · Teknofix Finance LLC · alptekin@atlasportal.us</div>
+
+<div class="abstract">
+<h2>Abstract</h2>
+<p>Sequence models begin with a learned table over a finite alphabet. We replace it with arithmetic. Each real number <i>x</i> is sent to b(<i>x</i>)<sub>k</sub> = p<sub>k</sub><sup>−1/2</sup> e<sup>2πi x√p<sub>k</sub></sup> over the first <i>R</i> primes: no parameters, no table, defined on all of ℝ. The map is a homomorphism from (ℝ, +) into the torus, every input has the same norm, and the Gram matrix depends only on <i>x</i> − <i>y</i>.</p>
+<p>On this basis we build a <b>continuous machine</b>: the input is a real number, the internal state is a bank of complex oscillators that advances by any real time gap Δ<i>t</i>, and the output is a full probability density over the next value, |⟨b(<i>x</i>), <i>h</i>⟩|² / <i>Z</i>, whose normaliser <i>Z</i> has a closed form. There is no tokenizer, no embedding table, no attention, no feed-forward block and no positional encoding. Depth is a stack of reversible blocks.</p>
+<p>The goal of this work is not a better language model. It is a different route to sequence cognition, with capabilities that token-based models do not have by construction. We implement every part of the design and verify it on a single 4-core CPU with no GPU. Six exactness properties hold to numerical precision. One machine of 112,769 parameters learns six continuous dynamical systems at once from irregularly sampled data, produces calibrated multi-modal densities, forecasts 16 steps ahead with uncertainty bands, runs in constant memory, and discovers an unstated boundary rule. We report where the substrate is strong and where it is limited, including a measured output-resolution limit, the result of a basis ablation, and the absence of content-addressable recall.</p>
+</div>
+
+<h2>1. Introduction</h2>
+<p>Attention charges twice: a T×T term at run time and a context length fixed at design time. The embedding table charges separately for the privilege of giving each token an arbitrary vector. A large literature makes the mixer cheaper (state-space models, long convolutions, linear attention). None of it changes the input: every one of these models still begins with a learned table over a finite alphabet.</p>
+<p><b class="lead">What the input is.</b> Here the input is ℝ. A byte, an audio sample, a temperature, a coordinate, a timestamp: each is already a point in the space, with no encoder, tokenizer or quantisation step. Giving a learned table real-valued input means learning an encoder; a learned encoder assigns arbitrary coordinates; and arbitrary coordinates cost the group law and the shared coordinate system that this construction provides for free.</p>
+<p><b class="lead">Why continuity matters.</b> Discrete models see the physical world through a quantiser chosen in advance. Sensor streams, irregular timestamps, mixed sampling rates and numbers themselves are all forced into symbols first. A model whose input, state dynamics and output all live on ℝ can meet these signals directly.</p>
+<p><b class="lead">Position of this work.</b> We do not compete with transformers on their own ground, and we do not claim to. The question we ask is different: <i>what can a machine do when its input, its clock and its output are all continuous, and its representation is fixed arithmetic rather than learned lookup?</i> We answer it with an implementation and measurements, not only a design.</p>
+<p><b class="lead">Origin of the basis.</b> The construction was motivated by the Euler product and the explicit formula, where primes enter as mutually incommensurable frequencies, each acting as an independent fingerprint. Section 2.6 shows that this link is concrete: the log-prime version of the bank recovers the first ten zeros of ζ.</p>
+<p><b class="lead">Contributions.</b></p>
+<ol>
+<li>A parameter-free basis on ℝ with four exact properties (homomorphism, constant norm, translation covariance, continuity), verified to 10<sup>−10</sup> or better (Section 2).</li>
+<li>A reversible oscillator architecture with no embedding table, attention, feed-forward block or positional encoding (Section 3).</li>
+<li>A continuous machine: a phase-amplitude output density with closed-form normaliser, and a continuous-time state that advances by any Δ<i>t</i>. Both are implemented and tested (Section 4).</li>
+<li>Measurements on a synthetic continuous world, all on a CPU, with baselines and multiple seeds (Section 5).</li>
+<li>An honest map of strengths and limits, including a resolution–aliasing trade-off for the output head that the design must respect (Sections 4.2, 6).</li>
+</ol>
+
+<h2>2. The basis</h2>
+<p>Let p<sub>1</sub> &lt; … &lt; p<sub>R</sub> be the first <i>R</i> primes and</p>
+<div class="eq">b: ℝ → ℂ<sup>R</sup>, &nbsp; b(x)<sub>k</sub> = p<sub>k</sub><sup>−1/2</sup> · e<sup>2πi x √p<sub>k</sub></sup><span class="n">(1)</span></div>
+<p>Real and imaginary parts are stored side by side, so the working space is real of dimension 2<i>R</i>. Nothing in (1) is a parameter, and the argument is a real number, not an index. All measurements in this section use <i>R</i> = 2048 and float64 phases (<code>exp_basis.py</code>).</p>
+
+<p><b class="lead">Proposition 1 (arithmetic inside the representation).</b> b(a) ⊙ b(c) = A ⊙ b(a+c), with A<sub>k</sub> = p<sub>k</sub><sup>−1/2</sup>. Up to the frozen amplitude, b is a group homomorphism from (ℝ, +) into the torus. <i>Proof:</i> the exponents add. Measured over 500 random pairs in [−10<sup>5</sup>, 10<sup>5</sup>]: maximum absolute deviation 1.4×10<sup>−10</sup>, mean 4.5×10<sup>−13</sup>.</p>
+<p><b class="lead">Proposition 2 (constant norm).</b> ‖b(x)‖² = Σ<sub>k</sub> p<sub>k</sub><sup>−1</sup> for every x, which by Mertens' second theorem is log log p<sub>R</sub> + M + o(1). Every input has the same amplitude profile, so identity is carried entirely by phase. Measured: 2.5436161509 across the whole byte alphabet, spread 8.9×10<sup>−16</sup> (Mertens estimate 2.5429).</p>
+<p><b class="lead">Proposition 3 (translation covariance).</b> ⟨b(x), b(y)⟩ = Σ<sub>k</sub> p<sub>k</sub><sup>−1</sup> e<sup>2πi(x−y)√p<sub>k</sub></sup>, a function of x − y alone; the Gram matrix is Toeplitz. Measured at x − y = 7 over 200 random x: 0.41791083 ± 2.7×10<sup>−12</sup>, against the closed form 0.41791083. Relative position is a property of the map, not something added to it.</p>
+<p><b class="lead">Proposition 4 (injectivity and continuity).</b> b is continuous. The √p<sub>k</sub> are ℚ-linearly independent (Besicovitch), so the phase vector equidistributes on the torus and b is injective. Measured: 1 − cos between b(x) and b(x+δ) is 1.589×10<sup>−4</sup> at δ = 10<sup>−4</sup> and 1.589×10<sup>−10</sup> at δ = 10<sup>−7</sup>, scaling exactly as δ².</p>
+
+<h3>2.1 Why the exponent is 1/2</h3>
+<p>Prime p contributes p<sup>−2σ</sup> to the squared norm. For σ &gt; 1/2 the shares by decade fall geometrically and a few small primes become the whole carrier; for σ &lt; 1/2 the largest primes swamp everything. At σ = 1/2 the shares fall harmonically and the total diverges only as log log. The carrier is placed at that boundary and frozen there.</p>
+<table>
+<tr><th>share of ‖b‖² by decade</th><th class="num">[10, 10²)</th><th class="num">[10², 10³)</th><th class="num">[10³, 10⁴)</th><th class="num">[10⁴, ·)</th></tr>
+<tr><td>σ = 0.40</td><td class="num">0.211</td><td class="num">0.215</td><td class="num">0.247</td><td class="num">0.070</td></tr>
+<tr><td>σ = 0.50</td><td class="num">0.246</td><td class="num">0.155</td><td class="num">0.112</td><td class="num">0.024</td></tr>
+<tr><td>σ = 0.60</td><td class="num">0.223</td><td class="num">0.087</td><td class="num">0.039</td><td class="num">0.006</td></tr>
+</table>
+
+<h3>2.2 Effective dimension</h3>
+<p>The harmonic profile has a cost that must be stated. The effective number of independent coordinates, (Σ A<sub>k</sub>²)² / Σ A<sub>k</sub><sup>4</sup>, is <b>14.3 at R = 2048</b>, because the first primes carry most of the weight. Two consequences follow and are measured below: different inputs are less orthogonal than 2R suggests (mean |cos| between distinct bytes 0.24), and superposition capacity is small (Section 5.6). A flat amplitude (σ = 0) restores the full dimension; the model can also learn per-channel gains, so the trunk is not limited by this, but any parameter-free readout is.</p>
+
+<h3>2.3 Typed vocabularies</h3>
+<p>Since the readout is parameter-free, a disjoint family of indices costs nothing to add. Action tokens written as type·10<sup>5</sup> + index occupy their own region of ℝ. Because of the effective dimension above, regions are separated by phase pattern, not by orthogonality: the maximum |cos| between 64 action codes and the 256 byte codes is 0.52, comparable to the 0.24 mean between bytes themselves. Separation must therefore be learned or obtained with σ = 0; it is not free at σ = 1/2.</p>
+
+<h3>2.4 Frequency families</h3>
+<p>Propositions 1–4 depend only on the frequencies being ℚ-linearly independent, not on their being √p. This makes the frequency family an experimental variable: √p (this paper), log p (Section 2.6), random reals, geometric (RoPE-like). Section 5.5 measures them.</p>
+
+<h3>2.5 Group law in binding</h3>
+<p>Binding is elementwise product and unbinding is the conjugate, as in vector-symbolic architectures, but the product of two codes is again a code: b(k) ⊙ b(v) ∝ b(k + v). Keys must therefore be spaced so that k<sub>i</sub> + v ≠ k<sub>j</sub> + v<sub>j</sub> within the value range; dense integer keys alias. With well-separated keys this is a strength: the bound pair is itself a point of ℝ.</p>
+
+<h3>2.6 The zeta variant</h3>
+<p>Take frequencies log p<sub>k</sub> instead of √p<sub>k</sub>:</p>
+<div class="eq">b(t)<sub>k</sub> = p<sub>k</sub><sup>−1/2</sup> e<sup>i t log p<sub>k</sub></sup> = p<sub>k</sub><sup>−1/2 − it</sup> &nbsp;(up to conjugation)<span class="n">(2)</span></div>
+<p>This is the Euler-product term of ζ(s) on the critical line Re s = 1/2. Propositions 1–3 hold unchanged (measured deviation 1.2×10<sup>−13</sup>), and ℚ-independence of the log p<sub>k</sub> follows from unique factorisation. For integer inputs a multiplicative channel n ↦ (e<sup>−i v<sub>p</sub>(n) log p</sup>)<sub>p</sub> turns multiplication of integers into addition of phases; measured over 200 random products, deviation 6.5×10<sup>−16</sup>.</p>
+<p><b class="lead">The bank recovers the zeros of ζ.</b> The tapered prime-power bank S(t) = −Σ<sub>p<sup>k</sup>≤X</sub> log p · p<sup>−k/2</sup> (1 − log p<sup>k</sup>/log X) cos(t k log p), with X = 2×10<sup>6</sup>, has its ten tallest peaks on t ∈ [12, 50] at</p>
+<table>
+<tr><th>true zero γ</th><td class="num">14.1347</td><td class="num">21.0220</td><td class="num">25.0109</td><td class="num">30.4249</td><td class="num">32.9351</td><td class="num">37.5862</td><td class="num">40.9187</td><td class="num">43.3271</td><td class="num">48.0052</td><td class="num">49.7738</td></tr>
+<tr><th>peak of bank</th><td class="num">14.160</td><td class="num">21.030</td><td class="num">25.020</td><td class="num">30.420</td><td class="num">32.930</td><td class="num">37.590</td><td class="num">40.920</td><td class="num">43.330</td><td class="num">48.010</td><td class="num">49.770</td></tr>
+</table>
+<p class="caption">Table 1. All ten zeros found, maximum error 0.025 (grid step 0.01). This is a property of the log-prime basis through the explicit formula, not of a trained model.</p>
+
+<h2>3. The model</h2>
+<p><b class="lead">Depth.</b> Each layer is a reversible block: y<sub>1</sub> = x<sub>1</sub> + F(x<sub>2</sub>), y<sub>2</sub> = x<sub>2</sub> + G(y<sub>1</sub>). The block is invertible whatever F and G are. Inside F and G act a time mixer, a circulant phase filter with frequency response e<sup>iθ<sub>k</sub></sup> (unitary by Parseval), and a spectral operator W = U diag(e<sup>σ</sup>) V<sup>T</sup> with U frozen orthogonal and V initialised to U, scaled by a per-channel gate α initialised to zero, so every layer is born as the identity and learns a perturbation. The only nonlinearity is multiplicative: F(x) = α ⊙ W(P<sub>θ</sub>(M(n)) ⊙ silu(n)), n = rms(x), where M is the time mixer.</p>
+<p><b class="lead">Time mixer, discrete version.</b> A causal per-channel convolution with kernel length K and fixed envelope ζ<sub>j</sub> = (j+1)<sup>−1/2</sup>, evaluated by FFT in O(T log T). No T×T object is formed. Note that L stacked layers have a receptive field of L·2(K−1)+1 samples, so the state used for generation is a sliding window of the last K inputs per layer: constant in sequence length, but a window.</p>
+<p><b class="lead">Time mixer, continuous version.</b> The kernel is a sum of complex exponentials, κ(t) = Re Σ<sub>m</sub> c<sub>m</sub> e<sup>(−λ<sub>m</sub>+iω<sub>m</sub>)t</sup>. Its state obeys</p>
+<div class="eq">s ← e<sup>(−λ+iω)Δt</sup> s + u, &nbsp;&nbsp; read-out at time t + q: &nbsp; y = Re Σ<sub>m</sub> c<sub>m</sub> e<sup>(−λ<sub>m</sub>+iω<sub>m</sub>)q</sup> s<sub>m</sub><span class="n">(3)</span></div>
+<p>so the state advances by any real Δt, can be queried at any future offset q, and has size O(channels × modes) independent of sequence length: a true recurrent state, not a window. Training uses an exact chunked scan; generation uses (3) one sample at a time.</p>
+<p><b class="lead">What the machine is.</b> An input is a bank of oscillators: by (1), x excites R phasors at frequencies √p<sub>k</sub>. The operators are all-pass phase filters and orthogonal maps. Reading out matches phase against the same frozen bank.</p>
+
+<h2>4. The continuous machine</h2>
+<h3>4.1 Continuous output: a phase-amplitude density</h3>
+<p>The readout is already phase matching, s(x) = ⟨b(x), h⟩ = Σ<sub>k</sub> h<sub>k</sub> A<sub>k</sub> e<sup>−2πi x f<sub>k</sub></sup>, a sum of R sinusoids and therefore a function on all of ℝ. The next-value density on a window [a, c] is</p>
+<div class="eq">q(x | h) = |s(x)|² / Z(h), &nbsp;&nbsp; Z(h) = Σ<sub>k,l</sub> h<sub>k</sub> h̄<sub>l</sub> A<sub>k</sub>A<sub>l</sub> I(f<sub>k</sub> − f<sub>l</sub>), &nbsp;&nbsp; I(Δ) = ∫<sub>a</sub><sup>c</sup> e<sup>−2πi xΔ</sup> dx<span class="n">(4)</span></div>
+<p>Every term of Z is a closed-form sinc, so Z = h<sup>T</sup> G h̄ with a frozen Hermitian matrix G. The density is non-negative by construction and integrates to one exactly (measured: numerical integral 1.0000000 ± 10<sup>−7</sup>). Training minimises −log q(x<sub>true</sub> | h). The head has <b>no parameters and no output vocabulary</b>: the same head emits a byte, a sample, a temperature or a coordinate.</p>
+
+<h3>4.2 The resolution–aliasing trade-off</h3>
+<p>The density can only be as sharp as the highest frequency allows (resolution ≈ 1/f<sub>max</sub>), and it can only be localised if neighbouring frequencies are close enough that the pattern does not repeat inside the window (coherence length ≈ 1/Δf). For √p at unit scale the spacing is too coarse for a long window: the best possible fit to a Gaussian of width 0.3 on a window of length 12 leaks <b>74% of its mass</b> into replicas. A fixed affine rescaling of the input fixes this. The table gives the excess negative log-likelihood (nats) over the target's entropy for the best least-squares fit, R = 128:</p>
+<table>
+<tr><th>input scale</th><th class="num">width 0.3</th><th class="num">width 0.1</th><th class="num">width 0.03</th><th>regime</th></tr>
+<tr><td>1</td><td class="num">2.14</td><td class="num">2.34</td><td class="num">1.98</td><td>aliasing dominates</td></tr>
+<tr><td>1/4</td><td class="num">0.70</td><td class="num">0.47</td><td class="num">0.47</td><td></td></tr>
+<tr><td>1/8</td><td class="num">0.27</td><td class="num">0.34</td><td class="num">0.80</td><td>balanced (used)</td></tr>
+<tr><td>1/16</td><td class="num">0.13</td><td class="num">0.32</td><td class="num">1.24</td><td>resolution dominates</td></tr>
+</table>
+<p class="caption">Table 2. Design rule: choose the input scale so that 1/Δf exceeds the window and 1/f<sub>max</sub> is below the narrowest density needed; increasing R improves both (R = 512 at 1/8: 0.26 / 0.33 / 0.38). Source: <code>exp_head_capacity.py</code>.</p>
+
+<h3>4.3 Exactness properties</h3>
+<p>The following hold for the implemented machine and are checked by an automated test suite (<code>tests/test_machine.py</code>, 6/6 passing):</p>
+<table>
+<tr><th>property</th><th>what it means</th><th>measured</th></tr>
+<tr><td>group law</td><td>arithmetic happens inside the representation</td><td>deviation &lt; 10<sup>−3</sup> in float32 storage, 10<sup>−10</sup> in float64</td></tr>
+<tr><td>normalised density</td><td>output is a true probability density</td><td>∫q = 1 to 10<sup>−6</sup>, q ≥ 0</td></tr>
+<tr><td>streaming = full pass</td><td>sample-by-sample operation equals whole-sequence operation</td><td>relative difference &lt; 10<sup>−5</sup></td></tr>
+<tr><td>constant state</td><td>memory does not grow with sequence length</td><td>identical state size after 10 and 1000 samples</td></tr>
+<tr><td>time semigroup</td><td>advancing by a then b equals advancing by a + b; querying at offset q equals advancing by q</td><td>difference &lt; 10<sup>−5</sup></td></tr>
+<tr><td>uses time</td><td>the same values at different times give different predictions</td><td>relative change &gt; 10<sup>−3</sup></td></tr>
+</table>
+
+<h2>5. Experiments</h2>
+<div class="note"><b>Compute.</b> Every result in Sections 2, 4 and 5 was produced on one machine with 4 CPU cores, 15 GB of memory and no GPU. Total training time for all experiments was a few CPU-hours. Code, logs and results are in the accompanying repository; Appendix A lists the commands.</div>
+
+<h3>5.1 A synthetic continuous world</h3>
+<p>One machine is trained on six signal families at once, each sequence drawn with fresh random initial conditions. Five of the six are sampled at irregular times; time units and sampling rates differ between families by design. At each step the machine sees the value, the time since the previous sample, and the time to the sample it must predict.</p>
+<table>
+<tr><th>family</th><th>dynamics</th><th>sampling</th></tr>
+<tr><td>sines</td><td>three random sinusoids + noise</td><td>irregular, mean gap 1.0</td></tr>
+<tr><td>pendulum</td><td>non-linear pendulum</td><td>irregular, mean gap 0.25</td></tr>
+<tr><td>lotka</td><td>Lotka–Volterra predator–prey</td><td>irregular, mean gap 0.35</td></tr>
+<tr><td>lorenz</td><td>chaotic Lorenz system</td><td>irregular, mean gap 0.04</td></tr>
+<tr><td>oscillator</td><td>random damped oscillator</td><td>irregular, mean gap 0.35</td></tr>
+<tr><td>bimodal</td><td>x → x ± 0.25 with reflection at ±1</td><td>regular</td></tr>
+</table>
+<p><b class="lead">Machine.</b> R = 128, input scale 1/8, 3 reversible layers, 4 oscillator modes per channel, phase-amplitude head on the window [−1.5, 1.5]: <b>112,769 parameters</b>. Trained for 2000 steps of 24 sequences × 64 samples, three seeds; evaluation on 96 unseen sequences per family, identical for every model.</p>
+
+<figure><img src="fig_machine.png" alt="forecasts and densities">
+<div class="caption">Figure 1. Top row and bottom-left: 16-step probabilistic forecasts from a 48-sample context, produced in streaming mode by sampling 32 paths from the predicted density (bands: 50% and 90%; red: unseen truth). Bottom, third panel: predicted next-value density on the bimodal family for three contexts. The machine places two peaks at x ± 0.25; for the green context (x = 0.82) it places one peak, which is correct, because the step up would cross the boundary and reflect onto the step down. This boundary rule was never stated to the model. Bottom right: training curves for all seeds.</div></figure>
+
+<h3>5.2 Results</h3>
+<p>Negative log-likelihood (NLL, nats) and continuous ranked probability score (CRPS) on unseen sequences; lower is better. "Persistence" is a no-learning reference: the next value is the current one plus Gaussian noise with a per-family width fitted on training data. The same oscillator trunk is also trained with two learned output heads (Gaussian, and a mixture of five Gaussians, MDN), and a standard GRU with an MDN head is included as an external reference.</p>
+<table>
+<tr><th></th><th class="num">machine<br>(parameter-free head)</th><th class="num">same trunk<br>+ Gaussian head</th><th class="num">same trunk<br>+ MDN head</th><th class="num">GRU + MDN<br>(reference)</th><th class="num">persistence</th></tr>
+<tr><td>mean NLL</td><td class="num">−1.347 ± 0.028</td><td class="num">−0.753</td><td class="num">−1.416</td><td class="num">−1.878 ± 0.305</td><td class="num">−0.397</td></tr>
+<tr><td>mean CRPS</td><td class="num">0.0646 ± 0.0010</td><td class="num">0.1064</td><td class="num">0.0709</td><td class="num">0.0591 ± 0.0059</td><td class="num">0.0913</td></tr>
+<tr><td>16-step CRPS</td><td class="num">0.168 ± 0.006</td><td class="num">0.167</td><td class="num">0.149</td><td class="num">0.155 ± 0.014</td><td class="num">—</td></tr>
+<tr><td>bimodal NLL</td><td class="num"><b>−1.837 ± 0.016</b></td><td class="num">+0.441</td><td class="num">−1.039</td><td class="num">−1.221 ± 1.197</td><td class="num">+0.034</td></tr>
+<tr><td>bimodal CRPS</td><td class="num"><b>0.116 ± 0.001</b></td><td class="num">0.226</td><td class="num">0.144</td><td class="num">0.136 ± 0.014</td><td class="num">0.151</td></tr>
+<tr><td>parameters</td><td class="num">112,769</td><td class="num">113,282</td><td class="num">116,623</td><td class="num">81,615</td><td class="num">—</td></tr>
+</table>
+<p class="caption">Table 3. Machine and GRU: mean ± std over three seeds; other rows one seed. Per-family results: <code>runs/machine/summary.txt</code>.</p>
+<p><b class="lead">What the table shows.</b></p>
+<ul>
+<li><b>It learns.</b> The machine beats the no-learning reference on all six families, on both NLL and CRPS.</li>
+<li><b>Multi-modal prediction is its strongest ability.</b> On the bimodal family it is best on both metrics, by a wide margin, with almost no variation between seeds. The GRU reference collapses on this family in one of its three seeds.</li>
+<li><b>It is stable.</b> Seed-to-seed spread of mean NLL is 0.03 for the machine and 0.31 for the GRU reference.</li>
+<li><b>The parameter-free head carries real capacity.</b> On the same trunk it beats a learned Gaussian head on five of six families (mean NLL −1.35 against −0.75).</li>
+<li><b>Its limit is sharpness.</b> On smooth, nearly deterministic systems (pendulum, Lotka–Volterra, Lorenz) learned heads produce sharper one-step densities. This is the resolution limit of Section 4.2 (here about 0.075 in value units), not a failure of learning, and it moves with R and the input scale.</li>
+</ul>
+
+<h3>5.3 Continuous time</h3>
+<p>On irregularly sampled damped oscillators, three otherwise identical models differ only in how they treat time (one seed):</p>
+<table>
+<tr><th>time handling</th><th class="num">NLL</th></tr>
+<tr><td>continuous state advanced by the true Δt, queried at the true offset q (equation 3)</td><td class="num"><b>0.648</b></td></tr>
+<tr><td>fixed step, Δt and q given as extra input features</td><td class="num">0.705</td></tr>
+<tr><td>fixed step, timestamps ignored</td><td class="num">0.799</td></tr>
+</table>
+<p class="caption">Table 4. Treating time as a continuous variable of the dynamics beats treating it as a feature. Source: <code>exp_continuous.py --part time</code>.</p>
+
+<h3>5.4 Byte-level language data</h3>
+<p>Language is not the purpose of the construction, but bytes are a hard discrete domain and show that the substrate carries it. Two sets of measurements exist.</p>
+<p><b class="lead">Large checkpoint (author's measurements).</b> An early-stage checkpoint of 797,540,809 parameters (76 layers, d = 4096, R = 2048) reached a three-domain held-out average of 2.0663 bits per byte after 84,000 steps (from 2.2152). Per sample: English prose 1.830, Python source 0.744, JSON 2.731. On uniform random bytes it scored 8.712; a calibrated model scores 8.000, so the excess measures over-confidence on noise, and calibration is a target for further training. Invertibility through 76 layers: 5.2×10<sup>−3</sup> relative error in float32. Streaming agreed with the full pass to 6.5×10<sup>−7</sup>; the 304 MiB generation state equals 76 × 512 × 2048 × 4 bytes, i.e. the sliding-window state of Section 3. Phase adaptation (θ, σ, α; 467,248 parameters, 0.059%) gave −0.527 bits per byte against −0.402 for tuning the dense operator (83,886,080 parameters).</p>
+<p><b class="lead">Small-scale replication (CPU).</b> A 2,107,905-parameter model (8 layers, d = 512, R = 256) trained for 3000 steps on Shakespeare, Python standard-library source and JSON files reached 1.78 bits per byte held-out (prose 2.40, code 1.97, JSON 0.97). Invertibility is exact in float64 and 8.9×10<sup>−3</sup> in float32; phase filters preserve norm to 10<sup>−6</sup>; streaming equals the full pass (relative 1.2×10<sup>−6</sup>, identical argmax on every position); the model runs unchanged at 8× its training length. Weight averaging of two branches fine-tuned from one checkpoint gave 1.792 against 1.827 for the better branch. A phase-only adapter (0.49% of parameters) obtained 84% of the gain of tuning the dense operator (50% of parameters) on a new domain.</p>
+
+<h3>5.5 Basis ablation</h3>
+<p>Same architecture (R = 128, 6 layers), same data and budget, three seeds each; held-out bits per byte, lower is better:</p>
+<table>
+<tr><th>input representation</th><th class="num">bits per byte</th></tr>
+<tr><td>learned 256 × 2R table</td><td class="num">2.156 ± 0.022</td></tr>
+<tr><td>random frequencies</td><td class="num">2.340 ± 0.030</td></tr>
+<tr><td>log p (zeta variant)</td><td class="num">2.343 ± 0.018</td></tr>
+<tr><td>geometric (RoPE-like)</td><td class="num">2.370 ± 0.016</td></tr>
+<tr><td>√p with flat amplitude (σ = 0)</td><td class="num">2.412 ± 0.041</td></tr>
+<tr><td>√p, σ = 1/2</td><td class="num">2.449 ± 0.025</td></tr>
+</table>
+<p class="caption">Table 5. On a finite alphabet, where every symbol is seen many times, a learned table is better. Among frozen families the choice matters by about 0.1 bits per byte and √p is not privileged. The value of the frozen basis lies elsewhere: it is defined on all of ℝ, needs no training to cover unseen values, and carries the group law; none of these is available to a table.</p>
+
+<h3>5.6 Further properties and limits</h3>
+<p><b class="lead">Superposition capacity.</b> N key–value bindings are summed into one vector and each value is recovered by unbinding with its key and phase-matching against the byte alphabet (<code>exp_binding.py</code>):</p>
+<table>
+<tr><th>bindings stored</th><th class="num">4</th><th class="num">8</th><th class="num">16</th><th class="num">32</th><th class="num">64</th><th class="num">128</th></tr>
+<tr><td>R = 2048, σ = 1/2</td><td class="num">0.73</td><td class="num">0.34</td><td class="num">0.15</td><td class="num">0.09</td><td class="num">0.04</td><td class="num">0.02</td></tr>
+<tr><td>R = 2048, σ = 0, separated keys</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.997</td></tr>
+</table>
+<p class="caption">Table 6. Recovery accuracy. With flat amplitude and well-separated keys the basis is a high-capacity symbolic memory (128 bindings at 99.7%); at σ = 1/2 the effective dimension of Section 2.2 limits it to a few items. A single write followed by an erase is exact (error 0 in float64).</p>
+<p><b class="lead">Content-addressable recall.</b> On multi-query associative recall (key–value pairs followed by queries), the attention-free oscillator model stays at chance after 5000 steps, while a small transformer reaches 41% with four pairs. Retrieving by content is the function attention provides, and this architecture does not provide it; it is a different capability profile, not a weaker version of the same one.</p>
+<p><b class="lead">Robustness.</b> Zeroing half of all weights costs 10.4 bits per byte and removing one of eight layers 1.17 at small scale, so information is distributed but not redundant. Adapter composition (adding two phase adapters trained on different domains) did not preserve either skill at this scale; subtraction is exact (10<sup>−7</sup>).</p>
+
+<h2>6. Discussion</h2>
+<p><b class="lead">What this machine can do that token models cannot by construction.</b></p>
+<ul>
+<li>Take a real number as input with no tokenizer, encoder or quantiser.</li>
+<li>Treat time as a real variable: accept any gap between samples and answer "what happens at time t + q" for any q.</li>
+<li>Return a full probability density, including several distinct outcomes, with no output vocabulary and no output parameters.</li>
+<li>Run indefinitely in constant memory, with streaming exactly equal to batch processing.</li>
+<li>Lose no information through depth (reversibility), and carry addition inside the representation (group law).</li>
+</ul>
+<p><b class="lead">Where it is limited.</b> Output sharpness is bounded by the highest frequency (Section 4.2); content-addressable recall is absent (Section 5.6); on finite alphabets a learned table is a better input than any frozen family (Section 5.5); the σ = 1/2 amplitude profile reduces orthogonality and symbolic capacity (Section 2.2). Each limit has a concrete lever: R and input scale for sharpness, a recall mechanism added alongside the oscillator state, σ for symbolic capacity.</p>
+<p><b class="lead">Why the CPU matters.</b> All results here come from a few CPU-hours. The machine's cost grows linearly with sequence length, its state is constant, and its basis needs no training. This puts continuous sequence modelling, for sensors, finance, physical systems and irregular event streams, within reach of hardware that has no accelerator.</p>
+
+<h2>7. Future work</h2>
+<ol>
+<li><b>Real signals.</b> Irregular financial tick data, physiological and environmental sensor streams, and audio, using the same machine without per-domain encoders.</li>
+<li><b>Resolution.</b> Larger R, multi-scale output banks, or a coarse-to-fine density, to remove the sharpness limit while keeping the head parameter-free.</li>
+<li><b>Modalities as phase-locked points of one space.</b> An object is a tuple of real coordinates; binding uses the group law (Section 2.5). Low-frequency primes carry shared structure and high-frequency primes modality-specific detail; a phase-locking loss on paired data aligns them. This removes per-modality encoders and fusion layers, not the need for paired data.</li>
+<li><b>Binding by synchrony.</b> A learnable Kuramoto-style phase coupling between channels of one layer, so that features of one object lock to a common phase.</li>
+<li><b>Recall.</b> A content-addressable memory alongside the oscillator state, using the exact phase write/erase of Section 5.6.</li>
+<li><b>Number theory.</b> Arithmetic-function prediction (divisor count, Möbius, modular arithmetic) with the multiplicative channel of Section 2.6, and a comparison of the spectrum a trained model develops with the zeta zeros.</li>
+</ol>
+
+<h2>8. Numerical notes</h2>
+<p>The phase x√p<sub>k</sub> reaches about 10<sup>7</sup> rad at x = 10<sup>5</sup> and p ≈ 17,000; float32 phase carries roughly 1 rad of error there. Compute frac(x√p<sub>k</sub>) in float64, then cast to float32. "No encoder" means no <i>learned</i> encoder: a fixed affine rescaling remains, and Section 4.2 gives the rule for choosing it. The continuous-time scan bounds decay rates (λ ≤ 4) so that the chunked log-space evaluation stays in range; it agrees with the sequential recurrence to 3×10<sup>−7</sup>.</p>
+
+<h2>9. Conclusion</h2>
+<p>A frozen arithmetic basis supplies identity, relative position, continuous values and a group law at no parameter cost. On it we built a machine whose input, clock and output are all continuous: a bank of oscillators with a state, not a lookup-and-mix pipeline. It is implemented, its exactness properties are tested, and on a CPU with no accelerator it learns six continuous dynamical systems in one model, predicts multi-modal futures, and discovers an unstated rule of its world. Its limits are measured and each has a concrete lever. The construction is offered not as a better version of existing sequence models but as a different one.</p>
+
+<h2 class="pb">Appendix A. Reproducibility</h2>
+<p class="small">Hardware: 4 CPU cores, 15 GB RAM, no GPU. Software: Python 3.13, PyTorch 2.15 (CPU), NumPy. Commands, from the repository root:</p>
+<table class="small">
+<tr><th>result</th><th>command</th></tr>
+<tr><td>exactness tests (Section 4.3)</td><td><code>python3 -m pytest -q tests</code></td></tr>
+<tr><td>basis properties, zeta zeros (Section 2)</td><td><code>python3 exp_basis.py</code></td></tr>
+<tr><td>head capacity (Table 2)</td><td><code>python3 exp_head_capacity.py</code></td></tr>
+<tr><td>continuous world (Tables 3, Figure 1)</td><td><code>./run_machine.sh; python3 plot_machine.py en</code></td></tr>
+<tr><td>continuous time (Table 4)</td><td><code>python3 exp_continuous.py --part time</code></td></tr>
+<tr><td>byte model (Section 5.4)</td><td><code>python3 data/build.py; python3 train_lm.py --out runs/main; python3 exp_props.py</code></td></tr>
+<tr><td>adapters, merging</td><td><code>./run_after_main.sh</code></td></tr>
+<tr><td>basis ablation (Table 5)</td><td><code>./run_ablation_seeds.sh</code></td></tr>
+<tr><td>binding capacity (Table 6)</td><td><code>python3 exp_binding.py</code></td></tr>
+<tr><td>recall</td><td><code>python3 exp_recall.py 2 5000 prime; python3 exp_recall.py 2 5000 transformer</code></td></tr>
+</table>
+<p class="small">Implementation choices not fixed by the design: the multiplicative gate inside F and G (the only nonlinearity); a learned scalar temperature and 2R-dimensional output gain for the discrete readout (513 parameters); input scale 1/8 for the continuous machine; four oscillator modes per channel.</p>
+
+</body>
+</html>
