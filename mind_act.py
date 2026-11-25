@@ -16,7 +16,7 @@ B, STEPS = 32, 40
 torch.manual_seed(0)
 rng = np.random.default_rng(0)
 m = OneMachine(MIND_STREAMS, R=64, L=2, M=4, RM=256)
-opt = torch.optim.Adam(m.parameters(), lr=3e-3)
+opt = torch.optim.Adam(m.parameters(), lr=float(__import__("os").environ.get("ACT_LR", "1e-2")))
 XS = torch.linspace(-1.5, 1.5, 601, dtype=torch.float64)
 OBS, ACT, REW = 2, 3, 4
 
@@ -63,22 +63,21 @@ def episode(policy, rng, learn=True):
         if policy == "machine":
             with torch.no_grad():
                 _, st = m.step(torch.tensor(a), torch.full((B,), ACT), torch.zeros(B), torch.zeros(B), st)
-                _, st = m.step(torch.tensor(r), torch.full((B,), REW), torch.zeros(B), torch.full((B,), 0.3), st)
+                _, st = m.step(torch.tensor(r), torch.full((B,), REW), torch.zeros(B), torch.zeros(B), st)
         xs += [e, a, r]; ss += [OBS, ACT, REW]; dts += [gap, 0.0, 0.0]; rews.append(r); acts.append(a)
     return np.stack(xs, 1), np.array(ss), np.array(dts), np.stack(rews, 1), np.stack(acts, 1)
 
 
 def reinforce(xs, ss, dts, rews):
     x = torch.tensor(xs); s = torch.tensor(ss)[None].repeat(B, 1); dt = torch.tensor(dts, dtype=torch.float32)[None].repeat(B, 1)
-    q = torch.cat([dt[:, 1:], torch.full((B, 1), 0.3)], 1)
-    q[:, 0::3] = 0.0  # the action is asked at the time of the observation
+    q = torch.zeros_like(dt)  # every read-out at the event's own time: identical to what the agent computed while acting
     h = m(x, s, dt, q)
     obs_pos = torch.arange(0, x.shape[1], 3)
     logp = -m.nll(h[:, obs_pos], torch.full((B, len(obs_pos)), ACT), x[:, obs_pos + 1])
     R = torch.tensor(rews, dtype=torch.float32)
     ret = torch.zeros_like(R); run = torch.zeros(B)
     for k in reversed(range(R.shape[1])):  # discounted return
-        run = R[:, k] + 0.8 * run; ret[:, k] = run
+        run = R[:, k] + 0.5 * run; ret[:, k] = run
     adv = ret - ret.mean(0, keepdim=True)
     adv = adv / (adv.std() + 1e-6)
     loss = -(adv * logp).mean()

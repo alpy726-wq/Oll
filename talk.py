@@ -73,6 +73,7 @@ if __name__ == "__main__":
     ap.add_argument("--tag", default="")
     ap.add_argument("--eval_every", type=int, default=200)
     ap.add_argument("--M", type=int, default=4, help="oscillator modes per channel")
+    ap.add_argument("--mem0", type=float, default=1.0, help="initial memory gate")
     a = ap.parse_args()
     torch.set_num_threads(a.threads); torch.manual_seed(0)
     tr = np.frombuffer(open(f"{DATA}/talk.train", "rb").read(), dtype=np.uint8)
@@ -80,6 +81,9 @@ if __name__ == "__main__":
     OneMachine.DISCRETE_READOUT = a.readout
     model = GPT() if a.arch == "gpt" else OneMachine(STREAMS, R=a.R, L=a.L, M=a.M, RM=512)
     lr = 1e-3 if a.arch == "gpt" else a.lr
+    if a.arch == "machine":
+        with torch.no_grad():
+            model.mem_beta.fill_(a.mem0)
     opt = torch.optim.AdamW(model.parameters(), lr=lr)
     rng = np.random.default_rng(0)
     vrng = np.random.default_rng(99)
