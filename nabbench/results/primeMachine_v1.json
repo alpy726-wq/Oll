@@ -1,0 +1,35 @@
+{
+ "standard": {
+  "normalized": 9.498233314823159,
+  "raw": -93.96409870961027,
+  "threshold": 0.9465048913167975
+ },
+ "reward_low_FP_rate": {
+  "normalized": 4.436266105352193,
+  "raw": -105.70786263558291,
+  "threshold": 0.9541483224091118
+ },
+ "reward_low_FN_rate": {
+  "normalized": 13.209243603380035,
+  "raw": -186.03183226023748,
+  "threshold": 0.9360481241785135
+ },
+ "config": {
+  "name": "primeMachine_v1",
+  "R": 64,
+  "L": 2,
+  "lr": 0.003,
+  "T": 64,
+  "B": 16,
+  "chunk": 64,
+  "context": 256,
+  "warm_steps": 150,
+  "steps_per_chunk": 3,
+  "short": 10,
+  "long": 2000,
+  "seed": 0,
+  "workers": 4,
+  "only": ""
+ },
+ "wall_seconds": 1581.8343212604523
+}
