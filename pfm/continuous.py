@@ -87,6 +87,10 @@ class MDNHead(nn.Module):
 
 
 # ----------------------------------------------------------------------------- 5.2
+DT_MAX = 18.0  # gaps longer than this (in the stream's time unit) are treated as 18: with lambda <= 4 the fastest
+               # modes are fully decayed by then, and it keeps the chunked scan exactly representable in complex128
+
+
 class CTConv(nn.Module):
     """kappa(t) = Re sum_m c_m exp((-lambda_m + i omega_m) t) per channel.
     State s_t = exp(a dt_t) s_{t-1} + u_t (a = -lambda + i omega); read-out at query time t+q: Re sum_m c_m exp(a q) s_t.
@@ -102,6 +106,8 @@ class CTConv(nn.Module):
         self.c_im = nn.Parameter(torch.zeros(C, M))
 
     def forward(self, u, dt, q=None):
+        dt = dt.clamp(max=DT_MAX)
+        q = q.clamp(max=DT_MAX) if q is not None else None
         a = torch.complex(-self.log_lam.clamp(max=math.log(4.0)).exp(), self.omega)  # (C,M), lambda <= 4 keeps the chunk scan in range
         cc = torch.complex(self.c_re, self.c_im)
         d0 = dt.reshape(-1)[0]
@@ -124,14 +130,15 @@ class CTConv(nn.Module):
         """Chunked exact scan (log-space within a chunk):
         s_t = e^{a c_t} (s_prev + sum_{j<=t} e^{-a c_j} u_j),  c = cumulative dt inside the chunk."""
         B, T, C = u.shape
-        s = torch.zeros(B, C, a.shape[1], dtype=torch.complex64, device=u.device)
+        s = torch.zeros(B, C, a.shape[1], dtype=torch.complex128, device=u.device)
+        a64 = a.to(torch.complex128)
         ys = []
-        for st in range(0, T, chunk):
+        for st in range(0, T, chunk):  # complex128 inside the chunk: |exp(-a c)| <= e^(4*8*18) < 1e300
             uc, ccc = u[:, st:st + chunk], cc[:, st:st + chunk]
-            c = dt[:, st:st + chunk].float().cumsum(1)[..., None, None]  # (B,n,1,1)
-            acc = torch.cumsum(torch.exp(-a * c) * uc[..., None], 1)  # (B,n,C,M)
-            sc = torch.exp(a * c) * (acc + s[:, None])
-            ys.append((sc * ccc).sum(-1).real)
+            c = dt[:, st:st + chunk].double().cumsum(1)[..., None, None]  # (B,n,1,1)
+            acc = torch.cumsum(torch.exp(-a64 * c) * uc[..., None].double(), 1)  # (B,n,C,M)
+            sc = torch.exp(a64 * c) * (acc + s[:, None])
+            ys.append((sc.to(torch.complex64) * ccc).sum(-1).real)
             s = sc[:, -1]
         return torch.cat(ys, 1)
 
@@ -141,6 +148,7 @@ class CTConv(nn.Module):
     def step(self, u, dt, q, s):
         """one sample: u (B,C), dt (B,), q (B,), state s (B,C,M) -> y (B,C), new state.  O(C*M) memory."""
         a, cc = self.a_cc()
+        dt, q = dt.clamp(max=DT_MAX), q.clamp(max=DT_MAX)
         s = torch.exp(dt[:, None, None].float() * a) * s + u[..., None]
         return (s * cc * torch.exp(q[:, None, None].float() * a)).sum(-1).real, s
 

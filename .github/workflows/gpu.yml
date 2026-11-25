@@ -34,7 +34,11 @@ jobs:
             export MODAL_TOKEN_SECRET=$(echo "$MODAL_TOKEN_SET" | grep -o 'as-[A-Za-z0-9]*' | head -1)
           fi
           echo "token id present: $([ -n "$MODAL_TOKEN_ID" ] && echo yes || echo no), secret present: $([ -n "$MODAL_TOKEN_SECRET" ] && echo yes || echo no)"
-          case "${{ github.event.inputs.job }}" in *.py) modal run "gpu/${{ github.event.inputs.job }}"; exit 0;; esac
+          case "${{ github.event.inputs.job }}" in
+            main:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py start $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
+            fetch) python gpu/main_app.py fetch; exit 0;;
+            *.py) modal run "gpu/${{ github.event.inputs.job }}"; exit 0;;
+          esac
           if [ -n "${{ github.event.inputs.job }}" ]; then JOBS="gpu/jobs/${{ github.event.inputs.job }}"; else
           JOBS=$(git diff --name-only HEAD~1 HEAD -- gpu/jobs | grep '\.json$' || true); fi
           for j in $JOBS; do echo "== $j"; python gpu/launch.py "$j"; done
