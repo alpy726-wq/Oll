@@ -29,6 +29,15 @@ def main(args: list):
     return dict(returncode=p.returncode, tail="".join(tail[-60:]))
 
 
+@app.function(image=image, volumes={"/vol": vol}, gpu=GPU, timeout=4 * 3600, cpu=8, memory=32768)
+def caps(args: list):
+    os.chdir("/oll")
+    vol.reload()
+    p = subprocess.run([sys.executable, "gpu/eval_caps.py", *args], capture_output=True, text=True)
+    vol.commit()
+    return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
+
+
 @app.function(image=image, volumes={"/vol": vol}, timeout=600)
 def read_results():
     vol.reload()
@@ -40,7 +49,11 @@ def read_results():
 
 if __name__ == "__main__":
     cmd = sys.argv[1]
-    if cmd == "start":
+    if cmd == "caps":
+        with modal.enable_output(), app.run(detach=True):
+            c = caps.spawn(sys.argv[2:])
+            print("SPAWNED", c.object_id)
+    elif cmd == "start":
         with modal.enable_output(), app.run(detach=True):
             c = main.spawn(sys.argv[2:])
             print("SPAWNED", c.object_id)
