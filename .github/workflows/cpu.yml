@@ -1,0 +1,37 @@
+name: cpu
+# Free CPU experiments on GitHub runners, many in parallel. Input: a JSON list of command lines, each producing files
+# under runs/. Every job commits its own results (retrying on concurrent pushes).
+on:
+  workflow_dispatch:
+    inputs:
+      commands:
+        description: 'JSON list of shell commands, e.g. ["python3 real_train.py --seed 0 --out runs/real/x"]'
+        required: true
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        cmd: ${{ fromJSON(github.event.inputs.commands) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install torch==2.9.0 --index-url https://download.pytorch.org/whl/cpu && pip install numpy==2.3.4 pytest
+      - name: tests first (the experiment only counts if the code passes its exactness tests)
+        run: python -m pytest -q tests
+      - name: experiment
+        run: ${{ matrix.cmd }}
+      - name: commit results
+        if: always()
+        run: |
+          git config user.name "oll-cpu-bot"; git config user.email "oll-cpu-bot@users.noreply.github.com"
+          git add runs || true
+          git commit -m "CPU results: ${{ matrix.cmd }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && break; sleep $((RANDOM % 20 + 5)); done
