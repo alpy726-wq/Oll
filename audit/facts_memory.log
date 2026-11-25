@@ -1,0 +1,53 @@
+{
+ "n_facts": 243,
+ "bytes_written": 4670,
+ "order_1_only": {
+  "orders": [
+   1
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.0,
+  "char_accuracy": 0.0787203987983715
+ },
+ "context_key_8": {
+  "orders": [
+   8
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.6172839506172839,
+  "char_accuracy": 0.7326900123196419
+ },
+ "context_keys_4_8_12": {
+  "orders": [
+   4,
+   8,
+   12
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.6995884773662552,
+  "char_accuracy": 0.7807452176914776
+ },
+ "context_keys_4_8_12_RM16384": {
+  "orders": [
+   4,
+   8,
+   12
+  ],
+  "RM": 16384,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.8024691358024691,
+  "char_accuracy": 0.8721444821576686,
+  "erase": {
+   "erased_country": "Afghanistan",
+   "erased_recalled_before": true,
+   "erased_recalled_after": false,
+   "other_correct_before": 194,
+   "other_correct_after": 194,
+   "other_answers_changed": 2
+  }
+ }
+}
+examples: [('Afghanistan', 'Kabul', 'Kabul'), ('Åland Islands', 'Mariehamn', 'Mariehamn'), ('Albania', 'Tirana', 'Tirana'), ('Algeria', 'Algiers', 'Algiers'), ('American Samoa', 'Pago Pago', 'Pago Pago'), ('Andorra', 'Andorra la Vella', 'Andorra la Vella'), ('Angola', 'Luanda', 'Luanda'), ('Anguilla', 'The Valley', 'The Valley')]
