@@ -1,0 +1,39 @@
+name: gpu
+on:
+  push:
+    paths: ["gpu/jobs/**"]
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "job file under gpu/jobs"
+        required: true
+permissions:
+  contents: write
+concurrency: gpu-results
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install modal==1.6.4 numpy
+      - name: run changed job files on Modal
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          if [ -n "${{ github.event.inputs.job }}" ]; then JOBS="gpu/jobs/${{ github.event.inputs.job }}"; else
+          JOBS=$(git diff --name-only HEAD~1 HEAD -- gpu/jobs | grep '\.json$' || true); fi
+          for j in $JOBS; do echo "== $j"; python gpu/launch.py "$j"; done
+      - name: commit results
+        if: always()
+        run: |
+          git config user.name "oll-gpu-bot"; git config user.email "oll-gpu-bot@users.noreply.github.com"
+          git add runs/gpu || true
+          git commit -m "GPU results: ${{ github.sha }}" || exit 0
+          for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done

@@ -1,0 +1,10 @@
+{
+ "gpu": "B200",
+ "script": "real_train.py",
+ "note": "Is the CPU result limited by training length? Same machine and same frozen data, 1k (CPU replica) vs 20k steps, and a same-size event transformer with the same budget.",
+ "runs": {
+  "machine_1k_s0":  ["--schedule", "joint", "--seed", "0", "--steps", "1000"],
+  "machine_20k_s0": ["--schedule", "joint", "--seed", "0", "--steps", "20000", "--B", "64"],
+  "gpt_20k_s0":     ["--arch", "gpt", "--d", "40", "--L", "3", "--schedule", "joint", "--seed", "0", "--steps", "20000", "--B", "64"]
+ }
+}

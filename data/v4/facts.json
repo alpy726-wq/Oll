@@ -1,0 +1,1703 @@
+[
+{
+"country": "Afghanistan",
+"capital": "Kabul",
+"currency": "AFN",
+"dial": "93",
+"continent": "AS"
+},
+{
+"country": "Åland Islands",
+"capital": "Mariehamn",
+"currency": "EUR",
+"dial": "358",
+"continent": "EU"
+},
+{
+"country": "Albania",
+"capital": "Tirana",
+"currency": "ALL",
+"dial": "355",
+"continent": "EU"
+},
+{
+"country": "Algeria",
+"capital": "Algiers",
+"currency": "DZD",
+"dial": "213",
+"continent": "AF"
+},
+{
+"country": "American Samoa",
+"capital": "Pago Pago",
+"currency": "USD",
+"dial": "1-684",
+"continent": "OC"
+},
+{
+"country": "Andorra",
+"capital": "Andorra la Vella",
+"currency": "EUR",
+"dial": "376",
+"continent": "EU"
+},
+{
+"country": "Angola",
+"capital": "Luanda",
+"currency": "AOA",
+"dial": "244",
+"continent": "AF"
+},
+{
+"country": "Anguilla",
+"capital": "The Valley",
+"currency": "XCD",
+"dial": "1-264",
+"continent": "NA"
+},
+{
+"country": "Antigua & Barbuda",
+"capital": "St. John's",
+"currency": "XCD",
+"dial": "1-268",
+"continent": "NA"
+},
+{
+"country": "Argentina",
+"capital": "Buenos Aires",
+"currency": "ARS",
+"dial": "54",
+"continent": "SA"
+},
+{
+"country": "Armenia",
+"capital": "Yerevan",
+"currency": "AMD",
+"dial": "374",
+"continent": "AS"
+},
+{
+"country": "Aruba",
+"capital": "Oranjestad",
+"currency": "AWG",
+"dial": "297",
+"continent": "NA"
+},
+{
+"country": "Australia",
+"capital": "Canberra",
+"currency": "AUD",
+"dial": "61",
+"continent": "OC"
+},
+{
+"country": "Austria",
+"capital": "Vienna",
+"currency": "EUR",
+"dial": "43",
+"continent": "EU"
+},
+{
+"country": "Azerbaijan",
+"capital": "Baku",
+"currency": "AZN",
+"dial": "994",
+"continent": "AS"
+},
+{
+"country": "Bahamas",
+"capital": "Nassau",
+"currency": "BSD",
+"dial": "1-242",
+"continent": "NA"
+},
+{
+"country": "Bahrain",
+"capital": "Manama",
+"currency": "BHD",
+"dial": "973",
+"continent": "AS"
+},
+{
+"country": "Bangladesh",
+"capital": "Dhaka",
+"currency": "BDT",
+"dial": "880",
+"continent": "AS"
+},
+{
+"country": "Barbados",
+"capital": "Bridgetown",
+"currency": "BBD",
+"dial": "1-246",
+"continent": "NA"
+},
+{
+"country": "Belarus",
+"capital": "Minsk",
+"currency": "BYN",
+"dial": "375",
+"continent": "EU"
+},
+{
+"country": "Belgium",
+"capital": "Brussels",
+"currency": "EUR",
+"dial": "32",
+"continent": "EU"
+},
+{
+"country": "Belize",
+"capital": "Belmopan",
+"currency": "BZD",
+"dial": "501",
+"continent": "NA"
+},
+{
+"country": "Benin",
+"capital": "Porto-Novo",
+"currency": "XOF",
+"dial": "229",
+"continent": "AF"
+},
+{
+"country": "Bermuda",
+"capital": "Hamilton",
+"currency": "BMD",
+"dial": "1-441",
+"continent": "NA"
+},
+{
+"country": "Bhutan",
+"capital": "Thimphu",
+"currency": "INR,BTN",
+"dial": "975",
+"continent": "AS"
+},
+{
+"country": "Bolivia",
+"capital": "Sucre",
+"currency": "BOB",
+"dial": "591",
+"continent": "SA"
+},
+{
+"country": "Bosnia",
+"capital": "Sarajevo",
+"currency": "BAM",
+"dial": "387",
+"continent": "EU"
+},
+{
+"country": "Botswana",
+"capital": "Gaborone",
+"currency": "BWP",
+"dial": "267",
+"continent": "AF"
+},
+{
+"country": "Brazil",
+"capital": "Brasilia",
+"currency": "BRL",
+"dial": "55",
+"continent": "SA"
+},
+{
+"country": "British Indian Ocean Territory",
+"capital": "Diego Garcia",
+"currency": "USD",
+"dial": "246",
+"continent": "AS"
+},
+{
+"country": "British Virgin Islands",
+"capital": "Road Town",
+"currency": "USD",
+"dial": "1-284",
+"continent": "NA"
+},
+{
+"country": "Brunei",
+"capital": "Bandar Seri Begawan",
+"currency": "BND",
+"dial": "673",
+"continent": "AS"
+},
+{
+"country": "Bulgaria",
+"capital": "Sofia",
+"currency": "EUR",
+"dial": "359",
+"continent": "EU"
+},
+{
+"country": "Burkina Faso",
+"capital": "Ouagadougou",
+"currency": "XOF",
+"dial": "226",
+"continent": "AF"
+},
+{
+"country": "Burundi",
+"capital": "Gitega",
+"currency": "BIF",
+"dial": "257",
+"continent": "AF"
+},
+{
+"country": "Cape Verde",
+"capital": "Praia",
+"currency": "CVE",
+"dial": "238",
+"continent": "AF"
+},
+{
+"country": "Cambodia",
+"capital": "Phnom Penh",
+"currency": "KHR",
+"dial": "855",
+"continent": "AS"
+},
+{
+"country": "Cameroon",
+"capital": "Yaounde",
+"currency": "XAF",
+"dial": "237",
+"continent": "AF"
+},
+{
+"country": "Canada",
+"capital": "Ottawa",
+"currency": "CAD",
+"dial": "1",
+"continent": "NA"
+},
+{
+"country": "Cayman Islands",
+"capital": "George Town",
+"currency": "KYD",
+"dial": "1-345",
+"continent": "NA"
+},
+{
+"country": "Central African Republic",
+"capital": "Bangui",
+"currency": "XAF",
+"dial": "236",
+"continent": "AF"
+},
+{
+"country": "Chad",
+"capital": "N'Djamena",
+"currency": "XAF",
+"dial": "235",
+"continent": "AF"
+},
+{
+"country": "Chile",
+"capital": "Santiago",
+"currency": "CLP",
+"dial": "56",
+"continent": "SA"
+},
+{
+"country": "China",
+"capital": "Beijing",
+"currency": "CNY",
+"dial": "86",
+"continent": "AS"
+},
+{
+"country": "Hong Kong",
+"capital": "Hong Kong",
+"currency": "HKD",
+"dial": "852",
+"continent": "AS"
+},
+{
+"country": "Macao",
+"capital": "Macao",
+"currency": "MOP",
+"dial": "853",
+"continent": "AS"
+},
+{
+"country": "Christmas Island",
+"capital": "Flying Fish Cove",
+"currency": "AUD",
+"dial": "61",
+"continent": "OC"
+},
+{
+"country": "Cocos Islands",
+"capital": "West Island",
+"currency": "AUD",
+"dial": "61",
+"continent": "AS"
+},
+{
+"country": "Colombia",
+"capital": "Bogota",
+"currency": "COP",
+"dial": "57",
+"continent": "SA"
+},
+{
+"country": "Comoros",
+"capital": "Moroni",
+"currency": "KMF",
+"dial": "269",
+"continent": "AF"
+},
+{
+"country": "Congo - Brazzaville",
+"capital": "Brazzaville",
+"currency": "XAF",
+"dial": "242",
+"continent": "AF"
+},
+{
+"country": "Cook Islands",
+"capital": "Avarua",
+"currency": "NZD",
+"dial": "682",
+"continent": "OC"
+},
+{
+"country": "Costa Rica",
+"capital": "San Jose",
+"currency": "CRC",
+"dial": "506",
+"continent": "NA"
+},
+{
+"country": "Croatia",
+"capital": "Zagreb",
+"currency": "EUR",
+"dial": "385",
+"continent": "EU"
+},
+{
+"country": "Cuba",
+"capital": "Havana",
+"currency": "CUP",
+"dial": "53",
+"continent": "NA"
+},
+{
+"country": "Curaçao",
+"capital": " Willemstad",
+"currency": "XCG",
+"dial": "599",
+"continent": "NA"
+},
+{
+"country": "Cyprus",
+"capital": "Nicosia",
+"currency": "EUR",
+"dial": "357",
+"continent": "EU"
+},
+{
+"country": "Czechia",
+"capital": "Prague",
+"currency": "CZK",
+"dial": "420",
+"continent": "EU"
+},
+{
+"country": "North Korea",
+"capital": "Pyongyang",
+"currency": "KPW",
+"dial": "850",
+"continent": "AS"
+},
+{
+"country": "Congo - Kinshasa",
+"capital": "Kinshasa",
+"currency": "CDF",
+"dial": "243",
+"continent": "AF"
+},
+{
+"country": "Denmark",
+"capital": "Copenhagen",
+"currency": "DKK",
+"dial": "45",
+"continent": "EU"
+},
+{
+"country": "Djibouti",
+"capital": "Djibouti",
+"currency": "DJF",
+"dial": "253",
+"continent": "AF"
+},
+{
+"country": "Dominica",
+"capital": "Roseau",
+"currency": "XCD",
+"dial": "1-767",
+"continent": "NA"
+},
+{
+"country": "Dominican Republic",
+"capital": "Santo Domingo",
+"currency": "DOP",
+"dial": "1-809,1-829,1-849",
+"continent": "NA"
+},
+{
+"country": "Ecuador",
+"capital": "Quito",
+"currency": "USD",
+"dial": "593",
+"continent": "SA"
+},
+{
+"country": "Egypt",
+"capital": "Cairo",
+"currency": "EGP",
+"dial": "20",
+"continent": "AF"
+},
+{
+"country": "El Salvador",
+"capital": "San Salvador",
+"currency": "SVC,USD",
+"dial": "503",
+"continent": "NA"
+},
+{
+"country": "Equatorial Guinea",
+"capital": "Ciudad de la Paz",
+"currency": "XAF",
+"dial": "240",
+"continent": "AF"
+},
+{
+"country": "Eritrea",
+"capital": "Asmara",
+"currency": "ERN",
+"dial": "291",
+"continent": "AF"
+},
+{
+"country": "Estonia",
+"capital": "Tallinn",
+"currency": "EUR",
+"dial": "372",
+"continent": "EU"
+},
+{
+"country": "Eswatini",
+"capital": "Mbabane",
+"currency": "SZL",
+"dial": "268",
+"continent": "AF"
+},
+{
+"country": "Ethiopia",
+"capital": "Addis Ababa",
+"currency": "ETB",
+"dial": "251",
+"continent": "AF"
+},
+{
+"country": "Falkland Islands",
+"capital": "Stanley",
+"currency": "FKP",
+"dial": "500",
+"continent": "SA"
+},
+{
+"country": "Faroe Islands",
+"capital": "Torshavn",
+"currency": "DKK",
+"dial": "298",
+"continent": "EU"
+},
+{
+"country": "Fiji",
+"capital": "Suva",
+"currency": "FJD",
+"dial": "679",
+"continent": "OC"
+},
+{
+"country": "Finland",
+"capital": "Helsinki",
+"currency": "EUR",
+"dial": "358",
+"continent": "EU"
+},
+{
+"country": "France",
+"capital": "Paris",
+"currency": "EUR",
+"dial": "33",
+"continent": "EU"
+},
+{
+"country": "French Guiana",
+"capital": "Cayenne",
+"currency": "EUR",
+"dial": "594",
+"continent": "SA"
+},
+{
+"country": "French Polynesia",
+"capital": "Papeete",
+"currency": "XPF",
+"dial": "689",
+"continent": "OC"
+},
+{
+"country": "French Southern Territories",
+"capital": "Port-aux-Francais",
+"currency": "EUR",
+"dial": "262",
+"continent": "AN"
+},
+{
+"country": "Gabon",
+"capital": "Libreville",
+"currency": "XAF",
+"dial": "241",
+"continent": "AF"
+},
+{
+"country": "Gambia",
+"capital": "Banjul",
+"currency": "GMD",
+"dial": "220",
+"continent": "AF"
+},
+{
+"country": "Georgia",
+"capital": "Tbilisi",
+"currency": "GEL",
+"dial": "995",
+"continent": "AS"
+},
+{
+"country": "Germany",
+"capital": "Berlin",
+"currency": "EUR",
+"dial": "49",
+"continent": "EU"
+},
+{
+"country": "Ghana",
+"capital": "Accra",
+"currency": "GHS",
+"dial": "233",
+"continent": "AF"
+},
+{
+"country": "Gibraltar",
+"capital": "Gibraltar",
+"currency": "GIP",
+"dial": "350",
+"continent": "EU"
+},
+{
+"country": "Greece",
+"capital": "Athens",
+"currency": "EUR",
+"dial": "30",
+"continent": "EU"
+},
+{
+"country": "Greenland",
+"capital": "Nuuk",
+"currency": "DKK",
+"dial": "299",
+"continent": "NA"
+},
+{
+"country": "Grenada",
+"capital": "St. George's",
+"currency": "XCD",
+"dial": "1-473",
+"continent": "NA"
+},
+{
+"country": "Guadeloupe",
+"capital": "Basse-Terre",
+"currency": "EUR",
+"dial": "590",
+"continent": "NA"
+},
+{
+"country": "Guam",
+"capital": "Hagatna",
+"currency": "USD",
+"dial": "1-671",
+"continent": "OC"
+},
+{
+"country": "Guatemala",
+"capital": "Guatemala City",
+"currency": "GTQ",
+"dial": "502",
+"continent": "NA"
+},
+{
+"country": "Guernsey",
+"capital": "St Peter Port",
+"currency": "GBP",
+"dial": "44",
+"continent": "EU"
+},
+{
+"country": "Guinea",
+"capital": "Conakry",
+"currency": "GNF",
+"dial": "224",
+"continent": "AF"
+},
+{
+"country": "Guinea-Bissau",
+"capital": "Bissau",
+"currency": "XOF",
+"dial": "245",
+"continent": "AF"
+},
+{
+"country": "Guyana",
+"capital": "Georgetown",
+"currency": "GYD",
+"dial": "592",
+"continent": "SA"
+},
+{
+"country": "Haiti",
+"capital": "Port-au-Prince",
+"currency": "HTG,USD",
+"dial": "509",
+"continent": "NA"
+},
+{
+"country": "Vatican City",
+"capital": "Vatican City",
+"currency": "EUR",
+"dial": "39-06",
+"continent": "EU"
+},
+{
+"country": "Honduras",
+"capital": "Tegucigalpa",
+"currency": "HNL",
+"dial": "504",
+"continent": "NA"
+},
+{
+"country": "Hungary",
+"capital": "Budapest",
+"currency": "HUF",
+"dial": "36",
+"continent": "EU"
+},
+{
+"country": "Iceland",
+"capital": "Reykjavik",
+"currency": "ISK",
+"dial": "354",
+"continent": "EU"
+},
+{
+"country": "India",
+"capital": "New Delhi",
+"currency": "INR",
+"dial": "91",
+"continent": "AS"
+},
+{
+"country": "Indonesia",
+"capital": "Jakarta",
+"currency": "IDR",
+"dial": "62",
+"continent": "AS"
+},
+{
+"country": "Iran",
+"capital": "Tehran",
+"currency": "IRR",
+"dial": "98",
+"continent": "AS"
+},
+{
+"country": "Iraq",
+"capital": "Baghdad",
+"currency": "IQD",
+"dial": "964",
+"continent": "AS"
+},
+{
+"country": "Ireland",
+"capital": "Dublin",
+"currency": "EUR",
+"dial": "353",
+"continent": "EU"
+},
+{
+"country": "Isle of Man",
+"capital": "Douglas",
+"currency": "GBP",
+"dial": "44",
+"continent": "EU"
+},
+{
+"country": "Israel",
+"capital": "Jerusalem",
+"currency": "ILS",
+"dial": "972",
+"continent": "AS"
+},
+{
+"country": "Italy",
+"capital": "Rome",
+"currency": "EUR",
+"dial": "39",
+"continent": "EU"
+},
+{
+"country": "Côte d’Ivoire",
+"capital": "Yamoussoukro",
+"currency": "XOF",
+"dial": "225",
+"continent": "AF"
+},
+{
+"country": "Jamaica",
+"capital": "Kingston",
+"currency": "JMD",
+"dial": "1-876",
+"continent": "NA"
+},
+{
+"country": "Japan",
+"capital": "Tokyo",
+"currency": "JPY",
+"dial": "81",
+"continent": "AS"
+},
+{
+"country": "Jersey",
+"capital": "Saint Helier",
+"currency": "GBP",
+"dial": "44",
+"continent": "EU"
+},
+{
+"country": "Jordan",
+"capital": "Amman",
+"currency": "JOD",
+"dial": "962",
+"continent": "AS"
+},
+{
+"country": "Kazakhstan",
+"capital": "Nur-Sultan",
+"currency": "KZT",
+"dial": "7",
+"continent": "AS"
+},
+{
+"country": "Kenya",
+"capital": "Nairobi",
+"currency": "KES",
+"dial": "254",
+"continent": "AF"
+},
+{
+"country": "Kiribati",
+"capital": "Tarawa",
+"currency": "AUD",
+"dial": "686",
+"continent": "OC"
+},
+{
+"country": "Kuwait",
+"capital": "Kuwait City",
+"currency": "KWD",
+"dial": "965",
+"continent": "AS"
+},
+{
+"country": "Kyrgyzstan",
+"capital": "Bishkek",
+"currency": "KGS",
+"dial": "996",
+"continent": "AS"
+},
+{
+"country": "Laos",
+"capital": "Vientiane",
+"currency": "LAK",
+"dial": "856",
+"continent": "AS"
+},
+{
+"country": "Latvia",
+"capital": "Riga",
+"currency": "EUR",
+"dial": "371",
+"continent": "EU"
+},
+{
+"country": "Lebanon",
+"capital": "Beirut",
+"currency": "LBP",
+"dial": "961",
+"continent": "AS"
+},
+{
+"country": "Lesotho",
+"capital": "Maseru",
+"currency": "LSL,ZAR",
+"dial": "266",
+"continent": "AF"
+},
+{
+"country": "Liberia",
+"capital": "Monrovia",
+"currency": "LRD",
+"dial": "231",
+"continent": "AF"
+},
+{
+"country": "Libya",
+"capital": "Tripoli",
+"currency": "LYD",
+"dial": "218",
+"continent": "AF"
+},
+{
+"country": "Liechtenstein",
+"capital": "Vaduz",
+"currency": "CHF",
+"dial": "423",
+"continent": "EU"
+},
+{
+"country": "Lithuania",
+"capital": "Vilnius",
+"currency": "EUR",
+"dial": "370",
+"continent": "EU"
+},
+{
+"country": "Luxembourg",
+"capital": "Luxembourg",
+"currency": "EUR",
+"dial": "352",
+"continent": "EU"
+},
+{
+"country": "Madagascar",
+"capital": "Antananarivo",
+"currency": "MGA",
+"dial": "261",
+"continent": "AF"
+},
+{
+"country": "Malawi",
+"capital": "Lilongwe",
+"currency": "MWK",
+"dial": "265",
+"continent": "AF"
+},
+{
+"country": "Malaysia",
+"capital": "Kuala Lumpur",
+"currency": "MYR",
+"dial": "60",
+"continent": "AS"
+},
+{
+"country": "Maldives",
+"capital": "Male",
+"currency": "MVR",
+"dial": "960",
+"continent": "AS"
+},
+{
+"country": "Mali",
+"capital": "Bamako",
+"currency": "XOF",
+"dial": "223",
+"continent": "AF"
+},
+{
+"country": "Malta",
+"capital": "Valletta",
+"currency": "EUR",
+"dial": "356",
+"continent": "EU"
+},
+{
+"country": "Marshall Islands",
+"capital": "Majuro",
+"currency": "USD",
+"dial": "692",
+"continent": "OC"
+},
+{
+"country": "Martinique",
+"capital": "Fort-de-France",
+"currency": "EUR",
+"dial": "596",
+"continent": "NA"
+},
+{
+"country": "Mauritania",
+"capital": "Nouakchott",
+"currency": "MRU",
+"dial": "222",
+"continent": "AF"
+},
+{
+"country": "Mauritius",
+"capital": "Port Louis",
+"currency": "MUR",
+"dial": "230",
+"continent": "AF"
+},
+{
+"country": "Mayotte",
+"capital": "Mamoudzou",
+"currency": "EUR",
+"dial": "262",
+"continent": "AF"
+},
+{
+"country": "Mexico",
+"capital": "Mexico City",
+"currency": "MXN",
+"dial": "52",
+"continent": "NA"
+},
+{
+"country": "Micronesia",
+"capital": "Palikir",
+"currency": "USD",
+"dial": "691",
+"continent": "OC"
+},
+{
+"country": "Monaco",
+"capital": "Monaco",
+"currency": "EUR",
+"dial": "377",
+"continent": "EU"
+},
+{
+"country": "Mongolia",
+"capital": "Ulaanbaatar",
+"currency": "MNT",
+"dial": "976",
+"continent": "AS"
+},
+{
+"country": "Montenegro",
+"capital": "Podgorica",
+"currency": "EUR",
+"dial": "382",
+"continent": "EU"
+},
+{
+"country": "Montserrat",
+"capital": "Plymouth",
+"currency": "XCD",
+"dial": "1-664",
+"continent": "NA"
+},
+{
+"country": "Morocco",
+"capital": "Rabat",
+"currency": "MAD",
+"dial": "212",
+"continent": "AF"
+},
+{
+"country": "Mozambique",
+"capital": "Maputo",
+"currency": "MZN",
+"dial": "258",
+"continent": "AF"
+},
+{
+"country": "Myanmar",
+"capital": "Nay Pyi Taw",
+"currency": "MMK",
+"dial": "95",
+"continent": "AS"
+},
+{
+"country": "Namibia",
+"capital": "Windhoek",
+"currency": "NAD,ZAR",
+"dial": "264",
+"continent": "AF"
+},
+{
+"country": "Nauru",
+"capital": "Yaren",
+"currency": "AUD",
+"dial": "674",
+"continent": "OC"
+},
+{
+"country": "Nepal",
+"capital": "Kathmandu",
+"currency": "NPR",
+"dial": "977",
+"continent": "AS"
+},
+{
+"country": "Netherlands",
+"capital": "Amsterdam",
+"currency": "EUR",
+"dial": "31",
+"continent": "EU"
+},
+{
+"country": "New Caledonia",
+"capital": "Noumea",
+"currency": "XPF",
+"dial": "687",
+"continent": "OC"
+},
+{
+"country": "New Zealand",
+"capital": "Wellington",
+"currency": "NZD",
+"dial": "64",
+"continent": "OC"
+},
+{
+"country": "Nicaragua",
+"capital": "Managua",
+"currency": "NIO",
+"dial": "505",
+"continent": "NA"
+},
+{
+"country": "Niger",
+"capital": "Niamey",
+"currency": "XOF",
+"dial": "227",
+"continent": "AF"
+},
+{
+"country": "Nigeria",
+"capital": "Abuja",
+"currency": "NGN",
+"dial": "234",
+"continent": "AF"
+},
+{
+"country": "Niue",
+"capital": "Alofi",
+"currency": "NZD",
+"dial": "683",
+"continent": "OC"
+},
+{
+"country": "Norfolk Island",
+"capital": "Kingston",
+"currency": "AUD",
+"dial": "672",
+"continent": "OC"
+},
+{
+"country": "Northern Mariana Islands",
+"capital": "Saipan",
+"currency": "USD",
+"dial": "1-670",
+"continent": "OC"
+},
+{
+"country": "North Macedonia",
+"capital": "Skopje",
+"currency": "MKD",
+"dial": "389",
+"continent": "EU"
+},
+{
+"country": "Norway",
+"capital": "Oslo",
+"currency": "NOK",
+"dial": "47",
+"continent": "EU"
+},
+{
+"country": "Oman",
+"capital": "Muscat",
+"currency": "OMR",
+"dial": "968",
+"continent": "AS"
+},
+{
+"country": "Pakistan",
+"capital": "Islamabad",
+"currency": "PKR",
+"dial": "92",
+"continent": "AS"
+},
+{
+"country": "Palau",
+"capital": "Melekeok",
+"currency": "USD",
+"dial": "680",
+"continent": "OC"
+},
+{
+"country": "Panama",
+"capital": "Panama City",
+"currency": "PAB,USD",
+"dial": "507",
+"continent": "NA"
+},
+{
+"country": "Papua New Guinea",
+"capital": "Port Moresby",
+"currency": "PGK",
+"dial": "675",
+"continent": "OC"
+},
+{
+"country": "Paraguay",
+"capital": "Asuncion",
+"currency": "PYG",
+"dial": "595",
+"continent": "SA"
+},
+{
+"country": "Peru",
+"capital": "Lima",
+"currency": "PEN",
+"dial": "51",
+"continent": "SA"
+},
+{
+"country": "Philippines",
+"capital": "Manila",
+"currency": "PHP",
+"dial": "63",
+"continent": "AS"
+},
+{
+"country": "Pitcairn",
+"capital": "Adamstown",
+"currency": "NZD",
+"dial": "870",
+"continent": "OC"
+},
+{
+"country": "Poland",
+"capital": "Warsaw",
+"currency": "PLN",
+"dial": "48",
+"continent": "EU"
+},
+{
+"country": "Portugal",
+"capital": "Lisbon",
+"currency": "EUR",
+"dial": "351",
+"continent": "EU"
+},
+{
+"country": "Puerto Rico",
+"capital": "San Juan",
+"currency": "USD",
+"dial": "1",
+"continent": "NA"
+},
+{
+"country": "Qatar",
+"capital": "Doha",
+"currency": "QAR",
+"dial": "974",
+"continent": "AS"
+},
+{
+"country": "South Korea",
+"capital": "Seoul",
+"currency": "KRW",
+"dial": "82",
+"continent": "AS"
+},
+{
+"country": "Moldova",
+"capital": "Chisinau",
+"currency": "MDL",
+"dial": "373",
+"continent": "EU"
+},
+{
+"country": "Réunion",
+"capital": "Saint-Denis",
+"currency": "EUR",
+"dial": "262",
+"continent": "AF"
+},
+{
+"country": "Romania",
+"capital": "Bucharest",
+"currency": "RON",
+"dial": "40",
+"continent": "EU"
+},
+{
+"country": "Russia",
+"capital": "Moscow",
+"currency": "RUB",
+"dial": "7",
+"continent": "EU"
+},
+{
+"country": "Rwanda",
+"capital": "Kigali",
+"currency": "RWF",
+"dial": "250",
+"continent": "AF"
+},
+{
+"country": "St. Barthélemy",
+"capital": "Gustavia",
+"currency": "EUR",
+"dial": "590",
+"continent": "NA"
+},
+{
+"country": "St. Helena",
+"capital": "Jamestown",
+"currency": "SHP",
+"dial": "290 n",
+"continent": "AF"
+},
+{
+"country": "St. Kitts & Nevis",
+"capital": "Basseterre",
+"currency": "XCD",
+"dial": "1-869",
+"continent": "NA"
+},
+{
+"country": "St. Lucia",
+"capital": "Castries",
+"currency": "XCD",
+"dial": "1-758",
+"continent": "NA"
+},
+{
+"country": "St. Martin",
+"capital": "Marigot",
+"currency": "EUR",
+"dial": "590",
+"continent": "NA"
+},
+{
+"country": "St. Pierre & Miquelon",
+"capital": "Saint-Pierre",
+"currency": "EUR",
+"dial": "508",
+"continent": "NA"
+},
+{
+"country": "St. Vincent & Grenadines",
+"capital": "Kingstown",
+"currency": "XCD",
+"dial": "1-784",
+"continent": "NA"
+},
+{
+"country": "Samoa",
+"capital": "Apia",
+"currency": "WST",
+"dial": "685",
+"continent": "OC"
+},
+{
+"country": "San Marino",
+"capital": "San Marino",
+"currency": "EUR",
+"dial": "378",
+"continent": "EU"
+},
+{
+"country": "São Tomé & Príncipe",
+"capital": "Sao Tome",
+"currency": "STN",
+"dial": "239",
+"continent": "AF"
+},
+{
+"country": "Saudi Arabia",
+"capital": "Riyadh",
+"currency": "SAR",
+"dial": "966",
+"continent": "AS"
+},
+{
+"country": "Senegal",
+"capital": "Dakar",
+"currency": "XOF",
+"dial": "221",
+"continent": "AF"
+},
+{
+"country": "Serbia",
+"capital": "Belgrade",
+"currency": "RSD",
+"dial": "381 p",
+"continent": "EU"
+},
+{
+"country": "Seychelles",
+"capital": "Victoria",
+"currency": "SCR",
+"dial": "248",
+"continent": "AF"
+},
+{
+"country": "Sierra Leone",
+"capital": "Freetown",
+"currency": "SLE",
+"dial": "232",
+"continent": "AF"
+},
+{
+"country": "Singapore",
+"capital": "Singapore",
+"currency": "SGD",
+"dial": "65",
+"continent": "AS"
+},
+{
+"country": "Sint Maarten",
+"capital": "Philipsburg",
+"currency": "XCG",
+"dial": "1-721",
+"continent": "NA"
+},
+{
+"country": "Slovakia",
+"capital": "Bratislava",
+"currency": "EUR",
+"dial": "421",
+"continent": "EU"
+},
+{
+"country": "Slovenia",
+"capital": "Ljubljana",
+"currency": "EUR",
+"dial": "386",
+"continent": "EU"
+},
+{
+"country": "Solomon Islands",
+"capital": "Honiara",
+"currency": "SBD",
+"dial": "677",
+"continent": "OC"
+},
+{
+"country": "Somalia",
+"capital": "Mogadishu",
+"currency": "SOS",
+"dial": "252",
+"continent": "AF"
+},
+{
+"country": "South Africa",
+"capital": "Pretoria",
+"currency": "ZAR",
+"dial": "27",
+"continent": "AF"
+},
+{
+"country": "South Georgia & South Sandwich Islands",
+"capital": "Grytviken",
+"currency": "",
+"dial": "500",
+"continent": "AN"
+},
+{
+"country": "South Sudan",
+"capital": "Juba",
+"currency": "SSP",
+"dial": "211",
+"continent": "AF"
+},
+{
+"country": "Spain",
+"capital": "Madrid",
+"currency": "EUR",
+"dial": "34",
+"continent": "EU"
+},
+{
+"country": "Sri Lanka",
+"capital": "Colombo",
+"currency": "LKR",
+"dial": "94",
+"continent": "AS"
+},
+{
+"country": "Palestine",
+"capital": "East Jerusalem",
+"currency": "",
+"dial": "970",
+"continent": "AS"
+},
+{
+"country": "Sudan",
+"capital": "Khartoum",
+"currency": "SDG",
+"dial": "249",
+"continent": "AF"
+},
+{
+"country": "Suriname",
+"capital": "Paramaribo",
+"currency": "SRD",
+"dial": "597",
+"continent": "SA"
+},
+{
+"country": "Svalbard & Jan Mayen",
+"capital": "Longyearbyen",
+"currency": "NOK",
+"dial": "47",
+"continent": "EU"
+},
+{
+"country": "Sweden",
+"capital": "Stockholm",
+"currency": "SEK",
+"dial": "46",
+"continent": "EU"
+},
+{
+"country": "Switzerland",
+"capital": "Bern",
+"currency": "CHF",
+"dial": "41",
+"continent": "EU"
+},
+{
+"country": "Syria",
+"capital": "Damascus",
+"currency": "SYP",
+"dial": "963",
+"continent": "AS"
+},
+{
+"country": "Taiwan",
+"capital": "Taipei",
+"currency": "TWD",
+"dial": "886",
+"continent": "AS"
+},
+{
+"country": "Tajikistan",
+"capital": "Dushanbe",
+"currency": "TJS",
+"dial": "992",
+"continent": "AS"
+},
+{
+"country": "Thailand",
+"capital": "Bangkok",
+"currency": "THB",
+"dial": "66",
+"continent": "AS"
+},
+{
+"country": "Timor-Leste",
+"capital": "Dili",
+"currency": "USD",
+"dial": "670",
+"continent": "OC"
+},
+{
+"country": "Togo",
+"capital": "Lome",
+"currency": "XOF",
+"dial": "228",
+"continent": "AF"
+},
+{
+"country": "Tonga",
+"capital": "Nuku'alofa",
+"currency": "TOP",
+"dial": "676",
+"continent": "OC"
+},
+{
+"country": "Trinidad & Tobago",
+"capital": "Port of Spain",
+"currency": "TTD",
+"dial": "1-868",
+"continent": "NA"
+},
+{
+"country": "Tunisia",
+"capital": "Tunis",
+"currency": "TND",
+"dial": "216",
+"continent": "AF"
+},
+{
+"country": "Türkiye",
+"capital": "Ankara",
+"currency": "TRY",
+"dial": "90",
+"continent": "AS"
+},
+{
+"country": "Turkmenistan",
+"capital": "Ashgabat",
+"currency": "TMT",
+"dial": "993",
+"continent": "AS"
+},
+{
+"country": "Turks & Caicos Islands",
+"capital": "Cockburn Town",
+"currency": "USD",
+"dial": "1-649",
+"continent": "NA"
+},
+{
+"country": "Tuvalu",
+"capital": "Funafuti",
+"currency": "AUD",
+"dial": "688",
+"continent": "OC"
+},
+{
+"country": "Uganda",
+"capital": "Kampala",
+"currency": "UGX",
+"dial": "256",
+"continent": "AF"
+},
+{
+"country": "Ukraine",
+"capital": "Kyiv",
+"currency": "UAH",
+"dial": "380",
+"continent": "EU"
+},
+{
+"country": "United Arab Emirates",
+"capital": "Abu Dhabi",
+"currency": "AED",
+"dial": "971",
+"continent": "AS"
+},
+{
+"country": "UK",
+"capital": "London",
+"currency": "GBP",
+"dial": "44",
+"continent": "EU"
+},
+{
+"country": "Tanzania",
+"capital": "Dodoma",
+"currency": "TZS",
+"dial": "255",
+"continent": "AF"
+},
+{
+"country": "US",
+"capital": "Washington",
+"currency": "USD",
+"dial": "1",
+"continent": "NA"
+},
+{
+"country": "U.S. Virgin Islands",
+"capital": "Charlotte Amalie",
+"currency": "USD",
+"dial": "1-340",
+"continent": "NA"
+},
+{
+"country": "Uruguay",
+"capital": "Montevideo",
+"currency": "UYU",
+"dial": "598",
+"continent": "SA"
+},
+{
+"country": "Uzbekistan",
+"capital": "Tashkent",
+"currency": "UZS",
+"dial": "998",
+"continent": "AS"
+},
+{
+"country": "Vanuatu",
+"capital": "Port Vila",
+"currency": "VUV",
+"dial": "678",
+"continent": "OC"
+},
+{
+"country": "Venezuela",
+"capital": "Caracas",
+"currency": "VES,VED",
+"dial": "58",
+"continent": "SA"
+},
+{
+"country": "Vietnam",
+"capital": "Hanoi",
+"currency": "VND",
+"dial": "84",
+"continent": "AS"
+},
+{
+"country": "Wallis & Futuna",
+"capital": "Mata Utu",
+"currency": "XPF",
+"dial": "681",
+"continent": "OC"
+},
+{
+"country": "Western Sahara",
+"capital": "El-Aaiun",
+"currency": "MAD",
+"dial": "212",
+"continent": "AF"
+},
+{
+"country": "Yemen",
+"capital": "Sanaa",
+"currency": "YER",
+"dial": "967",
+"continent": "AS"
+},
+{
+"country": "Zambia",
+"capital": "Lusaka",
+"currency": "ZMW",
+"dial": "260",
+"continent": "AF"
+},
+{
+"country": "Zimbabwe",
+"capital": "Harare",
+"currency": "ZWG",
+"dial": "263",
+"continent": "AF"
+}
+]
