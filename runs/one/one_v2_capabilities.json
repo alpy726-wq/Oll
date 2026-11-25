@@ -1,0 +1,83 @@
+{
+ "1_continuous_world_nll_by_family": {
+  "sines": -0.7402904629707336,
+  "pendulum": -1.4548941850662231,
+  "lotka": -1.8473299741744995,
+  "lorenz": -1.215382695198059,
+  "oscillator": -0.6644503474235535,
+  "bimodal": -1.7502801418304443
+ },
+ "1_continuous_world_nll_mean": -1.2787713011105855,
+ "2_multimodal_density": {
+  "integral": 1.000000238418579,
+  "mass_near_x_plus_0p25": 0.4919004306792671,
+  "mass_near_x_minus_0p25": 0.35464747170354993,
+  "mass_near_x": 0.022520294427869222
+ },
+ "3_text_bits_per_byte": 2.8883628845214844,
+ "4_recall_accuracy": {
+  "2": 1.0,
+  "4": 1.0,
+  "8": 0.994140625,
+  "16": 0.9931640625
+ },
+ "4_recall_accuracy_memory_off": {
+  "2": 0.015625,
+  "4": 0.03125,
+  "8": 0.013671875,
+  "16": 0.01171875
+ },
+ "4_recall_chance": 0.015625,
+ "5_fusion_sensorB_nll": {
+  "with_sensorA": -1.7940768226981163,
+  "without_sensorA": -1.4478913781543572
+ },
+ "6_streaming_vs_full_rel_diff": 5.689759063898236e-07,
+ "6_state_size_after_64_and_564_events": [
+  544768,
+  544768
+ ],
+ "7_inverse_rel_err_fp64": 4.208746883760031e-15,
+ "8_group_law_max_phase_dev": 3.5818083249897994e-13,
+ "8_role_binding_max_dev": 1.7763568394002505e-15,
+ "8_integer_channel_multiplicative_max_dev": 0.0,
+ "9_time_semigroup_max_dev": 3.1680303891334916e-07,
+ "9_same_values_double_time_rel_change": 0.6419205069541931,
+ "10_kuramoto_coupling_norms": [
+  4.652235984802246,
+  5.693368434906006,
+  4.9444684982299805,
+  4.915815830230713,
+  4.305485248565674,
+  4.897669315338135,
+  4.564187526702881,
+  5.273136138916016
+ ],
+ "10_nll_with_sync_vs_without": [
+  -0.00045600917655974627,
+  2.660482883453369
+ ],
+ "11_adapter_params": 10752,
+ "11_adapter_fraction_of_model": 0.06784452296819787,
+ "11_vdp_nll": {
+  "base": -0.3903476595878601,
+  "vdp_adapter": -1.5540562868118286,
+  "duffing_adapter": -0.09785591065883636,
+  "both": 1.0377966165542603
+ },
+ "11_duffing_nll": {
+  "base": -0.45072904229164124,
+  "vdp_adapter": 0.16219349205493927,
+  "duffing_adapter": -1.3412103652954102,
+  "both": 1.0807673931121826
+ },
+ "11b_band_adapters_vdp_nll": {
+  "vdp_adapter": -1.1894031763076782,
+  "both": -0.3593595623970032
+ },
+ "11b_band_adapters_duffing_nll": {
+  "duffing_adapter": -1.028468370437622,
+  "both": -0.21397218108177185
+ },
+ "11_remove_adapters_restores_base_max_dev": 8.940696716308594e-08
+}

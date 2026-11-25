@@ -182,11 +182,25 @@ def ev(model, fn, seed=4242):
     return float(l[:, 8:].mean())
 
 
-def train_adapter(fn, steps=300, seed=1):
+def band_mask(name, p, band, nb):
+    """adapter restricted to one frequency band of channels (Sec. 5.3 bandwidth allocation); kq stays shared-frozen."""
+    leaf = name.split(".")[-1]
+    if leaf == "kq":
+        return torch.zeros_like(p)
+    n = p.shape[0]
+    mask = torch.zeros_like(p)
+    mask[band * n // nb:(band + 1) * n // nb] = 1
+    return mask
+
+
+def train_adapter(fn, steps=300, seed=1, band=None, nb=2):
     mm = copy.deepcopy(m); mm.load_state_dict(base); mm.train()
     ps = [p for n, p in mm.named_parameters() if n.split(".")[-1] in PHASE_PARAMS]
     for n, p in mm.named_parameters():
         p.requires_grad = n.split(".")[-1] in PHASE_PARAMS
+        if p.requires_grad and band is not None:
+            msk = band_mask(n, p, band, nb)
+            p.register_hook(lambda g, msk=msk: g * msk)
     opt = torch.optim.Adam(ps, lr=float(__import__("os").environ.get("ADAPTER_LR", "3e-3")))
     rng = np.random.default_rng(seed)
     for _ in range(steps):
@@ -206,6 +220,13 @@ R["11_adapter_params"] = n_ad
 R["11_adapter_fraction_of_model"] = n_ad / sum(p.numel() for p in m.parameters())
 R["11_vdp_nll"] = dict(base=ev(m, vdp), vdp_adapter=ev(mv, vdp), duffing_adapter=ev(md_, vdp), both=ev(mc, vdp))
 R["11_duffing_nll"] = dict(base=ev(m, duffing), vdp_adapter=ev(mv, duffing), duffing_adapter=ev(md_, duffing), both=ev(mc, duffing))
+bv, _ = train_adapter(vdp, band=0)
+bd, _ = train_adapter(duffing, seed=2, band=1)
+bv = {k: v for k, v in bv.items() if v.abs().max() > 0}; bd = {k: v for k, v in bd.items() if v.abs().max() > 0}
+mbv, mbd, mbc = copy.deepcopy(m), copy.deepcopy(m), copy.deepcopy(m)
+mbv.apply_adapters(base, bv); mbd.apply_adapters(base, bd); mbc.apply_adapters(base, bv, bd)
+R["11b_band_adapters_vdp_nll"] = dict(vdp_adapter=ev(mbv, vdp), both=ev(mbc, vdp))
+R["11b_band_adapters_duffing_nll"] = dict(duffing_adapter=ev(mbd, duffing), both=ev(mbc, duffing))
 R["11_remove_adapters_restores_base_max_dev"] = max(float((mback.state_dict()[k] - base[k]).abs().max()) for k in base)
 
 json.dump(R, open(CK + "_capabilities.json", "w"), indent=1)

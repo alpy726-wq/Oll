@@ -79,9 +79,12 @@ class OneBranch(nn.Module):
 
 
 class OneMachine(nn.Module):
-    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0):
+    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024):
         super().__init__()
-        self.streams, self.R, self.L = list(streams), R, L
+        self.streams, self.R, self.L, self.RM = list(streams), R, L, RM
+        fm = torch.tensor(frequencies(RM, family), dtype=torch.float64)  # wide prime bank used only for memory addressing
+        self.register_buffer("fm", fm, persistent=False)
+        self.register_buffer("psim", torch.stack([2 * math.pi * torch.frac(1e5 * (i + 1) * fm) for i in range(len(streams))]), persistent=False)
         f = torch.tensor(frequencies(R, family), dtype=torch.float64)
         self.register_buffer("f", f, persistent=False)
         self.register_buffer("A", torch.tensor(amplitudes(R), dtype=torch.float64), persistent=False)
@@ -143,28 +146,40 @@ class OneMachine(nn.Module):
         ph = self.phases(x, s)
         return torch.cat([self.A * torch.cos(ph), self.A * torch.sin(ph)], -1).float(), ph
 
-    # ------------------------------------------------------------------ phase memory (exact bind / unbind)
-    def memory_read(self, ph, dt, M0=None):
-        """unit codes u_t = e^{i ph_t}.  write  M <- e^{-mu dt} M + pi(u_{t-1}) * u_t   (pi: fixed permutation, makes the
-        binding directional);  read, before writing:  r_t = M * conj(pi(u_t))  = superposition of what followed u_t before."""
-        u = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)  # (B,T,R)
-        B, T, R = u.shape
-        mu = self.mem_logmu.exp()
-        M = torch.zeros(B, R, dtype=torch.complex64) if M0 is None else M0
-        prev = torch.zeros(B, R, dtype=torch.complex64)
-        reads = []
-        for t in range(T):
-            M = torch.exp(-mu * dt[:, t])[:, None] * M
-            reads.append(M * u[:, t, self.perm].conj() / (M.abs().mean(-1, keepdim=True) + 1.0))
-            M = M + prev[:, self.perm] * u[:, t]
-            prev = u[:, t]
-        r = torch.stack(reads, 1)
-        return torch.cat([r.real, r.imag], -1), (M, prev)
+    # ------------------------------------------------------------------ phase memory (bind / unbind on a wide prime bank)
+    def mem_phases(self, x, s):
+        out = torch.zeros(*x.shape, self.RM, dtype=torch.float64)
+        for i, st in enumerate(self.streams):
+            m = s == i
+            if m.any():
+                ph = x[m].to(torch.float64)[:, None] * (self.fm / st.scale)
+                out[m] = 2 * math.pi * (ph - torch.floor(ph)) + self.psim[i]
+        return out
+
+    def memory_read(self, x, s, ph, dt):
+        """Associative phase memory. Pair (event j-1 -> event j) is stored as  conj(k_{j-1}) (x) v_j,  where k is the unit
+        phase code of an event on a wide RM-prime bank and v its unit code on the trunk bank. Reading at event t (before
+        writing): r_t = sum_j e^{-mu (tau_t - tau_j)} <k_t, k_{j-1}>/RM  v_j  -- i.e. unbinding with the current event
+        returns what followed it before. Training uses this parallel form; streaming uses the equivalent constant-size
+        matrix state M (RM x R) in step()."""
+        k = torch.polar(torch.ones(1, dtype=torch.float64), self.mem_phases(x, s)).to(torch.complex64)  # (B,T,RM)
+        v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)  # (B,T,R)
+        B, T, _ = k.shape
+        sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <k_t, k_i>
+        tau = dt.cumsum(1)
+        # pair stored at write time j uses key k_{j-1}, value v_j (1 <= j <= t-1)
+        S = torch.zeros(B, T, T, dtype=torch.complex64)
+        S[:, :, 1:] = sim[:, :, :-1]
+        decay = torch.exp(-self.mem_logmu.exp() * (tau[:, :, None] - tau[:, None, :]).clamp(min=0))
+        mask = torch.tril(torch.ones(T, T, dtype=torch.bool), -1) & (torch.arange(T)[None, :] >= 1)
+        W = S * (decay * mask).to(S.dtype)
+        r = W @ v
+        return torch.cat([r.real, r.imag], -1)
 
     # ------------------------------------------------------------------ trunk
     def embed(self, x, s, dt):
         c, ph = self.code(x, s)
-        r, _ = self.memory_read(ph, dt)
+        r = self.memory_read(x, s, ph, dt)
         return c + self.mem_beta[s][..., None] * r * float(self.A.mean())
 
     def trunk_from(self, e, dt, q):
@@ -232,22 +247,23 @@ class OneMachine(nn.Module):
     def init_state(self, B):
         Mm = self.F[0].conv.c_re.shape[1]
         return dict(conv=[torch.zeros(B, self.R, Mm, dtype=torch.complex64) for _ in range(2 * self.L)],
-                    M=torch.zeros(B, self.R, dtype=torch.complex64), prev=torch.zeros(B, self.R, dtype=torch.complex64))
+                    M=torch.zeros(B, self.RM, self.R, dtype=torch.complex64), prev=torch.zeros(B, self.RM, dtype=torch.complex64))
 
     def step(self, x, s, dt, q, st):
         c, ph = self.code(x, s)
-        u = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
-        M = torch.exp(-self.mem_logmu.exp() * dt)[:, None] * st["M"]
-        r = M * u[:, self.perm].conj() / (M.abs().mean(-1, keepdim=True) + 1.0)
+        v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
+        k = torch.polar(torch.ones(1, dtype=torch.float64), self.mem_phases(x, s)).to(torch.complex64)
+        M = torch.exp(-self.mem_logmu.exp() * dt)[:, None, None] * st["M"]
+        r = torch.einsum("bm,bmr->br", k, M) / self.RM
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
-        M = M + st["prev"][:, self.perm] * u
+        M = M + st["prev"].conj()[:, :, None] * v[:, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]
         conv = []
         for i, (F, G) in enumerate(zip(self.F, self.G)):
             f_, s1 = F.step(x2, dt, q, st["conv"][2 * i]); x1 = x1 + f_
             g_, s2 = G.step(x1, dt, q, st["conv"][2 * i + 1]); x2 = x2 + g_
             conv += [s1, s2]
-        return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=u)
+        return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=k)
 
     def state_numel(self, st):
         return sum(t.numel() for t in st["conv"]) + st["M"].numel() + st["prev"].numel()

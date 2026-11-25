@@ -69,7 +69,7 @@ def seq_text(rng, T, split="train"):
     return a[i:i + T + 1].astype(float), np.full(T + 1, 5), np.ones(T + 1), np.ones(T, bool), "text"
 
 
-MIX = (("signal", 0.4), ("fusion", 0.2), ("recall", 0.2), ("text", 0.2))
+MIX = (("signal", 0.35), ("fusion", 0.15), ("recall", 0.25), ("text", 0.25))
 
 
 def make(kind, rng, T, **kw):
