@@ -1,0 +1,73 @@
+{
+ "1_continuous_world_nll_by_family": {
+  "sines": -0.4925065040588379,
+  "pendulum": -1.1655329465866089,
+  "lotka": -1.5952184200286865,
+  "lorenz": -1.0071367025375366,
+  "oscillator": -0.3375991880893707,
+  "bimodal": -1.5516306161880493
+ },
+ "1_continuous_world_nll_mean": -1.0249373962481816,
+ "2_multimodal_density": {
+  "integral": 1.0000003576278687,
+  "mass_near_x_plus_0p25": 0.4031998977660689,
+  "mass_near_x_minus_0p25": 0.33999788773056105,
+  "mass_near_x": 0.021886357367036317
+ },
+ "3_text_bits_per_byte": 4.193664073944092,
+ "4_recall_accuracy": {
+  "2": 0.5859375,
+  "4": 0.3046875,
+  "8": 0.126953125,
+  "16": 0.0595703125
+ },
+ "4_recall_accuracy_memory_off": {
+  "2": 0.03125,
+  "4": 0.015625,
+  "8": 0.025390625,
+  "16": 0.015625
+ },
+ "4_recall_chance": 0.015625,
+ "5_fusion_sensorB_nll": {
+  "with_sensorA": -1.4344617016613483,
+  "without_sensorA": -1.3015680896739166
+ },
+ "6_streaming_vs_full_rel_diff": 8.087110359156213e-07,
+ "6_state_size_after_64_and_564_events": [
+  13312,
+  13312
+ ],
+ "7_inverse_rel_err_fp64": 4.838458993684388e-13,
+ "8_group_law_max_phase_dev": 2.7000623958883807e-13,
+ "8_role_binding_max_dev": 1.7763568394002505e-15,
+ "8_integer_channel_multiplicative_max_dev": 0.0,
+ "9_time_semigroup_max_dev": 3.769728778024728e-07,
+ "9_same_values_double_time_rel_change": 0.552257776260376,
+ "10_kuramoto_coupling_norms": [
+  4.316882610321045,
+  4.712954998016357,
+  4.437938690185547,
+  4.202403545379639,
+  3.8139519691467285,
+  4.17452335357666
+ ],
+ "10_nll_with_sync_vs_without": [
+  0.2904898524284363,
+  0.8986395001411438
+ ],
+ "11_adapter_params": 8064,
+ "11_adapter_fraction_of_model": 0.06780573119870846,
+ "11_vdp_nll": {
+  "base": -0.06997252255678177,
+  "vdp_adapter": -1.3051954507827759,
+  "duffing_adapter": 0.10674268752336502,
+  "both": 1.007003903388977
+ },
+ "11_duffing_nll": {
+  "base": -0.5003766417503357,
+  "vdp_adapter": 0.339877188205719,
+  "duffing_adapter": -1.027481198310852,
+  "both": 1.0479012727737427
+ },
+ "11_remove_adapters_restores_base_max_dev": 9.685754776000977e-08
+}
