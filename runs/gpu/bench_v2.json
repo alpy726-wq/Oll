@@ -15,34 +15,34 @@
    "gpu": "NVIDIA L40S",
    "machine_small": {
     "params": 81176,
-    "sec_per_step": 0.10866737365722656,
-    "events_per_sec": 75386.01260246082,
-    "peak_mem_gb": 0.950045184,
-    "usd_per_1000_steps": 0.0589
+    "sec_per_step": 0.08368754386901855,
+    "events_per_sec": 97887.92478868183,
+    "peak_mem_gb": 1.077176832,
+    "usd_per_1000_steps": 0.0453
    },
    "machine_large": {
     "params": 17508408,
-    "sec_per_step": 7.263400077819824,
-    "events_per_sec": 2255.692902010405,
-    "peak_mem_gb": 27.620716544,
-    "usd_per_1000_steps": 3.9343
+    "sec_per_step": 4.279783368110657,
+    "events_per_sec": 3828.231148819302,
+    "peak_mem_gb": 28.971593728,
+    "usd_per_1000_steps": 2.3182
    }
   },
   "H100": {
    "gpu": "NVIDIA H100 80GB HBM3",
    "machine_small": {
     "params": 81176,
-    "sec_per_step": 0.1063070297241211,
-    "events_per_sec": 77059.8145885477,
-    "peak_mem_gb": 1.001294336,
-    "usd_per_1000_steps": 0.1166
+    "sec_per_step": 0.04557013511657715,
+    "events_per_sec": 179766.85781254087,
+    "peak_mem_gb": 1.125476864,
+    "usd_per_1000_steps": 0.05
    },
    "machine_large": {
     "params": 17508408,
-    "sec_per_step": 2.232828736305237,
-    "events_per_sec": 7337.777292812591,
-    "peak_mem_gb": 27.67079424,
-    "usd_per_1000_steps": 2.4499
+    "sec_per_step": 0.9326289892196655,
+    "events_per_sec": 17567.543138143883,
+    "peak_mem_gb": 29.021375488,
+    "usd_per_1000_steps": 1.0233
    }
   }
  }
