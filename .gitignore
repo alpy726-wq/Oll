@@ -9,3 +9,4 @@ runs/*.done
 runs/machine/*.log
 runs/machine/*.pt
 runs/machine/*.npz
+oll_makine.zip
