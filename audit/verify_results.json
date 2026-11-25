@@ -1,0 +1,91 @@
+{
+ "P1 homomorphism b(x)b(y)=A b(x+y)": {
+  "status": "PASS",
+  "max_abs_dev": 1.3714840194866482e-10
+ },
+ "P2 constant norm = sum 1/p": {
+  "status": "PASS",
+  "spread": 8.881784197001252e-16
+ },
+ "P3 Toeplitz Gram <b(x),b(x+7)> = closed form": {
+  "status": "PASS",
+  "max_dev": 9.196421402180022e-12
+ },
+ "P4 continuity 1-cos ~ delta^2 (ratio for 10x delta = 100)": {
+  "status": "PASS",
+  "ratio": 99.97277745086333
+ },
+ "Z closed form = numerical integral (all continuous streams)": {
+  "status": "PASS",
+  "worst_abs_error": 5.7788005491943295e-09
+ },
+ "CT operator == sequential recurrence, regular (FFT path)": {
+  "status": "PASS",
+  "rel_err": 6.622807222929355e-08
+ },
+ "CT operator == sequential recurrence, irregular incl. long gaps (chunked scan)": {
+  "status": "PASS",
+  "rel_err": 3.9237492474485444e-08
+ },
+ "CT operator finite values and gradients with 72-unit gaps (the NaN found by the smoke test)": {
+  "status": "PASS"
+ },
+ "Backprop matches finite differences (6 parameter groups, float32 internals)": {
+  "status": "PASS",
+  "worst_rel_err": 0.0198263146926713
+ },
+ "Memory: 20 key->symbol facts written once, recalled (untrained machine, mechanism only)": {
+  "status": "FAIL",
+  "accuracy": 0.9
+ },
+ "Memory: erasing one fact removes it and leaves every other answer exactly as before": {
+  "status": "PASS",
+  "erased_still_recalled": 0.0,
+  "other_answers_changed": 0.0
+ },
+ "Memory LIMITATION: key is the single previous event, so 'X:' retrieves a superposition of all capitals' first letters": {
+  "status": "PASS",
+  "top3_after_colon": [
+   "R",
+   "M",
+   "P"
+  ]
+ },
+ "ETT borders ETTh1 = standard (test 11520..14400)": {
+  "status": "PASS",
+  "test_start": 11520.0,
+  "test_end": 14400.0,
+  "n": 14400.0
+ },
+ "ETT borders ETTh2 = standard (test 11520..14400)": {
+  "status": "PASS",
+  "test_start": 11520.0,
+  "test_end": 14400.0,
+  "n": 14400.0
+ },
+ "ETT borders ETTm1 = standard (test 46080..57600)": {
+  "status": "PASS",
+  "test_start": 46080.0,
+  "test_end": 57600.0,
+  "n": 57600.0
+ },
+ "Frozen corpus: every file matches its SHA-256": {
+  "status": "PASS",
+  "mismatched": []
+ },
+ "Text leakage: share of 32-byte test windows found verbatim in train (Gutenberg boilerplate expected)": {
+  "status": "PASS",
+  "overlap": 0.0002507679769293461
+ },
+ "Audio split: standard FSDD split (same speakers in train and test -> speaker generalisation NOT tested)": {
+  "status": "PASS",
+  "shared_speakers": [
+   "george",
+   "jackson",
+   "lucas",
+   "nicolas",
+   "theo",
+   "yweweler"
+  ]
+ }
+}
