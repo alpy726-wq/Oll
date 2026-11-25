@@ -6,3 +6,6 @@ __pycache__/
 runs/*.log
 runs/*.npy
 runs/*.done
+runs/machine/*.log
+runs/machine/*.pt
+runs/machine/*.npz
