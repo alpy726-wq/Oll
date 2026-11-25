@@ -3,7 +3,17 @@ import math
 import numpy as np
 import torch
 from pfm.one import OneMachine
-from pfm.oneworld import STREAMS, batch
+from pfm.realworld import STREAMS_REAL as STREAMS, RealData, make_batch
+
+_DATA = RealData("train")
+
+
+def batch(rng, B, T):
+    """real windows from the committed frozen corpus (data/v4), mixed domains"""
+    doms = ["weather", "grid", "market", "audio", "text"]
+    bs = [make_batch(_DATA, rng, 1, T, [doms[i % 5]]) for i in range(B)]
+    out = {k: torch.cat([b[k] for b in bs]) for k in ("x", "s", "dt", "q", "y", "s_out", "mask")}
+    return out
 
 torch.manual_seed(0)
 
