@@ -1,0 +1,18 @@
+name: ci
+# Every push: exactness tests and the independent audit checks, on a clean checkout (catches dependencies on
+# local files and regressions). Results of the audit are printed in the log.
+on:
+  push:
+    paths: ["pfm/**", "tests/**", "audit/verify.py", "gpu/**", "*.py"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install torch==2.9.0 --index-url https://download.pytorch.org/whl/cpu && pip install numpy==2.3.4 pytest
+      - run: python -m pytest -q tests
+      - run: python audit/verify.py
