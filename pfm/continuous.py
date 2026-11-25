@@ -106,25 +106,38 @@ class CTConv(nn.Module):
         self.c_im = nn.Parameter(torch.zeros(C, M))
 
     def forward(self, u, dt, q=None):
+        """Exact for any clock. Rows whose clock is regular (constant dt and q) share time-invariant kernels and go
+        through FFT convolution, grouped by (dt, q); only rows with irregular clocks use the recurrence scan, which is
+        recomputed in the backward pass (activation checkpointing) instead of being stored."""
         dt = dt.clamp(max=DT_MAX)
-        q = q.clamp(max=DT_MAX) if q is not None else None
-        a = torch.complex(-self.log_lam.clamp(max=math.log(4.0)).exp(), self.omega)  # (C,M), lambda <= 4 keeps the chunk scan in range
-        cc = torch.complex(self.c_re, self.c_im)
-        d0 = dt.reshape(-1)[0]
-        q0 = q.reshape(-1)[0] if q is not None else None
-        if bool((dt == d0).all()) and (q is None or bool((q == q0).all())):
-            # regular clock: the same operator is a time-invariant kernel  k_j = Re sum_m c_m e^{a q} e^{a dt j}  -> FFT
+        q = q.clamp(max=DT_MAX) if q is not None else torch.zeros_like(dt)
+        regular = (dt == dt[:, :1]).all(1) & (q == q[:, :1]).all(1)
+        out = torch.empty_like(u)
+        if bool(regular.any()):
             from .model import fft_causal_conv
+            a, cc = self.a_cc()
             T = u.shape[1]
-            ccq = cc * torch.exp(q0.float() * a) if q is not None else cc
             j = torch.arange(T, dtype=torch.float32, device=u.device)
-            k = (ccq[:, None, :] * torch.exp(a[:, None, :] * (d0.float() * j)[None, :, None])).sum(-1).real  # (C,T)
-            return fft_causal_conv(u, k)
-        if q is not None:
-            cc = cc * torch.exp(q[..., None, None].float() * a)  # (B,T,C,M)
-        else:
-            cc = cc.expand(u.shape[0], u.shape[1], *cc.shape)
-        return self.scan(u, dt, a, cc)
+            pairs = torch.stack([dt[:, 0], q[:, 0]], 1)
+            uniq, inv = torch.unique(pairs[regular], dim=0, return_inverse=True)
+            rows = torch.nonzero(regular).squeeze(1)
+            for g in range(uniq.shape[0]):
+                d0, q0 = uniq[g, 0].float(), uniq[g, 1].float()
+                k = (cc * torch.exp(q0 * a))[:, None, :] * torch.exp(a[:, None, :] * (d0 * j)[None, :, None])
+                sel = rows[inv == g]
+                out[sel] = fft_causal_conv(u[sel], k.sum(-1).real).to(out.dtype)
+        if bool((~regular).any()):
+            sel = torch.nonzero(~regular).squeeze(1)
+            if torch.is_grad_enabled() and u.requires_grad:
+                from torch.utils.checkpoint import checkpoint
+                out[sel] = checkpoint(self._scan_rows, u[sel], dt[sel], q[sel], use_reentrant=False).to(out.dtype)
+            else:
+                out[sel] = self._scan_rows(u[sel], dt[sel], q[sel]).to(out.dtype)
+        return out
+
+    def _scan_rows(self, u, dt, q):
+        a, cc = self.a_cc()
+        return self.scan(u, dt, a, cc * torch.exp(q[..., None, None].float() * a))
 
     def scan(self, u, dt, a, cc, chunk=8):
         """Chunked exact scan (log-space within a chunk):

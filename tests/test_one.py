@@ -59,3 +59,23 @@ def test_densities_normalised():
     with torch.no_grad():
         d = m.density(torch.randn(3, 2 * m.R), 0, xs)
     assert torch.allclose(torch.trapezoid(d, xs.float(), dim=-1), torch.ones(3), atol=1e-4)
+
+
+def test_ct_mixed_batch_and_checkpoint_gradients():
+    """rows with regular clocks (FFT path, grouped by dt) and irregular clocks (checkpointed scan) in one batch:
+    values equal the sequential recurrence, and gradients equal those of the plain scan."""
+    from pfm.continuous import CTConv
+    c = CTConv(8, 3)
+    for p in c.parameters():
+        p.data += 0.1 * torch.randn_like(p)
+    u = torch.randn(4, 30, 8, requires_grad=True)
+    dt = torch.stack([torch.full((30,), 0.5), torch.full((30,), 1.0), torch.rand(30) * 3, torch.full((30,), 0.5)])
+    q = torch.stack([torch.full((30,), 0.5), torch.full((30,), 1.0), torch.rand(30), torch.full((30,), 0.5)])
+    out = c(u, dt, q)
+    a, cc = c.a_cc()
+    ref = c.scan_reference(u, dt, a, cc[None, None] * torch.exp(q[..., None, None] * a))
+    assert ((out - ref).norm() / ref.norm()) < 1e-5
+    g1 = torch.autograd.grad(out.square().sum(), [u, c.c_re, c.log_lam])
+    g2 = torch.autograd.grad(ref.square().sum(), [u, c.c_re, c.log_lam])
+    for x, y in zip(g1, g2):
+        assert ((x - y).norm() / (y.norm() + 1e-12)) < 1e-4
