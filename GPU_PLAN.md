@@ -40,3 +40,17 @@ Bu belge GPU'ya geçmeden **önce** yazıldı. Ne kurulacağı, ne ölçüleceğ
 - `python3 explore_one.py`: tek gösterişte öğrenme (%100), tam silme, düzeltme, sanal sensör.
 - `runs/mind_logic_phaselinear_20k.json`: kural çıkarma %97.
 - Hatalarım da kayıtlı: mantık testindeki maske hatası, ilk ajan denemeleri, NAB'da basit kuralın makineyle eşit çıkması.
+
+## 4. Eleştirel gözden geçirme: GPU'dan önce düzeltilecekler
+
+| # | Sorun | Düzeltme | Durum |
+|---|---|---|---|
+| 1 | Veri oyuncak (sentetik fizik, 12 MB metin) | gerçek sürekli veri: ses, sensörler, finans, tıbbi ölçümler, zaman damgalı metin | yapılacak |
+| 2 | Bütün görevler aynı anda öğretiliyor ve birbirini etkiliyor (v2'de hafıza kapısı bazı akışlarda kapandı) | aşamalı eğitim: algı ve dünya modeli → dil → mantık ve hareket. v3 ile tek beyin ve ayrı modeller karşılaştırılacak | v3 sürüyor |
+| 3 | Bazı testler kandırmaya açıktı (NAB'da test üzerinde ayar; kural testinde eğitimdeki aileler) | test setleri baştan ayrılır ve dokunulmaz; genelleme yalnızca hiç görülmemiş ailelerle ölçülür | yapılacak |
+| 4 | Çoğu sonuç tek deneme | önemli her sonuç en az 3 tekrar | yapılacak |
+| 5 | Gece eklenen parçalar (yönlü hafıza, düz okuma, PhaseLinear, hafıza kapısı) birlikte ölçülmedi | aç/kapa ablasyonu | yapılacak |
+| 6 | Bilinen zayıflıklar: çıktı keskinliği, ajanın geçmişi kullanamaması, beceri kompozisyonu, uzun hayalde hata birikmesi | her biri için ayrı deney | açık |
+| 7 | Kod GPU'ya hazır değil (hafıza ve akış döngüleri Python'da) | vektörleştirme ve gerekirse özel çekirdek | yapılacak, ilk iş |
+| 8 | "Veri başına transformer'dan hızlı öğreniyor" sonucu çok küçük ölçekte ve tek denemeyle alındı | para harcamadan önce ucuz büyüme testi; eğri kötüyse dur | GPU aşama 2 |
+| 9 | Unutmadan sürekli öğrenme hiç test edilmedi | ana ölçüt: yeni beceriler sırayla öğrenilirken eskiler korunuyor mu (hafıza + adaptör + taban) | plana eklendi |
