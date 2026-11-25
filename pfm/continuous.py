@@ -139,14 +139,16 @@ class CTConv(nn.Module):
         a, cc = self.a_cc()
         return self.scan(u, dt, a, cc * torch.exp(q[..., None, None].float() * a))
 
-    def scan(self, u, dt, a, cc, chunk=8):
+    def scan(self, u, dt, a, cc, chunk=None):
         """Chunked exact scan (log-space within a chunk):
         s_t = e^{a c_t} (s_prev + sum_{j<=t} e^{-a c_j} u_j),  c = cumulative dt inside the chunk."""
         B, T, C = u.shape
+        if chunk is None:  # largest chunk whose exponents stay below e^600 (lambda <= 4): n * max_dt * 4 <= 600
+            chunk = int(max(1, min(T, 150.0 / max(float(dt.max()), 1e-6))))
         s = torch.zeros(B, C, a.shape[1], dtype=torch.complex128, device=u.device)
         a64 = a.to(torch.complex128)
         ys = []
-        for st in range(0, T, chunk):  # complex128 inside the chunk: |exp(-a c)| <= e^(4*8*18) < 1e300
+        for st in range(0, T, chunk):  # complex128 inside the chunk: |exp(-a c)| <= e^600
             uc, ccc = u[:, st:st + chunk], cc[:, st:st + chunk]
             c = dt[:, st:st + chunk].double().cumsum(1)[..., None, None]  # (B,n,1,1)
             acc = torch.cumsum(torch.exp(-a64 * c) * uc[..., None].double(), 1)  # (B,n,C,M)
