@@ -12,3 +12,4 @@ runs/machine/*.npz
 oll_makine.zip
 nabbench/results/*/
 nabbench/*.log
+data/nab/
