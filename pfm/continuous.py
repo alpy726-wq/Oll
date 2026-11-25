@@ -111,7 +111,7 @@ class CTConv(nn.Module):
             from .model import fft_causal_conv
             T = u.shape[1]
             ccq = cc * torch.exp(q0.float() * a) if q is not None else cc
-            j = torch.arange(T, dtype=torch.float32)
+            j = torch.arange(T, dtype=torch.float32, device=u.device)
             k = (ccq[:, None, :] * torch.exp(a[:, None, :] * (d0.float() * j)[None, :, None])).sum(-1).real  # (C,T)
             return fft_causal_conv(u, k)
         if q is not None:
@@ -124,7 +124,7 @@ class CTConv(nn.Module):
         """Chunked exact scan (log-space within a chunk):
         s_t = e^{a c_t} (s_prev + sum_{j<=t} e^{-a c_j} u_j),  c = cumulative dt inside the chunk."""
         B, T, C = u.shape
-        s = torch.zeros(B, C, a.shape[1], dtype=torch.complex64)
+        s = torch.zeros(B, C, a.shape[1], dtype=torch.complex64, device=u.device)
         ys = []
         for st in range(0, T, chunk):
             uc, ccc = u[:, st:st + chunk], cc[:, st:st + chunk]

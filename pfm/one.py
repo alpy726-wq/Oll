@@ -98,8 +98,9 @@ class OneBranch(nn.Module):
 
 
 class OneMachine(nn.Module):
-    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024):
+    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False):
         super().__init__()
+        self.readout_amp = readout_amp  # ablation: read out with the p^{-1/2} amplitude instead of flat
         self.streams, self.R, self.L, self.RM = list(streams), R, L, RM
         fm = torch.tensor(frequencies(RM, family), dtype=torch.float64)  # wide prime bank used only for memory addressing
         self.register_buffer("fm", fm, persistent=False)
@@ -111,6 +112,9 @@ class OneMachine(nn.Module):
         roles = torch.stack([2 * math.pi * torch.frac(1e5 * (i + 1) * f) for i in range(len(self.streams))])
         self.register_buffer("psi", roles, persistent=False)
         self.register_buffer("logp", torch.tensor(np.log(first_primes(R)), dtype=torch.float64), persistent=False)
+        self.register_buffer("inv_scale", torch.tensor([1.0 / st.scale for st in self.streams], dtype=torch.float64), persistent=False)
+        self.register_buffer("is_integer", torch.tensor([st.integer_channel for st in self.streams]), persistent=False)
+        self.has_integer = any(st.integer_channel for st in self.streams)
         # fixed permutation that makes binding directional (key -> next), so unbinding retrieves the successor only
         self.register_buffer("perm", torch.randperm(R, generator=torch.Generator().manual_seed(12345)), persistent=False)
         self.F = nn.ModuleList([OneBranch(R, 2 * (seed * 100 + i), M) for i in range(L)])
@@ -133,28 +137,25 @@ class OneMachine(nn.Module):
                 small = d.abs() < 1e-12
                 I = torch.where(small, torch.full_like(d, c - a).to(torch.complex128),
                                 (torch.exp(-2j * math.pi * c * d) - torch.exp(-2j * math.pi * a * d)) / (-2j * math.pi * d + small))
-                self.register_buffer(f"G{i}", I, persistent=False)  # flat readout amplitude (see Sec. 2.2)
+                G = (self.A[:, None] * self.A[None, :]) * I if readout_amp else I
+                self.register_buffer(f"G{i}", G, persistent=False)  # flat readout amplitude by default (see Sec. 2.2)
 
     # ------------------------------------------------------------------ codes
     def phases(self, x, s):
-        """x: real values (float64), s: stream ids (long). Returns total phase (..., R) in float64."""
-        out = torch.zeros(*x.shape, self.R, dtype=torch.float64)
-        for i, st in enumerate(self.streams):
-            m = s == i
-            if not m.any():
-                continue
-            ph = x[m].to(torch.float64)[:, None] * (self.f / st.scale)
-            ph = 2 * math.pi * (ph - torch.floor(ph)) + self.psi[i]
-            if st.integer_channel:
-                out[m] = ph - self.integer_phase(x[m])
-            else:
-                out[m] = ph
-        return out
+        """x: real values (float64), s: stream ids (long). Returns total phase (..., R) in float64. Fully vectorized."""
+        ph = x.to(torch.float64)[..., None] * self.f * self.inv_scale[s][..., None]
+        ph = 2 * math.pi * (ph - torch.floor(ph)) + self.psi[s]
+        if self.has_integer:
+            m = self.is_integer[s]
+            if m.any():
+                ph = ph.clone()
+                ph[m] = ph[m] - self.integer_phase(x[m])
+        return ph
 
     def integer_phase(self, n):
         """multiplicative channel (Sec. 2.6): sum_p v_p(n) log p  -> n*m maps to a phase sum."""
         n = n.round().long().clamp(min=1)
-        v = torch.zeros(*n.shape, self.R, dtype=torch.float64)
+        v = torch.zeros(*n.shape, self.R, dtype=torch.float64, device=n.device)
         rem = n.clone()
         for k, p in enumerate(first_primes(min(self.R, 60)).astype(int)):
             while True:
@@ -171,17 +172,13 @@ class OneMachine(nn.Module):
 
     # ------------------------------------------------------------------ phase memory (bind / unbind on a wide prime bank)
     def mem_phases(self, x, s):
-        out = torch.zeros(*x.shape, self.RM, dtype=torch.float64)
         half = self.RM // 2
-        for i, st in enumerate(self.streams):
-            m = s == i
-            if m.any():
-                fine = x[m].to(torch.float64)[:, None] * (self.fm[half:] / st.scale)
-                fine = 2 * math.pi * (fine - torch.floor(fine))
-                # coarse band: low frequencies scaled down by a learnable width; kept small enough that no wrap is needed
-                coarse = 2 * math.pi * x[m].to(torch.float64)[:, None] * (self.fm[:half] / self.fm[half - 1]) / self.mem_logwidth[i].exp().double() * 4.0
-                out[m] = torch.cat([coarse, fine], -1) + self.psim[i]
-        return out
+        xd = x.to(torch.float64)[..., None]
+        fine = xd * self.fm[half:] * self.inv_scale[s][..., None]
+        fine = 2 * math.pi * (fine - torch.floor(fine))
+        # coarse band: low frequencies scaled down by a learnable per-stream width; small enough that no wrap is needed
+        coarse = 2 * math.pi * xd * (self.fm[:half] / self.fm[half - 1]) / self.mem_logwidth.exp().double()[s][..., None] * 4.0
+        return torch.cat([coarse, fine], -1) + self.psim[s]
 
     def memory_read(self, x, s, ph, dt):
         """Associative phase memory. Pair (event j-1 -> event j) is stored as  conj(k_{j-1}) (x) v_j,  where k is the unit
@@ -189,16 +186,16 @@ class OneMachine(nn.Module):
         writing): r_t = sum_j e^{-mu (tau_t - tau_j)} <k_t, k_{j-1}>/RM  v_j  -- i.e. unbinding with the current event
         returns what followed it before. Training uses this parallel form; streaming uses the equivalent constant-size
         matrix state M (RM x R) in step()."""
-        k = torch.polar(torch.ones(1, dtype=torch.float64), self.mem_phases(x, s)).to(torch.complex64)  # (B,T,RM)
+        k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.mem_phases(x, s)).to(torch.complex64)  # (B,T,RM)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)  # (B,T,R)
         B, T, _ = k.shape
         sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <k_t, k_i>
         tau = dt.cumsum(1)
         # pair stored at write time j uses key k_{j-1}, value v_j (1 <= j <= t-1)
-        S = torch.zeros(B, T, T, dtype=torch.complex64)
+        S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
         S[:, :, 1:] = sim[:, :, :-1]
         decay = torch.exp(-self.mem_logmu.exp() * (tau[:, :, None] - tau[:, None, :]).clamp(min=0))
-        mask = torch.tril(torch.ones(T, T, dtype=torch.bool), -1) & (torch.arange(T)[None, :] >= 1)
+        mask = torch.tril(torch.ones(T, T, dtype=torch.bool, device=x.device), -1) & (torch.arange(T, device=x.device)[None, :] >= 1)
         W = S * (decay * mask).to(S.dtype)
         r = W @ v
         return torch.cat([r.real, r.imag], -1)
@@ -240,16 +237,16 @@ class OneMachine(nn.Module):
     def amp(self, c, x, st):
         ph = x.to(torch.float64)[..., None] * (self.f / st.scale)
         ph = 2 * math.pi * (ph - torch.floor(ph))
-        return (c * torch.exp(-1j * ph)).sum(-1)
+        return (c * (self.A if self.readout_amp else 1.0) * torch.exp(-1j * ph)).sum(-1)
 
     def nll(self, h, s_out, y):
         """negative log-likelihood of targets y for target streams s_out (per element)."""
-        out = torch.zeros(y.shape, dtype=torch.float32)
+        out = torch.zeros(y.shape, dtype=torch.float32, device=y.device)
         for i, st in enumerate(self.streams):
             m = s_out == i
             if not m.any():
                 continue
-            c = self.coeffs(h[m], torch.full((int(m.sum()),), i, dtype=torch.long))
+            c = self.coeffs(h[m], torch.full((int(m.sum()),), i, dtype=torch.long, device=h.device))
             if st.kind == "continuous":
                 Z = torch.einsum("nk,kl,nl->n", c, getattr(self, f"G{i}"), c.conj()).real
                 s2 = self.amp(c, y[m], st).abs() ** 2
@@ -262,30 +259,31 @@ class OneMachine(nn.Module):
     DISCRETE_READOUT = "power"  # "power": log|s(c)|^2 (phase-amplitude density on a discrete set); "phase": Re s(c)
 
     def discrete_logits(self, c, st):
-        cand = torch.arange(st.n_symbols, dtype=torch.float64)
+        cand = torch.arange(st.n_symbols, dtype=torch.float64, device=c.device)
         ph = cand[:, None] * (self.f / st.scale)
         ph = 2 * math.pi * (ph - torch.floor(ph))
-        s = c @ torch.exp(-1j * ph).T  # (n, n_symbols), flat readout amplitude
+        s = c @ ((self.A if self.readout_amp else 1.0) * torch.exp(-1j * ph)).T  # (n, n_symbols)
         if self.DISCRETE_READOUT == "phase":
             return s.real.float()  # phase matching: Re <code(c), h>
         return (s.abs() ** 2 + 1e-9).log().float()
 
     def density(self, h, i, xs):
         st = self.streams[i]
-        c = self.coeffs(h, torch.full(h.shape[:-1], i, dtype=torch.long))
+        c = self.coeffs(h, torch.full(h.shape[:-1], i, dtype=torch.long, device=h.device))
         Z = torch.einsum("...k,kl,...l->...", c, getattr(self, f"G{i}"), c.conj()).real
         return (self.amp(c.unsqueeze(-2), xs, st).abs() ** 2 / Z.unsqueeze(-1)).float()
 
     # ------------------------------------------------------------------ streaming (constant memory)
     def init_state(self, B):
         Mm = self.F[0].conv.c_re.shape[1]
-        return dict(conv=[torch.zeros(B, self.R, Mm, dtype=torch.complex64) for _ in range(2 * self.L)],
-                    M=torch.zeros(B, self.RM, self.R, dtype=torch.complex64), prev=torch.zeros(B, self.RM, dtype=torch.complex64))
+        dev = self.f.device
+        return dict(conv=[torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev) for _ in range(2 * self.L)],
+                    M=torch.zeros(B, self.RM, self.R, dtype=torch.complex64, device=dev), prev=torch.zeros(B, self.RM, dtype=torch.complex64, device=dev))
 
     def step(self, x, s, dt, q, st):
         c, ph = self.code(x, s)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
-        k = torch.polar(torch.ones(1, dtype=torch.float64), self.mem_phases(x, s)).to(torch.complex64)
+        k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.mem_phases(x, s)).to(torch.complex64)
         M = torch.exp(-self.mem_logmu.exp() * dt)[:, None, None] * st["M"]
         r = torch.einsum("bm,bmr->br", k, M) / self.RM
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
