@@ -1,0 +1,222 @@
+{
+ "n_facts": 243,
+ "bytes_written": 4670,
+ "order_1_only": {
+  "orders": [
+   1
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.0,
+  "char_accuracy": 0.0787203987983715,
+  "examples": [
+   [
+    "Afghanistan",
+    "Kabul",
+    "Ban"
+   ],
+   [
+    "Åland Islands",
+    "Mariehamn",
+    "Ban"
+   ],
+   [
+    "Albania",
+    "Tirana",
+    "Ban"
+   ],
+   [
+    "Algeria",
+    "Algiers",
+    "Ban"
+   ],
+   [
+    "American Samoa",
+    "Pago Pago",
+    "Ban"
+   ],
+   [
+    "Andorra",
+    "Andorra la Vella",
+    "Ban"
+   ],
+   [
+    "Angola",
+    "Luanda",
+    "Ban"
+   ],
+   [
+    "Anguilla",
+    "The Valley",
+    "Ban"
+   ]
+  ]
+ },
+ "context_key_8": {
+  "orders": [
+   8
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.6172839506172839,
+  "char_accuracy": 0.7326900123196419,
+  "examples": [
+   [
+    "Afghanistan",
+    "Kabul",
+    "Kabul"
+   ],
+   [
+    "Åland Islands",
+    "Mariehamn",
+    "Cockburn Town"
+   ],
+   [
+    "Albania",
+    "Tirana",
+    "Tirana"
+   ],
+   [
+    "Algeria",
+    "Algiers",
+    "Algier::naae: i:irooaninasia:leorb:sadao"
+   ],
+   [
+    "American Samoa",
+    "Pago Pago",
+    "Pago Pago"
+   ],
+   [
+    "Andorra",
+    "Andorra la Vella",
+    "Andorra la Vella"
+   ],
+   [
+    "Angola",
+    "Luanda",
+    "Luanda"
+   ],
+   [
+    "Anguilla",
+    "The Valley",
+    "The Valley"
+   ]
+  ]
+ },
+ "context_keys_4_8_12": {
+  "orders": [
+   4,
+   8,
+   12
+  ],
+  "RM": 4096,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.6995884773662552,
+  "char_accuracy": 0.7807452176914776,
+  "examples": [
+   [
+    "Afghanistan",
+    "Kabul",
+    "Kabul"
+   ],
+   [
+    "Åland Islands",
+    "Mariehamn",
+    "Mariehamn"
+   ],
+   [
+    "Albania",
+    "Tirana",
+    "Tirana"
+   ],
+   [
+    "Algeria",
+    "Algiers",
+    "Algiers"
+   ],
+   [
+    "American Samoa",
+    "Pago Pago",
+    "Pago Pago"
+   ],
+   [
+    "Andorra",
+    "Andorra la Vella",
+    "Andorra la Vella"
+   ],
+   [
+    "Angola",
+    "Luanda",
+    "Luanda"
+   ],
+   [
+    "Anguilla",
+    "The Valley",
+    "The Valley"
+   ]
+  ]
+ },
+ "context_keys_2_4_8_12_16_backoff_RM8192": {
+  "orders": [
+   2,
+   4,
+   8,
+   12,
+   16
+  ],
+  "RM": 8192,
+  "coarse_width": 0.01,
+  "exact_capital_recall": 0.2839506172839506,
+  "char_accuracy": 0.34064155587872286,
+  "examples": [
+   [
+    "Afghanistan",
+    "Kabul",
+    "Kabul"
+   ],
+   [
+    "Åland Islands",
+    "Mariehamn",
+    "Mariehamn"
+   ],
+   [
+    "Albania",
+    "Tirana",
+    "aoeaaet:"
+   ],
+   [
+    "Algeria",
+    "Algiers",
+    "airr ona"
+   ],
+   [
+    "American Samoa",
+    "Pago Pago",
+    "Pago Pago"
+   ],
+   [
+    "Andorra",
+    "Andorra la Vella",
+    ""
+   ],
+   [
+    "Angola",
+    "Luanda",
+    "a ctt"
+   ],
+   [
+    "Anguilla",
+    "The Valley",
+    "a:ea"
+   ]
+  ],
+  "erase": {
+   "erased_country": "Afghanistan",
+   "erased_recalled_before": true,
+   "erased_recalled_after": false,
+   "other_correct_before": 68,
+   "other_correct_after": 69,
+   "other_answers_changed": 95
+  }
+ }
+}

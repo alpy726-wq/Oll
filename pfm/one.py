@@ -98,8 +98,15 @@ class OneBranch(nn.Module):
 
 
 class OneMachine(nn.Module):
-    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False):
+    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,)):
         super().__init__()
+        # context-keyed memory: a key of order n is the binding (phase sum, Prop. 1) of the last n events, each under
+        # its own fixed permutation, so "France:" and "Italy:" give different keys although both end in ':'
+        self.mem_orders = tuple(mem_orders)
+        gperm = torch.Generator().manual_seed(4242)
+        self.register_buffer("ctx_perm", torch.stack([torch.arange(RM)] + [torch.randperm(RM, generator=gperm) for _ in range(max(self.mem_orders) - 1)]), persistent=False)
+        if len(self.mem_orders) > 1:
+            self.mem_order_logw = nn.Parameter(torch.zeros(len(self.mem_orders)))
         self.readout_amp = readout_amp  # ablation: read out with the p^{-1/2} amplitude instead of flat
         self.streams, self.R, self.L, self.RM = list(streams), R, L, RM
         fm = torch.tensor(frequencies(RM, family), dtype=torch.float64)  # wide prime bank used only for memory addressing
@@ -180,24 +187,43 @@ class OneMachine(nn.Module):
         coarse = 2 * math.pi * xd * (self.fm[:half] / self.fm[half - 1]) / self.mem_logwidth.exp().double()[s][..., None] * 4.0
         return torch.cat([coarse, fine], -1) + self.psim[s]
 
+    def order_weights(self):
+        if len(self.mem_orders) == 1:
+            return [1.0]
+        w = self.mem_order_logw.exp()
+        return [w[i] / len(self.mem_orders) for i in range(len(self.mem_orders))]
+
+    def context_phases(self, P, n):
+        """order-n context key phases: sum_{i<n} perm_i(P_{t-i}) (events before the window contribute phase 0)."""
+        if n == 1:
+            return P
+        out = P.clone()
+        for i in range(1, n):
+            sh = torch.zeros_like(P)
+            sh[:, i:] = P[:, :-i]
+            out = out + sh[..., self.ctx_perm[i]]
+        return out
+
     def memory_read(self, x, s, ph, dt):
-        """Associative phase memory. Pair (event j-1 -> event j) is stored as  conj(k_{j-1}) (x) v_j,  where k is the unit
-        phase code of an event on a wide RM-prime bank and v its unit code on the trunk bank. Reading at event t (before
-        writing): r_t = sum_j e^{-mu (tau_t - tau_j)} <k_t, k_{j-1}>/RM  v_j  -- i.e. unbinding with the current event
-        returns what followed it before. Training uses this parallel form; streaming uses the equivalent constant-size
-        matrix state M (RM x R) in step()."""
-        k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.mem_phases(x, s)).to(torch.complex64)  # (B,T,RM)
+        """Associative phase memory. With context key K_t (order n: the last n events bound together), the pair
+        (K_{j-1} -> event j) is stored as conj(K_{j-1}) (x) v_j, where v is the unit phase code of the event on the
+        trunk bank. Reading at event t (before writing): r_t = sum_n w_n sum_j e^{-mu (tau_t - tau_j)} <K_t, K_{j-1}>/RM v_j,
+        i.e. unbinding with the current context returns what followed the same context before. Training uses this
+        parallel form; streaming uses the equivalent constant-size matrix state (one RM x R matrix per order)."""
+        P = self.mem_phases(x, s)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)  # (B,T,R)
-        B, T, _ = k.shape
-        sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <k_t, k_i>
+        B, T = x.shape
         tau = dt.cumsum(1)
-        # pair stored at write time j uses key k_{j-1}, value v_j (1 <= j <= t-1)
-        S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
-        S[:, :, 1:] = sim[:, :, :-1]
         decay = torch.exp(-self.mem_logmu.exp() * (tau[:, :, None] - tau[:, None, :]).clamp(min=0))
         mask = torch.tril(torch.ones(T, T, dtype=torch.bool, device=x.device), -1) & (torch.arange(T, device=x.device)[None, :] >= 1)
-        W = S * (decay * mask).to(S.dtype)
-        r = W @ v
+        W = 0
+        for n, w in zip(self.mem_orders, self.order_weights()):
+            k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.context_phases(P, n)).to(torch.complex64)
+            sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <K_t, K_i>
+            S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
+            S[:, :, 1:] = sim[:, :, :-1]  # pair stored at write time j uses key K_{j-1}
+            W = W + w * S
+        r = (W * (decay * mask).to(torch.complex64)) @ v
         return torch.cat([r.real, r.imag], -1)
 
     # ------------------------------------------------------------------ trunk
@@ -277,17 +303,25 @@ class OneMachine(nn.Module):
     def init_state(self, B):
         Mm = self.F[0].conv.c_re.shape[1]
         dev = self.f.device
+        no = len(self.mem_orders)
         return dict(conv=[torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev) for _ in range(2 * self.L)],
-                    M=torch.zeros(B, self.RM, self.R, dtype=torch.complex64, device=dev), prev=torch.zeros(B, self.RM, dtype=torch.complex64, device=dev))
+                    M=torch.zeros(no, B, self.RM, self.R, dtype=torch.complex64, device=dev),
+                    prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
+                    hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev))
 
     def step(self, x, s, dt, q, st):
         c, ph = self.code(x, s)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
-        k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.mem_phases(x, s)).to(torch.complex64)
-        M = torch.exp(-self.mem_logmu.exp() * dt)[:, None, None] * st["M"]
-        r = torch.einsum("bm,bmr->br", k, M) / self.RM
+        hist = torch.cat([self.mem_phases(x, s)[:, None], st["hist"][:, :-1]], 1)  # most recent first
+        M = torch.exp(-self.mem_logmu.exp() * dt)[None, :, None, None] * st["M"]
+        r, keys = 0, []
+        for o, (n, w) in enumerate(zip(self.mem_orders, self.order_weights())):
+            ph_n = sum(hist[:, i][:, self.ctx_perm[i]] for i in range(n))
+            k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), ph_n).to(torch.complex64)
+            r = r + w * torch.einsum("bm,bmr->br", k, M[o]) / self.RM
+            keys.append(k)
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
-        M = M + st["prev"].conj()[:, :, None] * v[:, None, :]
+        M = M + st["prev"].conj()[:, :, :, None] * v[None, :, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]
         conv = []
         for i, (F, G, P) in enumerate(zip(self.F, self.G, self.P)):
@@ -295,10 +329,10 @@ class OneMachine(nn.Module):
             g_, s2 = G.step(x1, dt, q, st["conv"][2 * i + 1]); x2 = x2 + g_
             x1, x2 = P(x1, x2)
             conv += [s1, s2]
-        return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=k)
+        return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=torch.stack(keys), hist=hist)
 
     def state_numel(self, st):
-        return sum(t.numel() for t in st["conv"]) + st["M"].numel() + st["prev"].numel()
+        return sum(t.numel() for t in st["conv"]) + st["M"].numel() + st["prev"].numel() + st["hist"].numel()
 
     # ------------------------------------------------------------------ phase adapters (Sec. 5.6)
     def adapter(self, base):

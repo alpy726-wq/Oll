@@ -89,3 +89,17 @@ def test_ct_mixed_batch_and_checkpoint_gradients():
     g2 = torch.autograd.grad(ref.square().sum(), [u, c.c_re, c.log_lam])
     for x, y in zip(g1, g2):
         assert ((x - y).norm() / (y.norm() + 1e-12)) < 1e-4
+
+
+def test_context_keyed_memory_streaming_equals_full():
+    m = OneMachine(STREAMS, R=32, L=1, RM=128, mem_orders=(1, 3, 6))
+    for p in m.parameters():
+        p.data += 0.05 * torch.randn_like(p)
+    m.eval()
+    b = batch(np.random.default_rng(5), 2, 40)
+    with torch.no_grad():
+        full = m(b["x"], b["s"], b["dt"], b["q"])
+        st = m.init_state(2); out = []
+        for t in range(40):
+            f, st = m.step(b["x"][:, t], b["s"][:, t], b["dt"][:, t], b["q"][:, t], st); out.append(f)
+    assert ((torch.stack(out, 1) - full).norm() / full.norm()) < 1e-5

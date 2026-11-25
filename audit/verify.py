@@ -106,7 +106,7 @@ with torch.no_grad():
         _, st = mem.step(xseq[:, t_], sseq[:, t_], torch.ones(1), torch.ones(1), st)
     def recall(state, k):
         kk = torch.polar(torch.ones(1, dtype=torch.float64), mem.mem_phases(torch.tensor([k]), torch.tensor([SID["vix"]]))).to(torch.complex64)
-        r = torch.einsum("bm,bmr->br", kk, state["M"]) / mem.RM
+        r = torch.einsum("bm,bmr->br", kk, state["M"][0]) / mem.RM
         cf_ = r.to(torch.complex128) * torch.exp(-1j * mem.psi[SID["text"]])
         return int(mem.discrete_logits(cf_, STREAMS_REAL[SID["text"]]).argmax())
     before_pred = [recall(st, float(k)) for k in keys]
@@ -114,7 +114,7 @@ with torch.no_grad():
     # exact erase of fact 3
     k3 = torch.polar(torch.ones(1, dtype=torch.float64), mem.mem_phases(keys[3:4], torch.tensor([SID["vix"]]))).to(torch.complex64)
     _, ph = mem.code(vals[3:4], torch.tensor([SID["text"]])); v3 = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
-    st2 = dict(st); st2["M"] = st["M"] - k3.conj()[:, :, None] * v3[:, None, :]
+    st2 = dict(st); st2["M"] = st["M"] - (k3.conj()[:, :, None] * v3[:, None, :])[None]
     after = [recall(st2, float(k)) == int(v) for k, v in zip(keys, vals)]
     after_pred = [recall(st2, float(k)) for k in keys]
 check("Memory: 20 key->symbol facts written once, recalled (untrained machine, mechanism only)", acc >= 0.95, accuracy=acc)
@@ -129,7 +129,7 @@ with torch.no_grad():
         _, st = mem.step(xs_[:, t_], ss_[:, t_], torch.ones(1), torch.ones(1), st)
     out = recall_txt = None
     k = torch.polar(torch.ones(1, dtype=torch.float64), mem.mem_phases(torch.tensor([float(ord(":"))]), torch.tensor([SID["text"]]))).to(torch.complex64)
-    r = torch.einsum("bm,bmr->br", k, st["M"]) / mem.RM
+    r = torch.einsum("bm,bmr->br", k, st["M"][0]) / mem.RM
     lg = mem.discrete_logits(r.to(torch.complex128) * torch.exp(-1j * mem.psi[SID["text"]]), STREAMS_REAL[SID["text"]])[0]
     top3 = [chr(int(i)) for i in lg.topk(3).indices]
 check("Memory LIMITATION: key is the single previous event, so 'X:' retrieves a superposition of all capitals' first letters",
