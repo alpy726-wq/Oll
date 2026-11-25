@@ -133,10 +133,10 @@ def imagine(m, W, foreign=None, C=512, device="cpu"):
             for r in range(x.shape[0]):
                 if int(g[r]) != 1:
                     ch = int(s[r, k])
-                    err.append((int(g[r]), float(t_elapsed[r]), float(cur[r] - x[r, k]) * 3.0, float(last[r].get(ch, 0.0) - x[r, k]) * 3.0))
+                    err.append((int(g[r]), float(t_elapsed[r]), float(cur[r] - x[r, k]) * 3.0, float(last[r].get(ch, 0.0) - x[r, k]) * 3.0, r))
             h, st = m.step(inp, s[:, k], dt[:, k], dt[:, k + 1], st)
             cur = median_next(m, h, s[:, k + 1], grid)
-    return np.array(err)  # (n, 4): group, elapsed frames, model error, hold-last error (in std units)
+    return np.array(err)  # (n, 5): group, elapsed frames, model error, hold-last error (std units), row
 
 
 def summarize_imagination(E_real, E_foreign):
@@ -186,6 +186,8 @@ def main():
         if k % 100 == 0:
             log.append(dict(step=k, loss=float(loss), sec=round(time.time() - t0))); print(log[-1], flush=True)
         k += 1
+    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
+    torch.save(m.state_dict(), a.out + ".pt")  # saved before evaluation, so a failed evaluation never loses training
     m.eval()
     te, te_full = RobotData("test", a.no_actions), RobotData("test", False)
     erng = np.random.default_rng(777)
@@ -219,8 +221,6 @@ def main():
         ti = time.time()
         E_r = imagine(m, Wi, None, device=a.device); E_f = imagine(m, Wi, Fi, device=a.device)
         res["imagination_1s"] = summarize_imagination(E_r, E_f); res["imagination_seconds"] = time.time() - ti
-    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
-    torch.save(m.state_dict(), a.out + ".pt")
     json.dump(res, open(a.out + ".json", "w"), indent=1)
     print(json.dumps({kk: v for kk, v in res.items() if kk not in ("curve", "args")}, indent=1))
 

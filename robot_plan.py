@@ -17,7 +17,7 @@ ap.add_argument("--threads", type=int, default=int(os.environ.get("THREADS", 4))
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 torch.set_num_threads(a.threads)
-m = OneMachine(STREAMS_ROBOT, R=a.R, L=a.L, M=8, RM=a.RM); m.load_state_dict(torch.load(a.ckpt)); m.eval()
+m = OneMachine(STREAMS_ROBOT, R=a.R, L=a.L, M=8, RM=a.RM); m.load_state_dict(torch.load(a.ckpt, map_location="cpu")); m.eval()
 te = RobotData("test")
 rng = np.random.default_rng(4242)
 C, H = 512, 700
@@ -26,13 +26,16 @@ W = [(w[0][:C + H], w[1][:C + H], w[2][:C + H], w[3]) for w in W]
 cands = [[None] + [te.window(rng, C + H, ep=(w[3] + 1 + j) % len(te.eps)) for j in range(a.N - 1)] for w in W]
 
 
+# all windows x candidates in one batch; candidate 0 = the real commands (the window itself)
+Wb = [W[r][:3] for j in range(a.N) for r in range(a.n)]
+Fb = [tuple(v[:C + H] for v in (W[r] if j == 0 else cands[r][j])[:3]) for j in range(a.N) for r in range(a.n)]
+dev = "cuda" if torch.cuda.is_available() else "cpu"
+m.to(dev)
+E = imagine(m, Wb, Fb, device=dev)
 scores = np.zeros((a.n, a.N))
 for j in range(a.N):
-    foreign = None if j == 0 else [c[j] for c in cands]
-    # errors per event: (group, elapsed, model_err, hold_err); split back per window by recomputing per window
     for r in range(a.n):
-        E = imagine(m, [W[r][:3]], None if foreign is None else [foreign[r]])
-        sel = (E[:, 0] == 0) & (E[:, 1] > 24)  # joints, last ~0.2 s of the imagined second
+        sel = (E[:, 4] == j * a.n + r) & (E[:, 0] == 0) & (E[:, 1] > 24)  # joints, last ~0.2 s of the imagined second
         scores[r, j] = float((E[sel, 2] ** 2).mean())  # distance of the imagined body to the goal body
 pick = scores.argmin(1)
 res = dict(N=a.N, n=a.n, picked_real_rate=float((pick == 0).mean()), chance=1.0 / a.N,

@@ -1,0 +1,10 @@
+{
+ "gpu": "L4",
+ "note": "World model from a real arm (data/robot). Four small runs share one L4: with/without motor commands, 2 seeds; then the decision test on the with-command runs.",
+ "cmds": {
+  "world_s0": "python3 robot_world.py --device cuda --threads 2 --B 32 --steps 6000 --minutes 45 --seed 0 --out runs/robot/gpu_world_s0 && python3 robot_plan.py --threads 2 --ckpt runs/robot/gpu_world_s0.pt --out runs/robot/gpu_plan_s0.json",
+  "world_s1": "python3 robot_world.py --device cuda --threads 2 --B 32 --steps 6000 --minutes 45 --seed 1 --out runs/robot/gpu_world_s1 && python3 robot_plan.py --threads 2 --ckpt runs/robot/gpu_world_s1.pt --out runs/robot/gpu_plan_s1.json",
+  "noact_s0": "python3 robot_world.py --device cuda --threads 2 --B 32 --steps 6000 --minutes 45 --seed 0 --no_actions --out runs/robot/gpu_noact_s0",
+  "noact_s1": "python3 robot_world.py --device cuda --threads 2 --B 32 --steps 6000 --minutes 45 --seed 1 --no_actions --out runs/robot/gpu_noact_s1"
+ }
+}

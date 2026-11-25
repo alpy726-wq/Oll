@@ -42,7 +42,7 @@ jobs:
           esac
           if [ -n "${{ github.event.inputs.job }}" ]; then JOBS="gpu/jobs/${{ github.event.inputs.job }}"; else
           JOBS=$(git diff --name-only HEAD~1 HEAD -- gpu/jobs | grep '\.json$' || true); fi
-          for j in $JOBS; do echo "== $j"; python gpu/launch.py "$j"; done
+          for j in $JOBS; do echo "== $j"; if grep -q '"cmds"' "$j"; then python gpu/multi.py "$j"; else python gpu/launch.py "$j"; fi; done
       - name: commit results
         if: always()
         run: |

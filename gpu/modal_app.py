@@ -48,3 +48,22 @@ def train_b200(args: list, script: str = "real_train.py"):
 @app.function(image=image, volumes={"/vol": vol}, gpu="H100", timeout=6 * 3600)
 def train_h100(args: list, script: str = "real_train.py"):
     return _train(args, script)
+
+
+def _multi(cmds: dict):
+    """several small runs at once on ONE GPU (small models leave a GPU mostly idle); each value is a shell command
+    that writes JSON files under runs/; returns {relative path: parsed JSON} plus logs"""
+    import glob, time
+    os.chdir("/oll")
+    t0 = time.time()
+    procs = {k: subprocess.Popen(c, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) for k, c in cmds.items()}
+    logs = {k: p.communicate()[0][-3000:] for k, p in procs.items()}
+    out = {f: json.load(open(f)) for f in glob.glob("runs/**/*.json", recursive=True)}
+    pts = {f: open(f, "rb").read() for f in glob.glob("runs/**/*.pt", recursive=True)}
+    gpu = subprocess.run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"], capture_output=True, text=True).stdout.strip()
+    return dict(files=out, pts=pts, logs=logs, gpu=gpu, wall_seconds=time.time() - t0)
+
+
+@app.function(image=image, gpu="L4", cpu=8, timeout=4 * 3600)
+def multi_l4(cmds: dict):
+    return _multi(cmds)
