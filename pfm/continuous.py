@@ -51,6 +51,11 @@ class PhaseDensityHead(nn.Module):
         return xs, s2 / self.Z(cf).unsqueeze(-1), s2
 
 
+    def pdf_grid(self, h, xs):
+        cf = self.coeffs(h)
+        return (self.amp(cf.unsqueeze(-2), xs).abs() ** 2 / self.Z(cf).unsqueeze(-1)).float()
+
+
 class GaussianHead(nn.Module):
     def __init__(self, d):
         super().__init__()
@@ -60,6 +65,9 @@ class GaussianHead(nn.Module):
         mu, ls = self.lin(h).unbind(-1)
         ls = ls.clamp(-7, 5)
         return 0.5 * ((x.float() - mu) / ls.exp()) ** 2 + ls + 0.5 * math.log(2 * math.pi)
+
+    def pdf_grid(self, h, xs):
+        return (-self.nll(h.unsqueeze(-2), xs.float())).exp()
 
 
 class MDNHead(nn.Module):
@@ -73,6 +81,9 @@ class MDNHead(nn.Module):
         ls = ls.clamp(-7, 5)
         lp = -0.5 * ((x.float().unsqueeze(-1) - mu) / ls.exp()) ** 2 - ls - 0.5 * math.log(2 * math.pi)
         return -torch.logsumexp(lp + torch.log_softmax(lw, -1), -1)
+
+    def pdf_grid(self, h, xs):
+        return (-self.nll(h.unsqueeze(-2), xs.float())).exp()
 
 
 # ----------------------------------------------------------------------------- 5.2
@@ -114,6 +125,15 @@ class CTConv(nn.Module):
             s = sc[:, -1]
         return torch.cat(ys, 1)
 
+    def a_cc(self):
+        return torch.complex(-self.log_lam.clamp(max=math.log(4.0)).exp(), self.omega), torch.complex(self.c_re, self.c_im)
+
+    def step(self, u, dt, q, s):
+        """one sample: u (B,C), dt (B,), q (B,), state s (B,C,M) -> y (B,C), new state.  O(C*M) memory."""
+        a, cc = self.a_cc()
+        s = torch.exp(dt[:, None, None].float() * a) * s + u[..., None]
+        return (s * cc * torch.exp(q[:, None, None].float() * a)).sum(-1).real, s
+
     def scan_reference(self, u, dt, a, cc):
         s = torch.zeros(u.shape[0], u.shape[2], a.shape[1], dtype=torch.complex64)
         decay = torch.exp(dt[..., None, None].float() * a)
@@ -135,6 +155,11 @@ class CTBranch(Branch):
     def forward(self, x, dt, q=None):
         n = rms(x)
         return self.mix(n, self.conv(n, dt, q))
+
+    def step(self, x, dt, q, s):
+        n = rms(x)
+        y, s = self.conv.step(n, dt, q, s)
+        return self.mix(n, y), s
 
 
 class CTSeqModel(nn.Module):
@@ -168,3 +193,19 @@ class CTSeqModel(nn.Module):
 
     def nll(self, x, dt, q, y):
         return self.head.nll(self.trunk(x, dt, q), y)
+
+    # ---- streaming (mode 'ct'): constant memory, one sample at a time ------------
+    def init_state(self, B):
+        M = self.F[0].conv.c_re.shape[1]
+        return [torch.zeros(B, self.R, M, dtype=torch.complex64) for _ in range(2 * len(self.F))]
+
+    def step(self, x, dt, q, state):
+        assert self.mode == "ct"
+        e = self.basis(x)
+        x1, x2 = e[..., : self.R], e[..., self.R:]
+        new = []
+        for i, (F, G) in enumerate(zip(self.F, self.G)):
+            f, s1 = F.step(x2, dt, q, state[2 * i]); x1 = x1 + f
+            g, s2 = G.step(x1, dt, q, state[2 * i + 1]); x2 = x2 + g
+            new += [s1, s2]
+        return rms(torch.cat([x1, x2], -1)) * self.gain, new
