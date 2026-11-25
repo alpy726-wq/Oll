@@ -1,0 +1,336 @@
+{
+ "jena_train": {
+  "sha256": "2cc6f91ad81a34e3b26a2d7c1f7d313de555f2f39aae1d4f0f3169d6186df0d8",
+  "shapes": {
+   "t": [
+    315731
+   ],
+   "x": [
+    315731,
+    14
+   ],
+   "names": [
+    14
+   ]
+  }
+ },
+ "jena_val": {
+  "sha256": "5e6f8a1295de63916b42debcf519e76bef37599a545b7d6e61750350caa4c14e",
+  "shapes": {
+   "t": [
+    52560
+   ],
+   "x": [
+    52560,
+    14
+   ],
+   "names": [
+    14
+   ]
+  }
+ },
+ "jena_test": {
+  "sha256": "367ae4413c2f453b3fddd12a64b9bd9081318381ba68d2b91726053e600f9923",
+  "shapes": {
+   "t": [
+    52259
+   ],
+   "x": [
+    52259,
+    14
+   ],
+   "names": [
+    14
+   ]
+  }
+ },
+ "ETTh1_train": {
+  "sha256": "07ef7c67a76ce3ef77bec63f4d374b05713f815d97ff7afad1610a90970d8913",
+  "shapes": {
+   "t": [
+    8640
+   ],
+   "x": [
+    8640,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTh1_val": {
+  "sha256": "5322fd21c147639ce57d99d087207f034f3a2ad4816f19a342c997c3f55b444a",
+  "shapes": {
+   "t": [
+    2880
+   ],
+   "x": [
+    2880,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTh1_test": {
+  "sha256": "c1cb4d9bdf5b8e44460282a6146770a65071c18b9f6659063a756b5d78884306",
+  "shapes": {
+   "t": [
+    2880
+   ],
+   "x": [
+    2880,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTh2_train": {
+  "sha256": "17ecae06a2215cd03e56fd14b7326e3efd56fc8ea49168c23f581d2f86293d4f",
+  "shapes": {
+   "t": [
+    8640
+   ],
+   "x": [
+    8640,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTh2_val": {
+  "sha256": "232e456c347336932553a9f6734fd88c22be9305254486e5fe8f89c0654f3c8c",
+  "shapes": {
+   "t": [
+    2880
+   ],
+   "x": [
+    2880,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTh2_test": {
+  "sha256": "a8b7fd72123b938f70a97d7440e6eb3e9f20030404ed7a404d1f32d6377e36cf",
+  "shapes": {
+   "t": [
+    2880
+   ],
+   "x": [
+    2880,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTm1_train": {
+  "sha256": "f385ea08bb7c459851c0f172bc4241700fc4df21a4a7cd176d2902f0266a9fe6",
+  "shapes": {
+   "t": [
+    34560
+   ],
+   "x": [
+    34560,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTm1_val": {
+  "sha256": "ced41c5df5ad7fef4bd9085b8726aca172517485cfaf9491a2fc4ecbabb00f9e",
+  "shapes": {
+   "t": [
+    11520
+   ],
+   "x": [
+    11520,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "ETTm1_test": {
+  "sha256": "71135dc5dc4f295284dff11f0e4c4408801bd4a658fd04a6968034feaf391c35",
+  "shapes": {
+   "t": [
+    11520
+   ],
+   "x": [
+    11520,
+    7
+   ],
+   "names": [
+    7
+   ]
+  }
+ },
+ "vix_train": {
+  "sha256": "13d351e5f505b843ced2c47da55b3c5730400c86a9ee091a6f728968ffea6164",
+  "shapes": {
+   "t": [
+    6550
+   ],
+   "x": [
+    6550,
+    4
+   ],
+   "names": [
+    4
+   ]
+  }
+ },
+ "vix_val": {
+  "sha256": "ff6ec4212930ee12413d56c3bbf164db8984e7354e52da24e380380704bba033",
+  "shapes": {
+   "t": [
+    754
+   ],
+   "x": [
+    754,
+    4
+   ],
+   "names": [
+    4
+   ]
+  }
+ },
+ "vix_test": {
+  "sha256": "501880b9c524bb3d0986115b6434fd977ee50a9a06604fea13b762495f50b54e",
+  "shapes": {
+   "t": [
+    1974
+   ],
+   "x": [
+    1974,
+    4
+   ],
+   "names": [
+    4
+   ]
+  }
+ },
+ "sp500_train": {
+  "sha256": "4d28b952e84e1339136ad758370e8d407716abf84a0d0b305a331f4f670a56dd",
+  "shapes": {
+   "t": [
+    1440
+   ],
+   "x": [
+    1440,
+    1
+   ],
+   "names": [
+    1
+   ]
+  }
+ },
+ "sp500_val": {
+  "sha256": "8bd6a87060a3b2294fec69dac328e6e524220eab47680fe699e078bf71c15b18",
+  "shapes": {
+   "t": [
+    180
+   ],
+   "x": [
+    180,
+    1
+   ],
+   "names": [
+    1
+   ]
+  }
+ },
+ "sp500_test": {
+  "sha256": "257c27428bed03fc2368cb0c26124a62607a53f5709bb9c1929413c1bcc1a1f7",
+  "shapes": {
+   "t": [
+    249
+   ],
+   "x": [
+    249,
+    1
+   ],
+   "names": [
+    1
+   ]
+  }
+ },
+ "fsdd_train": {
+  "sha256": "60026ed9105e642c4c5346586934dbebf8e5745f046a2fe9c2fc6c3a22fdaf00",
+  "shapes": {
+   "audio": [
+    9464394
+   ],
+   "lengths": [
+    2700
+   ],
+   "label": [
+    2700
+   ],
+   "speaker": [
+    2700
+   ],
+   "rate": []
+  }
+ },
+ "fsdd_test": {
+  "sha256": "95f36c1986638c0c75240e445694c715f559b6ae013cc912781760d7e4d8f347",
+  "shapes": {
+   "audio": [
+    1034030
+   ],
+   "lengths": [
+    300
+   ],
+   "label": [
+    300
+   ],
+   "speaker": [
+    300
+   ],
+   "rate": []
+  }
+ },
+ "text_train": {
+  "sha256": "354246950e9e46497503f515eddb922a9b7e5193c294f964ab66047ba7b63d17",
+  "shapes": {
+   "bytes": [
+    16373202
+   ]
+  }
+ },
+ "text_test": {
+  "sha256": "85d99c423abc5fa8300132e0f06c7b24c97b9753caba369935ac03f109bc9510",
+  "shapes": {
+   "bytes": [
+    1547206
+   ]
+  }
+ },
+ "facts": {
+  "sha256": "5ffc11a4501183c7772b0e790bfc72dfa3389f544973bc8cccb359bec9f9cebe",
+  "n": 243
+ },
+ "arc_train": {
+  "sha256": "be1f73d74d6093dfa7083d0254780860f783a029e0679091e270e394169f8cf5",
+  "n": 400
+ },
+ "arc_test": {
+  "sha256": "5fd140aca045f139a5b2d9a003e75c44e4da0469c791274d4aa4ddd174103852",
+  "n": 400
+ }
+}

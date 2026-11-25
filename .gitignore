@@ -19,3 +19,7 @@ data/talk.val
 runs/talk/*.pt
 runs/mind_act*.pt
 runs/mind_logic*.pt
+data/real/
+data/v4/*.npz
+data/v4/*.json
+!data/v4/MANIFEST.json
