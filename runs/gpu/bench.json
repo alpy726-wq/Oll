@@ -1,0 +1,58 @@
+{
+ "prices_usd_per_hour": {
+  "T4": 0.59,
+  "L4": 0.8,
+  "A10": 1.1,
+  "L40S": 1.95,
+  "A100-80GB": 2.5,
+  "H100": 3.95,
+  "H200": 4.54,
+  "B200": 6.25,
+  "B300": 7.1
+ },
+ "results": {
+  "L4": {
+   "error": "Could not deserialize remote exception due to local error:\nDeserialization failed because the 'torch' module is not available in the local environment.\nThis can happen if your local environment does not have the remote exception definitions.\nHere is the remote traceback:\nTraceback (most recent call "
+  },
+  "A10": {
+   "error": "Could not deserialize remote exception due to local error:\nDeserialization failed because the 'torch' module is not available in the local environment.\nThis can happen if your local environment does not have the remote exception definitions.\nHere is the remote traceback:\nTraceback (most recent call "
+  },
+  "L40S": {
+   "error": "Could not deserialize remote exception due to local error:\nDeserialization failed because the 'torch' module is not available in the local environment.\nThis can happen if your local environment does not have the remote exception definitions.\nHere is the remote traceback:\nTraceback (most recent call "
+  },
+  "H100": {
+   "error": "Could not deserialize remote exception due to local error:\nDeserialization failed because the 'torch' module is not available in the local environment.\nThis can happen if your local environment does not have the remote exception definitions.\nHere is the remote traceback:\nTraceback (most recent call "
+  },
+  "B200": {
+   "gpu": "NVIDIA B200",
+   "machine_small": {
+    "params": 81176,
+    "sec_per_step": 0.034543633460998535,
+    "events_per_sec": 237149.3435758335,
+    "peak_mem_gb": 2.357679616,
+    "usd_per_1000_steps": 0.06
+   },
+   "gpt_small": {
+    "params": 87471,
+    "sec_per_step": 0.004087090492248535,
+    "events_per_sec": 2004359.8289631035,
+    "peak_mem_gb": 0.170454528,
+    "usd_per_1000_steps": 0.0071
+   },
+   "machine_large": {
+    "params": 17508408,
+    "sec_per_step": 1.1825205087661743,
+    "events_per_sec": 13855.150822791937,
+    "peak_mem_gb": 120.62232576,
+    "usd_per_1000_steps": 2.053
+   },
+   "gpt_large": {
+    "params": 25774863,
+    "sec_per_step": 0.06955206394195557,
+    "events_per_sec": 235564.5407399155,
+    "peak_mem_gb": 4.139235328,
+    "usd_per_1000_steps": 0.1208
+   }
+  }
+ }
+}
