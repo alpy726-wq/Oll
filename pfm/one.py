@@ -100,6 +100,9 @@ class OneMachine(nn.Module):
         self.mem_beta = nn.Parameter(torch.ones(len(self.streams)))  # per input stream: how much memory read-out enters (born on)
         self.sym_logtemp = nn.Parameter(torch.zeros(len(self.streams)))  # discrete streams: p(c) ~ |s(c)|^(2 tau)
         self.mem_logmu = nn.Parameter(torch.tensor(-6.0))     # memory decay per unit time (continuous)
+        # two-band memory addressing (Sec. 5.3 bandwidth idea): the first half of the bank is "coarse" -- its frequencies
+        # are divided by a learnable per-stream width, so similar (not only identical) events retrieve each other
+        self.mem_logwidth = nn.Parameter(torch.full((len(self.streams),), math.log(1.0)))
         self.out_logscale = nn.Parameter(torch.tensor(0.0))
         # closed-form normaliser matrices for continuous streams (Sec. 4.1)
         for i, st in enumerate(self.streams):
@@ -149,11 +152,15 @@ class OneMachine(nn.Module):
     # ------------------------------------------------------------------ phase memory (bind / unbind on a wide prime bank)
     def mem_phases(self, x, s):
         out = torch.zeros(*x.shape, self.RM, dtype=torch.float64)
+        half = self.RM // 2
         for i, st in enumerate(self.streams):
             m = s == i
             if m.any():
-                ph = x[m].to(torch.float64)[:, None] * (self.fm / st.scale)
-                out[m] = 2 * math.pi * (ph - torch.floor(ph)) + self.psim[i]
+                fine = x[m].to(torch.float64)[:, None] * (self.fm[half:] / st.scale)
+                fine = 2 * math.pi * (fine - torch.floor(fine))
+                # coarse band: low frequencies scaled down by a learnable width; kept small enough that no wrap is needed
+                coarse = 2 * math.pi * x[m].to(torch.float64)[:, None] * (self.fm[:half] / self.fm[half - 1]) / self.mem_logwidth[i].exp().double() * 4.0
+                out[m] = torch.cat([coarse, fine], -1) + self.psim[i]
         return out
 
     def memory_read(self, x, s, ph, dt):

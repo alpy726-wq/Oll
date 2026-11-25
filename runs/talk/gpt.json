@@ -1,0 +1,854 @@
+{
+ "args": {
+  "arch": "gpt",
+  "minutes": 150.0,
+  "threads": 2,
+  "R": 256,
+  "L": 6,
+  "B": 16,
+  "T": 256,
+  "lr": 0.003
+ },
+ "params": 891904,
+ "curve": [
+  {
+   "step": 200,
+   "minutes": 1.0345074534416199,
+   "bytes_seen": 819200,
+   "val_bits_per_byte": 3.785333157993543
+  },
+  {
+   "step": 400,
+   "minutes": 1.9624618689219158,
+   "bytes_seen": 1638400,
+   "val_bits_per_byte": 3.732931334145527
+  },
+  {
+   "step": 600,
+   "minutes": 2.9236037929852805,
+   "bytes_seen": 2457600,
+   "val_bits_per_byte": 3.5435347519522553
+  },
+  {
+   "step": 800,
+   "minutes": 3.8714449604352317,
+   "bytes_seen": 3276800,
+   "val_bits_per_byte": 3.2933521916814055
+  },
+  {
+   "step": 1000,
+   "minutes": 4.898671329021454,
+   "bytes_seen": 4096000,
+   "val_bits_per_byte": 3.1288085643903423
+  },
+  {
+   "step": 1200,
+   "minutes": 5.913029177983602,
+   "bytes_seen": 4915200,
+   "val_bits_per_byte": 2.995931371676382
+  },
+  {
+   "step": 1400,
+   "minutes": 6.89963665008545,
+   "bytes_seen": 5734400,
+   "val_bits_per_byte": 2.909935144739428
+  },
+  {
+   "step": 1600,
+   "minutes": 7.916907294591268,
+   "bytes_seen": 6553600,
+   "val_bits_per_byte": 2.8258367033590823
+  },
+  {
+   "step": 1800,
+   "minutes": 8.856817758083343,
+   "bytes_seen": 7372800,
+   "val_bits_per_byte": 2.814023645027943
+  },
+  {
+   "step": 2000,
+   "minutes": 9.829476765791576,
+   "bytes_seen": 8192000,
+   "val_bits_per_byte": 2.7768027727672497
+  },
+  {
+   "step": 2200,
+   "minutes": 10.812708373864492,
+   "bytes_seen": 9011200,
+   "val_bits_per_byte": 2.732143779843728
+  },
+  {
+   "step": 2400,
+   "minutes": 11.775925461451212,
+   "bytes_seen": 9830400,
+   "val_bits_per_byte": 2.691785127113705
+  },
+  {
+   "step": 2600,
+   "minutes": 12.818702149391175,
+   "bytes_seen": 10649600,
+   "val_bits_per_byte": 2.678067145945947
+  },
+  {
+   "step": 2800,
+   "minutes": 13.833759085337322,
+   "bytes_seen": 11468800,
+   "val_bits_per_byte": 2.6231210967523917
+  },
+  {
+   "step": 3000,
+   "minutes": 14.83910903930664,
+   "bytes_seen": 12288000,
+   "val_bits_per_byte": 2.656523739185617
+  },
+  {
+   "step": 3200,
+   "minutes": 15.78129874865214,
+   "bytes_seen": 13107200,
+   "val_bits_per_byte": 2.6151579130564793
+  },
+  {
+   "step": 3400,
+   "minutes": 16.72419329881668,
+   "bytes_seen": 13926400,
+   "val_bits_per_byte": 2.5862036018878203
+  },
+  {
+   "step": 3600,
+   "minutes": 17.698551332950593,
+   "bytes_seen": 14745600,
+   "val_bits_per_byte": 2.569360351988583
+  },
+  {
+   "step": 3800,
+   "minutes": 18.640278045336405,
+   "bytes_seen": 15564800,
+   "val_bits_per_byte": 2.5721274238539773
+  },
+  {
+   "step": 4000,
+   "minutes": 19.573727440834045,
+   "bytes_seen": 16384000,
+   "val_bits_per_byte": 2.5865040125832146
+  },
+  {
+   "step": 4200,
+   "minutes": 20.463346978028614,
+   "bytes_seen": 17203200,
+   "val_bits_per_byte": 2.5352172382520672
+  },
+  {
+   "step": 4400,
+   "minutes": 21.369420683383943,
+   "bytes_seen": 18022400,
+   "val_bits_per_byte": 2.5337815700783275
+  },
+  {
+   "step": 4600,
+   "minutes": 22.232151055335997,
+   "bytes_seen": 18841600,
+   "val_bits_per_byte": 2.529908649767885
+  },
+  {
+   "step": 4800,
+   "minutes": 23.082919053236644,
+   "bytes_seen": 19660800,
+   "val_bits_per_byte": 2.507290609413639
+  },
+  {
+   "step": 5000,
+   "minutes": 23.96169317960739,
+   "bytes_seen": 20480000,
+   "val_bits_per_byte": 2.4924054249901375
+  },
+  {
+   "step": 5200,
+   "minutes": 24.840640985965727,
+   "bytes_seen": 21299200,
+   "val_bits_per_byte": 2.4867173567868264
+  },
+  {
+   "step": 5400,
+   "minutes": 25.745726068814594,
+   "bytes_seen": 22118400,
+   "val_bits_per_byte": 2.478251510798105
+  },
+  {
+   "step": 5600,
+   "minutes": 26.702714848518372,
+   "bytes_seen": 22937600,
+   "val_bits_per_byte": 2.474765078499814
+  },
+  {
+   "step": 5800,
+   "minutes": 27.604080673058828,
+   "bytes_seen": 23756800,
+   "val_bits_per_byte": 2.4871762064993286
+  },
+  {
+   "step": 6000,
+   "minutes": 28.515450592835744,
+   "bytes_seen": 24576000,
+   "val_bits_per_byte": 2.452402819343064
+  },
+  {
+   "step": 6200,
+   "minutes": 29.433542342980704,
+   "bytes_seen": 25395200,
+   "val_bits_per_byte": 2.448842735474541
+  },
+  {
+   "step": 6400,
+   "minutes": 30.329893636703492,
+   "bytes_seen": 26214400,
+   "val_bits_per_byte": 2.4469349319285194
+  },
+  {
+   "step": 6600,
+   "minutes": 31.262036601702373,
+   "bytes_seen": 27033600,
+   "val_bits_per_byte": 2.436693107095663
+  },
+  {
+   "step": 6800,
+   "minutes": 32.16402376095454,
+   "bytes_seen": 27852800,
+   "val_bits_per_byte": 2.4447231490470984
+  },
+  {
+   "step": 7000,
+   "minutes": 33.052169704437254,
+   "bytes_seen": 28672000,
+   "val_bits_per_byte": 2.4323793952510595
+  },
+  {
+   "step": 7200,
+   "minutes": 33.977884451548256,
+   "bytes_seen": 29491200,
+   "val_bits_per_byte": 2.4398972728682256
+  },
+  {
+   "step": 7400,
+   "minutes": 34.90811258951823,
+   "bytes_seen": 30310400,
+   "val_bits_per_byte": 2.419738670412643
+  },
+  {
+   "step": 7600,
+   "minutes": 35.856802598635355,
+   "bytes_seen": 31129600,
+   "val_bits_per_byte": 2.398088376434802
+  },
+  {
+   "step": 7800,
+   "minutes": 36.78861904939016,
+   "bytes_seen": 31948800,
+   "val_bits_per_byte": 2.3937014429765933
+  },
+  {
+   "step": 8000,
+   "minutes": 37.6853727221489,
+   "bytes_seen": 32768000,
+   "val_bits_per_byte": 2.3943367898845436
+  },
+  {
+   "step": 8200,
+   "minutes": 38.61361529429754,
+   "bytes_seen": 33587200,
+   "val_bits_per_byte": 2.3888342909615132
+  },
+  {
+   "step": 8400,
+   "minutes": 39.542499427000685,
+   "bytes_seen": 34406400,
+   "val_bits_per_byte": 2.39712922919094
+  },
+  {
+   "step": 8600,
+   "minutes": 40.484625136852266,
+   "bytes_seen": 35225600,
+   "val_bits_per_byte": 2.403778551425586
+  },
+  {
+   "step": 8800,
+   "minutes": 41.38999715248744,
+   "bytes_seen": 36044800,
+   "val_bits_per_byte": 2.3718855297059718
+  },
+  {
+   "step": 9000,
+   "minutes": 42.265168472131094,
+   "bytes_seen": 36864000,
+   "val_bits_per_byte": 2.382234757704292
+  },
+  {
+   "step": 9200,
+   "minutes": 43.143174695968625,
+   "bytes_seen": 37683200,
+   "val_bits_per_byte": 2.3685046517596477
+  },
+  {
+   "step": 9400,
+   "minutes": 44.04683528343836,
+   "bytes_seen": 38502400,
+   "val_bits_per_byte": 2.3777444196772524
+  },
+  {
+   "step": 9600,
+   "minutes": 44.9303045630455,
+   "bytes_seen": 39321600,
+   "val_bits_per_byte": 2.3721382582114146
+  },
+  {
+   "step": 9800,
+   "minutes": 45.82091172933578,
+   "bytes_seen": 40140800,
+   "val_bits_per_byte": 2.3774786634860066
+  },
+  {
+   "step": 10000,
+   "minutes": 46.72723722457886,
+   "bytes_seen": 40960000,
+   "val_bits_per_byte": 2.36419958204325
+  },
+  {
+   "step": 10200,
+   "minutes": 47.632022591431934,
+   "bytes_seen": 41779200,
+   "val_bits_per_byte": 2.353544353913382
+  },
+  {
+   "step": 10400,
+   "minutes": 48.55941489140193,
+   "bytes_seen": 42598400,
+   "val_bits_per_byte": 2.3637312732849507
+  },
+  {
+   "step": 10600,
+   "minutes": 49.49089300632477,
+   "bytes_seen": 43417600,
+   "val_bits_per_byte": 2.351963059430024
+  },
+  {
+   "step": 10800,
+   "minutes": 50.44726354281108,
+   "bytes_seen": 44236800,
+   "val_bits_per_byte": 2.323196381333456
+  },
+  {
+   "step": 11000,
+   "minutes": 51.3839159766833,
+   "bytes_seen": 45056000,
+   "val_bits_per_byte": 2.340053045879461
+  },
+  {
+   "step": 11200,
+   "minutes": 52.32249137560527,
+   "bytes_seen": 45875200,
+   "val_bits_per_byte": 2.3478348738700383
+  },
+  {
+   "step": 11400,
+   "minutes": 53.25599646568298,
+   "bytes_seen": 46694400,
+   "val_bits_per_byte": 2.3397536670799712
+  },
+  {
+   "step": 11600,
+   "minutes": 54.14432164827983,
+   "bytes_seen": 47513600,
+   "val_bits_per_byte": 2.330294621282517
+  },
+  {
+   "step": 11800,
+   "minutes": 55.041944392522176,
+   "bytes_seen": 48332800,
+   "val_bits_per_byte": 2.3294858728668344
+  },
+  {
+   "step": 12000,
+   "minutes": 55.985153965155284,
+   "bytes_seen": 49152000,
+   "val_bits_per_byte": 2.3253225598504104
+  },
+  {
+   "step": 12200,
+   "minutes": 56.93338006734848,
+   "bytes_seen": 49971200,
+   "val_bits_per_byte": 2.333881104487947
+  },
+  {
+   "step": 12400,
+   "minutes": 57.88179386854172,
+   "bytes_seen": 50790400,
+   "val_bits_per_byte": 2.3094798190225676
+  },
+  {
+   "step": 12600,
+   "minutes": 58.81025439898173,
+   "bytes_seen": 51609600,
+   "val_bits_per_byte": 2.3061618867264593
+  },
+  {
+   "step": 12800,
+   "minutes": 59.77287209033966,
+   "bytes_seen": 52428800,
+   "val_bits_per_byte": 2.312398407603372
+  },
+  {
+   "step": 13000,
+   "minutes": 60.70014061927795,
+   "bytes_seen": 53248000,
+   "val_bits_per_byte": 2.294922003574983
+  },
+  {
+   "step": 13200,
+   "minutes": 61.628157472610475,
+   "bytes_seen": 54067200,
+   "val_bits_per_byte": 2.303768232191751
+  },
+  {
+   "step": 13400,
+   "minutes": 62.57941119273504,
+   "bytes_seen": 54886400,
+   "val_bits_per_byte": 2.314975481635226
+  },
+  {
+   "step": 13600,
+   "minutes": 63.516662808259326,
+   "bytes_seen": 55705600,
+   "val_bits_per_byte": 2.297051449762304
+  },
+  {
+   "step": 13800,
+   "minutes": 64.40974750916163,
+   "bytes_seen": 56524800,
+   "val_bits_per_byte": 2.298793505028556
+  },
+  {
+   "step": 14000,
+   "minutes": 65.34959820508956,
+   "bytes_seen": 57344000,
+   "val_bits_per_byte": 2.300239320178697
+  },
+  {
+   "step": 14200,
+   "minutes": 66.26239319642384,
+   "bytes_seen": 58163200,
+   "val_bits_per_byte": 2.2807645207429452
+  },
+  {
+   "step": 14400,
+   "minutes": 67.25097035566965,
+   "bytes_seen": 58982400,
+   "val_bits_per_byte": 2.2912377912282
+  },
+  {
+   "step": 14600,
+   "minutes": 68.14131496747335,
+   "bytes_seen": 59801600,
+   "val_bits_per_byte": 2.29489440035952
+  },
+  {
+   "step": 14800,
+   "minutes": 69.03671234448751,
+   "bytes_seen": 60620800,
+   "val_bits_per_byte": 2.2814797535922207
+  },
+  {
+   "step": 15000,
+   "minutes": 69.93417483170828,
+   "bytes_seen": 61440000,
+   "val_bits_per_byte": 2.276285404583874
+  },
+  {
+   "step": 15200,
+   "minutes": 70.8562574227651,
+   "bytes_seen": 62259200,
+   "val_bits_per_byte": 2.2913770111840734
+  },
+  {
+   "step": 15400,
+   "minutes": 71.74091687997182,
+   "bytes_seen": 63078400,
+   "val_bits_per_byte": 2.2822617157100313
+  },
+  {
+   "step": 15600,
+   "minutes": 72.64268734852473,
+   "bytes_seen": 63897600,
+   "val_bits_per_byte": 2.285524484570875
+  },
+  {
+   "step": 15800,
+   "minutes": 73.54285292625427,
+   "bytes_seen": 64716800,
+   "val_bits_per_byte": 2.2757036302716678
+  },
+  {
+   "step": 16000,
+   "minutes": 74.40839809974035,
+   "bytes_seen": 65536000,
+   "val_bits_per_byte": 2.2632720363367005
+  },
+  {
+   "step": 16200,
+   "minutes": 75.28932454188664,
+   "bytes_seen": 66355200,
+   "val_bits_per_byte": 2.2662701668935292
+  },
+  {
+   "step": 16400,
+   "minutes": 76.23108142614365,
+   "bytes_seen": 67174400,
+   "val_bits_per_byte": 2.2701541370892895
+  },
+  {
+   "step": 16600,
+   "minutes": 77.12909594774246,
+   "bytes_seen": 67993600,
+   "val_bits_per_byte": 2.2923520668231405
+  },
+  {
+   "step": 16800,
+   "minutes": 78.04839041233063,
+   "bytes_seen": 68812800,
+   "val_bits_per_byte": 2.2650767792791924
+  },
+  {
+   "step": 17000,
+   "minutes": 78.95820186138153,
+   "bytes_seen": 69632000,
+   "val_bits_per_byte": 2.2733993637197454
+  },
+  {
+   "step": 17200,
+   "minutes": 79.81877038478851,
+   "bytes_seen": 70451200,
+   "val_bits_per_byte": 2.249805407813178
+  },
+  {
+   "step": 17400,
+   "minutes": 80.7316649278005,
+   "bytes_seen": 71270400,
+   "val_bits_per_byte": 2.251260768000442
+  },
+  {
+   "step": 17600,
+   "minutes": 81.67036518653234,
+   "bytes_seen": 72089600,
+   "val_bits_per_byte": 2.2610934891025587
+  },
+  {
+   "step": 17800,
+   "minutes": 82.61068489551545,
+   "bytes_seen": 72908800,
+   "val_bits_per_byte": 2.271615903630298
+  },
+  {
+   "step": 18000,
+   "minutes": 83.51665662924448,
+   "bytes_seen": 73728000,
+   "val_bits_per_byte": 2.254962393590625
+  },
+  {
+   "step": 18200,
+   "minutes": 84.38407243092855,
+   "bytes_seen": 74547200,
+   "val_bits_per_byte": 2.2615682472102656
+  },
+  {
+   "step": 18400,
+   "minutes": 85.28551438252131,
+   "bytes_seen": 75366400,
+   "val_bits_per_byte": 2.2539925834224097
+  },
+  {
+   "step": 18600,
+   "minutes": 86.22847039699555,
+   "bytes_seen": 76185600,
+   "val_bits_per_byte": 2.2533430479457635
+  },
+  {
+   "step": 18800,
+   "minutes": 87.13804494142532,
+   "bytes_seen": 77004800,
+   "val_bits_per_byte": 2.2535059155161306
+  },
+  {
+   "step": 19000,
+   "minutes": 88.01619127194087,
+   "bytes_seen": 77824000,
+   "val_bits_per_byte": 2.2460098796956243
+  },
+  {
+   "step": 19200,
+   "minutes": 88.89675965706508,
+   "bytes_seen": 78643200,
+   "val_bits_per_byte": 2.2351823249495917
+  },
+  {
+   "step": 19400,
+   "minutes": 89.80276330709458,
+   "bytes_seen": 79462400,
+   "val_bits_per_byte": 2.2382904814073097
+  },
+  {
+   "step": 19600,
+   "minutes": 90.7230083545049,
+   "bytes_seen": 80281600,
+   "val_bits_per_byte": 2.2260032669077416
+  },
+  {
+   "step": 19800,
+   "minutes": 91.65240707397462,
+   "bytes_seen": 81100800,
+   "val_bits_per_byte": 2.230474385873548
+  },
+  {
+   "step": 20000,
+   "minutes": 92.56499731143316,
+   "bytes_seen": 81920000,
+   "val_bits_per_byte": 2.221292103156994
+  },
+  {
+   "step": 20200,
+   "minutes": 93.4515480041504,
+   "bytes_seen": 82739200,
+   "val_bits_per_byte": 2.2435963181690783
+  },
+  {
+   "step": 20400,
+   "minutes": 94.3395983616511,
+   "bytes_seen": 83558400,
+   "val_bits_per_byte": 2.23515506569943
+  },
+  {
+   "step": 20600,
+   "minutes": 95.25018787384033,
+   "bytes_seen": 84377600,
+   "val_bits_per_byte": 2.2321383180206453
+  },
+  {
+   "step": 20800,
+   "minutes": 96.13848236401876,
+   "bytes_seen": 85196800,
+   "val_bits_per_byte": 2.2291455619216562
+  },
+  {
+   "step": 21000,
+   "minutes": 97.01876095136006,
+   "bytes_seen": 86016000,
+   "val_bits_per_byte": 2.2265764850830676
+  },
+  {
+   "step": 21200,
+   "minutes": 97.91622316042582,
+   "bytes_seen": 86835200,
+   "val_bits_per_byte": 2.2319073453205367
+  },
+  {
+   "step": 21400,
+   "minutes": 98.8126938064893,
+   "bytes_seen": 87654400,
+   "val_bits_per_byte": 2.23484412106667
+  },
+  {
+   "step": 21600,
+   "minutes": 99.70025244951248,
+   "bytes_seen": 88473600,
+   "val_bits_per_byte": 2.22247375295541
+  },
+  {
+   "step": 21800,
+   "minutes": 100.60819605191548,
+   "bytes_seen": 89292800,
+   "val_bits_per_byte": 2.2223454109022036
+  },
+  {
+   "step": 22000,
+   "minutes": 101.53342988491059,
+   "bytes_seen": 90112000,
+   "val_bits_per_byte": 2.216473794214759
+  },
+  {
+   "step": 22200,
+   "minutes": 102.43469073375066,
+   "bytes_seen": 90931200,
+   "val_bits_per_byte": 2.2169448116998094
+  },
+  {
+   "step": 22400,
+   "minutes": 103.33657826185227,
+   "bytes_seen": 91750400,
+   "val_bits_per_byte": 2.2073380758009264
+  },
+  {
+   "step": 22600,
+   "minutes": 104.27588053544362,
+   "bytes_seen": 92569600,
+   "val_bits_per_byte": 2.2184368901830327
+  },
+  {
+   "step": 22800,
+   "minutes": 105.17786351442336,
+   "bytes_seen": 93388800,
+   "val_bits_per_byte": 2.2152901666158584
+  },
+  {
+   "step": 23000,
+   "minutes": 106.08151721556982,
+   "bytes_seen": 94208000,
+   "val_bits_per_byte": 2.2151917065482394
+  },
+  {
+   "step": 23200,
+   "minutes": 106.99514536062877,
+   "bytes_seen": 95027200,
+   "val_bits_per_byte": 2.2209480088682803
+  },
+  {
+   "step": 23400,
+   "minutes": 107.89735591014227,
+   "bytes_seen": 95846400,
+   "val_bits_per_byte": 2.2137506209209974
+  },
+  {
+   "step": 23600,
+   "minutes": 108.85645384788513,
+   "bytes_seen": 96665600,
+   "val_bits_per_byte": 2.2091255344870064
+  },
+  {
+   "step": 23800,
+   "minutes": 109.80733245213827,
+   "bytes_seen": 97484800,
+   "val_bits_per_byte": 2.2133318431661464
+  },
+  {
+   "step": 24000,
+   "minutes": 110.7389122446378,
+   "bytes_seen": 98304000,
+   "val_bits_per_byte": 2.216506169948784
+  },
+  {
+   "step": 24200,
+   "minutes": 111.67443387111028,
+   "bytes_seen": 99123200,
+   "val_bits_per_byte": 2.206661238078456
+  },
+  {
+   "step": 24400,
+   "minutes": 112.58431212504705,
+   "bytes_seen": 99942400,
+   "val_bits_per_byte": 2.2122247908425425
+  },
+  {
+   "step": 24600,
+   "minutes": 113.52252684036891,
+   "bytes_seen": 100761600,
+   "val_bits_per_byte": 2.2197740122978282
+  },
+  {
+   "step": 24800,
+   "minutes": 114.41855883995692,
+   "bytes_seen": 101580800,
+   "val_bits_per_byte": 2.20725199848417
+  },
+  {
+   "step": 25000,
+   "minutes": 115.33291647434234,
+   "bytes_seen": 102400000,
+   "val_bits_per_byte": 2.2135245067307756
+  },
+  {
+   "step": 25200,
+   "minutes": 116.30471290747325,
+   "bytes_seen": 103219200,
+   "val_bits_per_byte": 2.2070229175932203
+  },
+  {
+   "step": 25400,
+   "minutes": 117.26125868161519,
+   "bytes_seen": 104038400,
+   "val_bits_per_byte": 2.1985149788507
+  },
+  {
+   "step": 25600,
+   "minutes": 118.21490372816722,
+   "bytes_seen": 104857600,
+   "val_bits_per_byte": 2.1982493946421053
+  },
+  {
+   "step": 25800,
+   "minutes": 119.20722461938858,
+   "bytes_seen": 105676800,
+   "val_bits_per_byte": 2.2108575287681833
+  },
+  {
+   "step": 26000,
+   "minutes": 120.22566277186075,
+   "bytes_seen": 106496000,
+   "val_bits_per_byte": 2.204921719556304
+  },
+  {
+   "step": 26200,
+   "minutes": 121.83985954523087,
+   "bytes_seen": 107315200,
+   "val_bits_per_byte": 2.2060418855570365
+  },
+  {
+   "step": 26400,
+   "minutes": 123.97614070574443,
+   "bytes_seen": 108134400,
+   "val_bits_per_byte": 2.2081939474629455
+  },
+  {
+   "step": 26600,
+   "minutes": 126.02808384100597,
+   "bytes_seen": 108953600,
+   "val_bits_per_byte": 2.2034262444157267
+  },
+  {
+   "step": 26800,
+   "minutes": 128.06739329099656,
+   "bytes_seen": 109772800,
+   "val_bits_per_byte": 2.1936896186197794
+  },
+  {
+   "step": 27000,
+   "minutes": 130.0653199036916,
+   "bytes_seen": 110592000,
+   "val_bits_per_byte": 2.1945834554519763
+  },
+  {
+   "step": 27200,
+   "minutes": 132.03585646947224,
+   "bytes_seen": 111411200,
+   "val_bits_per_byte": 2.1966902429250457
+  },
+  {
+   "step": 27400,
+   "minutes": 133.18118287324904,
+   "bytes_seen": 112230400,
+   "val_bits_per_byte": 2.1883670995408773
+  },
+  {
+   "step": 27600,
+   "minutes": 136.20602663755417,
+   "bytes_seen": 113049600,
+   "val_bits_per_byte": 2.194474805412294
+  },
+  {
+   "step": 27800,
+   "minutes": 146.12336411078772,
+   "bytes_seen": 113868800,
+   "val_bits_per_byte": 2.1938979326056374
+  }
+ ],
+ "samples": {
+  "Alice was beginning to ": "Alice was beginning to say that the same was a man at once: \nSo say that they laid when the part to me, \nSat destroyed the same and heathen beasts, \nRather of past diswards; and he still long to bow \nThence, and their brother! are gone to their soul? \nBut what from all the same wound? \nBut may have no more very excuse down. \nThe harpoon ereth; who touched their situation? \nHuman half at their family behaviour: \nBest the",
+  "Once upon a time there was a little ": "Once upon a time there was a little sort and the sword.\nHe hope to the rolls saying, and no more doubt should give his power and\nbehead the man who the place was in ragionable which gives him\nto the cloud to be called with his pirtues and harp, which should soon fall\nabout from a deep that was that all magnifying them in case for\na crowd and hard them for a torture farthere.\n\nThere was all the level there for her father's heads, and",
+  "\"I do not know,\" said the ": "\"I do not know,\" said the same stood from his chariot at last, \"so\r\nsaith the pit--\"  \"'That shall not see that the little book,' said he to\r\npuzzled with ragion, and he was seal to yourself, and descended now.  Look\r\ninto the commandment of the Pole.  My haytes were desired that was that\r\nhe made from me from a field that the ship had never been just out\r\nas the most do some turn that in his hands.\r\n\r\nThe precious and all"
+ }
+}
