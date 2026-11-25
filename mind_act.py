@@ -52,6 +52,8 @@ def episode(policy, rng, learn=True):
         ev_x = torch.tensor(e); ev_s = torch.full((B,), OBS)
         if policy == "machine":
             with torch.no_grad():
+                if MARKOV:
+                    st = m.init_state(B)
                 h, st = m.step(ev_x, ev_s, torch.full((B,), gap), torch.zeros(B), st)
                 d = m.density(h, ACT, XS).double()
                 cdf = (d / d.sum(-1, keepdim=True)).cumsum(-1)
@@ -71,19 +73,43 @@ def episode(policy, rng, learn=True):
     return np.stack(xs, 1), np.array(ss), np.array(dts), np.stack(rews, 1), np.stack(acts, 1)
 
 
+MARKOV = os.environ.get("ACT_MARKOV", "0") == "1"
+
+
 def reinforce(xs, ss, dts, rews):
+    if MARKOV:  # every decision from the current observation only (no history): one-event sequences
+        e = torch.tensor(xs[:, 0::3]).reshape(-1, 1); a = torch.tensor(xs[:, 1::3]).reshape(-1)
+        g = torch.tensor(np.tile(dts[0::3], (B, 1)), dtype=torch.float32).reshape(-1, 1)
+        h = m(e, torch.full(e.shape, OBS), g, torch.zeros_like(g))[:, 0]
+        logp = -m.nll(h, torch.full((len(a),), ACT), a)
+        R = torch.tensor(rews, dtype=torch.float32).reshape(-1)
+        adv = (R - R.mean()) / (R.std() + 1e-6)
+        loss = -(adv * logp).mean()
+        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
+        return
     x = torch.tensor(xs); s = torch.tensor(ss)[None].repeat(B, 1); dt = torch.tensor(dts, dtype=torch.float32)[None].repeat(B, 1)
     q = torch.zeros_like(dt)  # every read-out at the event's own time: identical to what the agent computed while acting
     h = m(x, s, dt, q)
     obs_pos = torch.arange(0, x.shape[1], 3)
     logp = -m.nll(h[:, obs_pos], torch.full((B, len(obs_pos)), ACT), x[:, obs_pos + 1])
     R = torch.tensor(rews, dtype=torch.float32)
-    ret = torch.zeros_like(R); run = torch.zeros(B)
-    for k in reversed(range(R.shape[1])):  # discounted return
-        run = R[:, k] + 0.5 * run; ret[:, k] = run
-    adv = ret - ret.mean(0, keepdim=True)
-    adv = adv / (adv.std() + 1e-6)
-    loss = -(adv * logp).mean()
+    if os.environ.get("ACT_CRITIC", "0") == "1":
+        # the machine itself predicts the reward it will get (its continuous output on the reward stream, read at the
+        # observation): this self-prediction is the baseline, and learning it is part of the same objective
+        rew_nll = m.nll(h[:, obs_pos], torch.full((B, len(obs_pos)), REW), x[:, obs_pos + 2])
+        with torch.no_grad():
+            d = m.density(h[:, obs_pos], REW, XS).double()
+            V = ((d * XS).sum(-1) / d.sum(-1)).float()
+        adv = R - V
+        adv = adv / (adv.std() + 1e-6)
+        loss = -(adv * logp).mean() + rew_nll.mean()
+    else:
+        ret = torch.zeros_like(R); run = torch.zeros(B)
+        for k in reversed(range(R.shape[1])):  # discounted return
+            run = R[:, k] + 0.5 * run; ret[:, k] = run
+        adv = ret - ret.mean(0, keepdim=True)
+        adv = adv / (adv.std() + 1e-6)
+        loss = -(adv * logp).mean()
     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
 
 
