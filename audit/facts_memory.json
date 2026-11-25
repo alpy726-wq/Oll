@@ -156,18 +156,16 @@
    ]
   ]
  },
- "context_keys_2_4_8_12_16_backoff_RM8192": {
+ "context_keys_4_8_12_RM16384": {
   "orders": [
-   2,
    4,
    8,
-   12,
-   16
+   12
   ],
-  "RM": 8192,
+  "RM": 16384,
   "coarse_width": 0.01,
-  "exact_capital_recall": 0.2839506172839506,
-  "char_accuracy": 0.34064155587872286,
+  "exact_capital_recall": 0.8024691358024691,
+  "char_accuracy": 0.8721444821576686,
   "examples": [
    [
     "Afghanistan",
@@ -182,12 +180,12 @@
    [
     "Albania",
     "Tirana",
-    "aoeaaet:"
+    "Tirana"
    ],
    [
     "Algeria",
     "Algiers",
-    "airr ona"
+    "Algiers"
    ],
    [
     "American Samoa",
@@ -197,26 +195,26 @@
    [
     "Andorra",
     "Andorra la Vella",
-    ""
+    "Andorra la Vella"
    ],
    [
     "Angola",
     "Luanda",
-    "a ctt"
+    "Luanda"
    ],
    [
     "Anguilla",
     "The Valley",
-    "a:ea"
+    "The Valley"
    ]
   ],
   "erase": {
    "erased_country": "Afghanistan",
    "erased_recalled_before": true,
    "erased_recalled_after": false,
-   "other_correct_before": 68,
-   "other_correct_after": 69,
-   "other_answers_changed": 95
+   "other_correct_before": 194,
+   "other_correct_after": 194,
+   "other_answers_changed": 2
   }
  }
 }
