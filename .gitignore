@@ -13,3 +13,7 @@ oll_makine.zip
 nabbench/results/*/
 nabbench/*.log
 data/nab/
+data/text_dl/
+data/talk.train
+data/talk.val
+runs/talk/*.pt

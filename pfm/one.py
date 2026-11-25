@@ -230,11 +230,15 @@ class OneMachine(nn.Module):
                 out[m] = Fn.cross_entropy(lg, y[m].long(), reduction="none")
         return out
 
+    DISCRETE_READOUT = "power"  # "power": log|s(c)|^2 (phase-amplitude density on a discrete set); "phase": Re s(c)
+
     def discrete_logits(self, c, st):
         cand = torch.arange(st.n_symbols, dtype=torch.float64)
         ph = cand[:, None] * (self.f / st.scale)
         ph = 2 * math.pi * (ph - torch.floor(ph))
         s = c @ torch.exp(-1j * ph).T  # (n, n_symbols), flat readout amplitude
+        if self.DISCRETE_READOUT == "phase":
+            return s.real.float()  # phase matching: Re <code(c), h>
         return (s.abs() ** 2 + 1e-9).log().float()
 
     def density(self, h, i, xs):

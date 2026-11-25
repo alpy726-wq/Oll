@@ -104,6 +104,16 @@ class CTConv(nn.Module):
     def forward(self, u, dt, q=None):
         a = torch.complex(-self.log_lam.clamp(max=math.log(4.0)).exp(), self.omega)  # (C,M), lambda <= 4 keeps the chunk scan in range
         cc = torch.complex(self.c_re, self.c_im)
+        d0 = dt.reshape(-1)[0]
+        q0 = q.reshape(-1)[0] if q is not None else None
+        if bool((dt == d0).all()) and (q is None or bool((q == q0).all())):
+            # regular clock: the same operator is a time-invariant kernel  k_j = Re sum_m c_m e^{a q} e^{a dt j}  -> FFT
+            from .model import fft_causal_conv
+            T = u.shape[1]
+            ccq = cc * torch.exp(q0.float() * a) if q is not None else cc
+            j = torch.arange(T, dtype=torch.float32)
+            k = (ccq[:, None, :] * torch.exp(a[:, None, :] * (d0.float() * j)[None, :, None])).sum(-1).real  # (C,T)
+            return fft_causal_conv(u, k)
         if q is not None:
             cc = cc * torch.exp(q[..., None, None].float() * a)  # (B,T,C,M)
         else:
