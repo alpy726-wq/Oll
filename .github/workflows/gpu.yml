@@ -26,7 +26,14 @@ jobs:
         env:
           MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
           MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+          MODAL_TOKEN_SET: ${{ secrets.MODAL_TOKEN_SET }}
         run: |
+          # accept either the two secrets, or the whole "modal token set --token-id ak-.. --token-secret as-.." line
+          if [ -n "$MODAL_TOKEN_SET" ]; then
+            export MODAL_TOKEN_ID=$(echo "$MODAL_TOKEN_SET" | grep -o 'ak-[A-Za-z0-9]*' | head -1)
+            export MODAL_TOKEN_SECRET=$(echo "$MODAL_TOKEN_SET" | grep -o 'as-[A-Za-z0-9]*' | head -1)
+          fi
+          echo "token id present: $([ -n "$MODAL_TOKEN_ID" ] && echo yes || echo no), secret present: $([ -n "$MODAL_TOKEN_SECRET" ] && echo yes || echo no)"
           if [ -n "${{ github.event.inputs.job }}" ]; then JOBS="gpu/jobs/${{ github.event.inputs.job }}"; else
           JOBS=$(git diff --name-only HEAD~1 HEAD -- gpu/jobs | grep '\.json$' || true); fi
           for j in $JOBS; do echo "== $j"; python gpu/launch.py "$j"; done
