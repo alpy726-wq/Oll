@@ -17,3 +17,5 @@ data/text_dl/
 data/talk.train
 data/talk.val
 runs/talk/*.pt
+runs/mind_act*.pt
+runs/mind_logic*.pt

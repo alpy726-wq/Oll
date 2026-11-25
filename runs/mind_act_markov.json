@@ -1,0 +1,57 @@
+{
+ "reference": {
+  "random": -0.8326642153821139,
+  "proportional": -0.0989080393454144
+ },
+ "curve": [
+  {
+   "update": 0,
+   "episodes_seen": 128,
+   "mean_reward": -1.0678556034712703,
+   "sec": 18.892094135284424
+  },
+  {
+   "update": 25,
+   "episodes_seen": 3328,
+   "mean_reward": -0.6025690489255726,
+   "sec": 115.03844738006592
+  },
+  {
+   "update": 50,
+   "episodes_seen": 6528,
+   "mean_reward": -0.5508520862369373,
+   "sec": 215.5789246559143
+  },
+  {
+   "update": 75,
+   "episodes_seen": 9728,
+   "mean_reward": -0.5115661833132912,
+   "sec": 314.95466017723083
+  },
+  {
+   "update": 100,
+   "episodes_seen": 12928,
+   "mean_reward": -0.495994201514568,
+   "sec": 409.19618129730225
+  },
+  {
+   "update": 125,
+   "episodes_seen": 16128,
+   "mean_reward": -0.4793724174880977,
+   "sec": 505.3090081214905
+  },
+  {
+   "update": 149,
+   "episodes_seen": 19200,
+   "mean_reward": -0.4567818591484647,
+   "sec": 597.3361375331879
+  }
+ ],
+ "env": {
+  "ACT_B": "128",
+  "ACT_LR": "3e-3",
+  "ACT_TAG": "_markov",
+  "ACT_MARKOV": "1",
+  "ACT_MEM0": "0"
+ }
+}

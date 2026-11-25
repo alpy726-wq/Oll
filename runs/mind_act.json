@@ -1,0 +1,24 @@
+{
+ "reference": {
+  "random": -0.8244990158774433,
+  "proportional": -0.10143113953456975
+ },
+ "curve": [
+  {
+   "update": 0,
+   "episodes_seen": 16,
+   "mean_reward": -0.9965310930758088,
+   "sec": 6.7676777839660645
+  },
+  {
+   "update": 1,
+   "episodes_seen": 32,
+   "mean_reward": -0.9197622084125465,
+   "sec": 12.125431537628174
+  }
+ ],
+ "env": {
+  "ACT_B": "16",
+  "ACT_CRITIC": "1"
+ }
+}
