@@ -27,6 +27,8 @@ ap.add_argument("--device", default="cpu")
 ap.add_argument("--out", required=True)
 ap.add_argument("--arch", default="machine", choices=["machine", "gpt"])
 ap.add_argument("--d", type=int, default=128)
+ap.add_argument("--mem_orders", default="1", help="comma list, e.g. 1,4,8 (context-keyed memory)")
+ap.add_argument("--RM", type=int, default=512)
 a = ap.parse_args()
 torch.set_num_threads(a.threads)
 torch.manual_seed(a.seed)
@@ -35,7 +37,8 @@ abl = set(x for x in a.ablate.split(",") if x)
 if a.arch == "gpt":
     m = EventGPT(STREAMS_REAL, d=a.d, L=a.L, T=a.T).to(a.device)
 else:
-    m = OneMachine(STREAMS_REAL, R=a.R, L=a.L, M=8, RM=512, seed=a.seed, readout_amp="flatreadout" in abl).to(a.device)
+    m = OneMachine(STREAMS_REAL, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, readout_amp="flatreadout" in abl,
+                   mem_orders=tuple(int(v) for v in a.mem_orders.split(","))).to(a.device)
 with torch.no_grad():
     if "memory" in abl:
         m.mem_beta.zero_(); m.mem_beta.requires_grad = False
