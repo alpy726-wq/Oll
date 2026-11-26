@@ -1,0 +1,6959 @@
+{
+ "args": {
+  "events": 1000000,
+  "minutes": 300.0,
+  "episode": 1024,
+  "U": 128,
+  "W": 384,
+  "lr": 0.001,
+  "attention": "curious",
+  "no_replay": false,
+  "no_learning": false,
+  "anticipate": false,
+  "brain": false,
+  "probe_every": 200000,
+  "R": 96,
+  "L": 3,
+  "RM": 512,
+  "seed": 0,
+  "threads": 4,
+  "out": "runs/life/plain_s0"
+ },
+ "episodes": [
+  {
+   "events": 1024,
+   "source": "weather",
+   "loss": -1.4007896580344164,
+   "reference": -3.6247113595516454,
+   "updates": 5
+  },
+  {
+   "events": 2048,
+   "source": "grid",
+   "loss": 0.07673211100489732,
+   "reference": -0.8863897168232908,
+   "updates": 13
+  },
+  {
+   "events": 3072,
+   "source": "market",
+   "loss": -0.9317974514015682,
+   "reference": -1.4304064888677055,
+   "updates": 21
+  },
+  {
+   "events": 4096,
+   "source": "audio",
+   "loss": -2.187663548925522,
+   "reference": -2.8407465498105156,
+   "updates": 29
+  },
+  {
+   "events": 5120,
+   "source": "text",
+   "loss": 4.656430082628503,
+   "reference": 3.6307212485741753,
+   "updates": 37
+  },
+  {
+   "events": 6144,
+   "source": "body",
+   "loss": -0.7584629033081615,
+   "reference": -2.193857908155715,
+   "updates": 45
+  },
+  {
+   "events": 7168,
+   "source": "audio",
+   "loss": -1.6192579928949442,
+   "reference": -2.8565083142896444,
+   "updates": 53
+  },
+  {
+   "events": 8192,
+   "source": "text",
+   "loss": 4.700238561024889,
+   "reference": 3.2217908764933516,
+   "updates": 61
+  },
+  {
+   "events": 9216,
+   "source": "grid",
+   "loss": 0.1568739372246455,
+   "reference": -0.8393895359612695,
+   "updates": 69
+  },
+  {
+   "events": 10240,
+   "source": "grid",
+   "loss": 0.11282985322168315,
+   "reference": -0.8682232919825018,
+   "updates": 77
+  },
+  {
+   "events": 11264,
+   "source": "audio",
+   "loss": -0.24966150562340772,
+   "reference": 2.753887346960935,
+   "updates": 85
+  },
+  {
+   "events": 12288,
+   "source": "weather",
+   "loss": -0.8698690110817324,
+   "reference": -3.5309756880094945,
+   "updates": 93
+  },
+  {
+   "events": 13312,
+   "source": "weather",
+   "loss": -0.5491043041863577,
+   "reference": -2.2605793033620385,
+   "updates": 101
+  },
+  {
+   "events": 14336,
+   "source": "text",
+   "loss": 4.424158325069584,
+   "reference": 3.1150192919774353,
+   "updates": 109
+  },
+  {
+   "events": 15360,
+   "source": "body",
+   "loss": -0.27923741488484666,
+   "reference": -1.794067933925684,
+   "updates": 117
+  },
+  {
+   "events": 16384,
+   "source": "body",
+   "loss": 0.07229165789431136,
+   "reference": -2.4308045670845475,
+   "updates": 125
+  },
+  {
+   "events": 17408,
+   "source": "text",
+   "loss": 4.363084180979058,
+   "reference": 3.0937509074747918,
+   "updates": 133
+  },
+  {
+   "events": 18432,
+   "source": "weather",
+   "loss": -0.9762813497407024,
+   "reference": -3.3920033844345623,
+   "updates": 141
+  },
+  {
+   "events": 19456,
+   "source": "body",
+   "loss": 0.14049784772970497,
+   "reference": -2.579959867696115,
+   "updates": 149
+  },
+  {
+   "events": 20480,
+   "source": "grid",
+   "loss": 0.5467453717004815,
+   "reference": -0.8824896679061051,
+   "updates": 157
+  },
+  {
+   "events": 21504,
+   "source": "body",
+   "loss": -0.48205316397013576,
+   "reference": -2.9048005164023105,
+   "updates": 165
+  },
+  {
+   "events": 22528,
+   "source": "weather",
+   "loss": -0.4243964290647,
+   "reference": -3.0050629262497788,
+   "updates": 173
+  },
+  {
+   "events": 23552,
+   "source": "weather",
+   "loss": -0.6831905896187891,
+   "reference": -3.0477057426230725,
+   "updates": 181
+  },
+  {
+   "events": 24576,
+   "source": "grid",
+   "loss": 0.43995852924126666,
+   "reference": -0.8796032513636102,
+   "updates": 189
+  },
+  {
+   "events": 25600,
+   "source": "text",
+   "loss": 4.340981951449066,
+   "reference": 3.117480317449929,
+   "updates": 197
+  },
+  {
+   "events": 26624,
+   "source": "text",
+   "loss": 4.204391260980628,
+   "reference": 3.0610110185031187,
+   "updates": 205
+  },
+  {
+   "events": 27648,
+   "source": "grid",
+   "loss": 0.5770115795853599,
+   "reference": -0.9820665525351802,
+   "updates": 213
+  },
+  {
+   "events": 28672,
+   "source": "body",
+   "loss": 0.6177595669028619,
+   "reference": -2.892606606702173,
+   "updates": 221
+  },
+  {
+   "events": 29696,
+   "source": "text",
+   "loss": 4.229227157542482,
+   "reference": 3.2298817091903715,
+   "updates": 229
+  },
+  {
+   "events": 30720,
+   "source": "market",
+   "loss": -0.8882635565541932,
+   "reference": -1.511410230414748,
+   "updates": 237
+  },
+  {
+   "events": 31744,
+   "source": "text",
+   "loss": 4.117254399810918,
+   "reference": 3.1782749342846444,
+   "updates": 245
+  },
+  {
+   "events": 32768,
+   "source": "weather",
+   "loss": -0.887142694250997,
+   "reference": -3.155552947549737,
+   "updates": 253
+  },
+  {
+   "events": 33792,
+   "source": "text",
+   "loss": 3.9805448001716286,
+   "reference": 3.074663358207796,
+   "updates": 261
+  },
+  {
+   "events": 34816,
+   "source": "weather",
+   "loss": -0.830737215320255,
+   "reference": -2.545524254546536,
+   "updates": 269
+  },
+  {
+   "events": 35840,
+   "source": "audio",
+   "loss": 0.3678978620462203,
+   "reference": 0.3921852051713317,
+   "updates": 277
+  },
+  {
+   "events": 36864,
+   "source": "weather",
+   "loss": -0.20199741517035363,
+   "reference": -2.6156619283656055,
+   "updates": 285
+  },
+  {
+   "events": 37888,
+   "source": "market",
+   "loss": -0.8942257140547554,
+   "reference": -1.4638485306640074,
+   "updates": 293
+  },
+  {
+   "events": 38912,
+   "source": "body",
+   "loss": 0.35166723943370926,
+   "reference": -2.697641824152643,
+   "updates": 301
+  },
+  {
+   "events": 39936,
+   "source": "text",
+   "loss": 3.971061996766366,
+   "reference": 3.1891118644526117,
+   "updates": 309
+  },
+  {
+   "events": 40960,
+   "source": "text",
+   "loss": 3.8744068688247353,
+   "reference": 3.2580899367144243,
+   "updates": 317
+  },
+  {
+   "events": 41984,
+   "source": "text",
+   "loss": 3.7492868661647663,
+   "reference": 3.1368634426383815,
+   "updates": 325
+  },
+  {
+   "events": 43008,
+   "source": "market",
+   "loss": -1.0843026180600646,
+   "reference": -1.605505152564929,
+   "updates": 333
+  },
+  {
+   "events": 44032,
+   "source": "audio",
+   "loss": -0.3552927745320176,
+   "reference": -0.8299182388825939,
+   "updates": 341
+  },
+  {
+   "events": 45056,
+   "source": "text",
+   "loss": 3.8962783828610554,
+   "reference": 3.119327492682168,
+   "updates": 349
+  },
+  {
+   "events": 46080,
+   "source": "grid",
+   "loss": 1.065266045744977,
+   "reference": -0.9448486707298319,
+   "updates": 357
+  },
+  {
+   "events": 47104,
+   "source": "market",
+   "loss": -0.7229272533973585,
+   "reference": -1.2541098998027986,
+   "updates": 365
+  },
+  {
+   "events": 48128,
+   "source": "text",
+   "loss": 3.8604181349510327,
+   "reference": 3.1327205734492214,
+   "updates": 373
+  },
+  {
+   "events": 49152,
+   "source": "text",
+   "loss": 3.658697437029332,
+   "reference": 3.153656859308925,
+   "updates": 381
+  },
+  {
+   "events": 50176,
+   "source": "market",
+   "loss": -0.912021438202828,
+   "reference": -1.202171305069583,
+   "updates": 389
+  },
+  {
+   "events": 51200,
+   "source": "body",
+   "loss": -0.46216066111469445,
+   "reference": -2.7367083204481704,
+   "updates": 397
+  },
+  {
+   "events": 52224,
+   "source": "body",
+   "loss": 0.3742671077392288,
+   "reference": -2.691559335681958,
+   "updates": 405
+  },
+  {
+   "events": 53248,
+   "source": "grid",
+   "loss": 0.5407781441709858,
+   "reference": -0.8705060431549256,
+   "updates": 413
+  },
+  {
+   "events": 54272,
+   "source": "grid",
+   "loss": 0.36552185703999385,
+   "reference": -0.8529742065208551,
+   "updates": 421
+  },
+  {
+   "events": 55296,
+   "source": "grid",
+   "loss": 0.32053212645308804,
+   "reference": -0.9183417724848358,
+   "updates": 429
+  },
+  {
+   "events": 56320,
+   "source": "body",
+   "loss": -0.06821846203706627,
+   "reference": 0.40944551446939464,
+   "updates": 437
+  },
+  {
+   "events": 57344,
+   "source": "text",
+   "loss": 3.8454926269478165,
+   "reference": 3.16986208863312,
+   "updates": 445
+  },
+  {
+   "events": 58368,
+   "source": "audio",
+   "loss": -1.9339505622665456,
+   "reference": -1.2342589167987723,
+   "updates": 453
+  },
+  {
+   "events": 59392,
+   "source": "market",
+   "loss": -1.030693658162761,
+   "reference": -1.4215485200224447,
+   "updates": 461
+  },
+  {
+   "events": 60416,
+   "source": "body",
+   "loss": 0.01879169835842731,
+   "reference": -2.1544187283126783,
+   "updates": 469
+  },
+  {
+   "events": 61440,
+   "source": "audio",
+   "loss": 0.24221823848779422,
+   "reference": 0.15840712549590105,
+   "updates": 477
+  },
+  {
+   "events": 62464,
+   "source": "text",
+   "loss": 3.6501640482456423,
+   "reference": 3.148240499684939,
+   "updates": 485
+  },
+  {
+   "events": 63488,
+   "source": "body",
+   "loss": 0.34208395297548577,
+   "reference": -2.6394521265392408,
+   "updates": 493
+  },
+  {
+   "events": 64512,
+   "source": "grid",
+   "loss": 0.15523395444233756,
+   "reference": -1.0355977699720982,
+   "updates": 501
+  },
+  {
+   "events": 65536,
+   "source": "market",
+   "loss": -0.9756691777436117,
+   "reference": -1.50650788193613,
+   "updates": 509
+  },
+  {
+   "events": 66560,
+   "source": "grid",
+   "loss": 0.1271862209621304,
+   "reference": -1.045479573680143,
+   "updates": 517
+  },
+  {
+   "events": 67584,
+   "source": "text",
+   "loss": 3.5698138121515512,
+   "reference": 3.1042215355750495,
+   "updates": 525
+  },
+  {
+   "events": 68608,
+   "source": "market",
+   "loss": -0.9951696694029124,
+   "reference": -1.4628631845507925,
+   "updates": 533
+  },
+  {
+   "events": 69632,
+   "source": "text",
+   "loss": 3.4432989762863144,
+   "reference": 3.088472794467851,
+   "updates": 541
+  },
+  {
+   "events": 70656,
+   "source": "text",
+   "loss": 3.3279877555323765,
+   "reference": 3.068222322331188,
+   "updates": 549
+  },
+  {
+   "events": 71680,
+   "source": "grid",
+   "loss": 0.4812439410402476,
+   "reference": -1.079647319187065,
+   "updates": 557
+  },
+  {
+   "events": 72704,
+   "source": "body",
+   "loss": 0.011414940516260685,
+   "reference": -1.8983282180864198,
+   "updates": 565
+  },
+  {
+   "events": 73728,
+   "source": "grid",
+   "loss": 0.23212549830032003,
+   "reference": -0.9305849286979014,
+   "updates": 573
+  },
+  {
+   "events": 74752,
+   "source": "body",
+   "loss": 0.361499481209421,
+   "reference": -1.9058682863538703,
+   "updates": 581
+  },
+  {
+   "events": 75776,
+   "source": "audio",
+   "loss": 0.1417902240850708,
+   "reference": -0.2886700393955035,
+   "updates": 589
+  },
+  {
+   "events": 76800,
+   "source": "text",
+   "loss": 3.5495191912923474,
+   "reference": 3.0632670030140705,
+   "updates": 597
+  },
+  {
+   "events": 77824,
+   "source": "text",
+   "loss": 3.3066406355355866,
+   "reference": 3.0449331897785887,
+   "updates": 605
+  },
+  {
+   "events": 78848,
+   "source": "grid",
+   "loss": 0.2990278934830286,
+   "reference": -0.8850459414467767,
+   "updates": 613
+  },
+  {
+   "events": 79872,
+   "source": "text",
+   "loss": 3.375929248169996,
+   "reference": 3.0488334366742764,
+   "updates": 621
+  },
+  {
+   "events": 80896,
+   "source": "market",
+   "loss": -1.155775707249859,
+   "reference": -1.591718520348189,
+   "updates": 629
+  },
+  {
+   "events": 81920,
+   "source": "body",
+   "loss": -0.0965920062733403,
+   "reference": -2.726829843058349,
+   "updates": 637
+  },
+  {
+   "events": 82944,
+   "source": "body",
+   "loss": 0.4688872985374246,
+   "reference": -2.537010974249469,
+   "updates": 645
+  },
+  {
+   "events": 83968,
+   "source": "market",
+   "loss": -0.8254806337417904,
+   "reference": -1.2705938433578894,
+   "updates": 653
+  },
+  {
+   "events": 84992,
+   "source": "grid",
+   "loss": -0.09227360837485321,
+   "reference": -1.031625797123702,
+   "updates": 661
+  },
+  {
+   "events": 86016,
+   "source": "grid",
+   "loss": -0.12097208630552814,
+   "reference": -0.9811420340934955,
+   "updates": 669
+  },
+  {
+   "events": 87040,
+   "source": "text",
+   "loss": 3.366164551815018,
+   "reference": 3.0850937831720944,
+   "updates": 677
+  },
+  {
+   "events": 88064,
+   "source": "grid",
+   "loss": 0.4189375442543337,
+   "reference": -0.9900987736545364,
+   "updates": 685
+  },
+  {
+   "events": 89088,
+   "source": "body",
+   "loss": -0.7882868287898077,
+   "reference": 4.433042310167894,
+   "updates": 693
+  },
+  {
+   "events": 90112,
+   "source": "text",
+   "loss": 3.429286853526719,
+   "reference": 3.029475613631403,
+   "updates": 701
+  },
+  {
+   "events": 91136,
+   "source": "body",
+   "loss": -0.06255792866795673,
+   "reference": -2.591081935346117,
+   "updates": 709
+  },
+  {
+   "events": 92160,
+   "source": "body",
+   "loss": 0.3426224389393582,
+   "reference": -2.6050911057293025,
+   "updates": 717
+  },
+  {
+   "events": 93184,
+   "source": "text",
+   "loss": 3.556283404235728,
+   "reference": 3.120105209065183,
+   "updates": 725
+  },
+  {
+   "events": 94208,
+   "source": "market",
+   "loss": -1.0194966620151718,
+   "reference": -1.2087342700221353,
+   "updates": 733
+  },
+  {
+   "events": 95232,
+   "source": "market",
+   "loss": -1.1520773456941242,
+   "reference": -1.4216149547103536,
+   "updates": 741
+  },
+  {
+   "events": 96256,
+   "source": "audio",
+   "loss": -0.9849053068560352,
+   "reference": -1.020727963293086,
+   "updates": 749
+  },
+  {
+   "events": 97280,
+   "source": "audio",
+   "loss": -1.5663890222203918,
+   "reference": -1.137115590418387,
+   "updates": 757
+  },
+  {
+   "events": 98304,
+   "source": "audio",
+   "loss": 0.5063941440497501,
+   "reference": 0.7629935261576574,
+   "updates": 765
+  },
+  {
+   "events": 99328,
+   "source": "text",
+   "loss": 3.425717896549031,
+   "reference": 3.0914001002568607,
+   "updates": 773
+  },
+  {
+   "events": 100352,
+   "source": "grid",
+   "loss": 0.5684749762717445,
+   "reference": -0.8679597915753334,
+   "updates": 781
+  },
+  {
+   "events": 101376,
+   "source": "weather",
+   "loss": -0.38375412157256505,
+   "reference": -2.638480496362045,
+   "updates": 789
+  },
+  {
+   "events": 102400,
+   "source": "grid",
+   "loss": 0.6305322841917587,
+   "reference": -0.9372385114754735,
+   "updates": 797
+  },
+  {
+   "events": 103424,
+   "source": "text",
+   "loss": 3.431854215799831,
+   "reference": 3.144513987075908,
+   "updates": 805
+  },
+  {
+   "events": 104448,
+   "source": "market",
+   "loss": -1.0736884230486794,
+   "reference": -1.505588592247011,
+   "updates": 813
+  },
+  {
+   "events": 105472,
+   "source": "body",
+   "loss": 0.1396147571504116,
+   "reference": -2.3628056092308842,
+   "updates": 821
+  },
+  {
+   "events": 106496,
+   "source": "body",
+   "loss": -0.13675842433895014,
+   "reference": -2.6941848875395995,
+   "updates": 829
+  },
+  {
+   "events": 107520,
+   "source": "text",
+   "loss": 3.499570300686173,
+   "reference": 3.092516278745548,
+   "updates": 837
+  },
+  {
+   "events": 108544,
+   "source": "weather",
+   "loss": -0.5642492707806923,
+   "reference": -2.8545043097015887,
+   "updates": 845
+  },
+  {
+   "events": 109568,
+   "source": "market",
+   "loss": -1.0964310284047087,
+   "reference": -1.4624041302105248,
+   "updates": 853
+  },
+  {
+   "events": 110592,
+   "source": "market",
+   "loss": -1.2766845902992827,
+   "reference": -1.5897824239280642,
+   "updates": 861
+  },
+  {
+   "events": 111616,
+   "source": "market",
+   "loss": -1.0118095637872102,
+   "reference": -1.2724730317002637,
+   "updates": 869
+  },
+  {
+   "events": 112640,
+   "source": "text",
+   "loss": 3.3496238307561725,
+   "reference": 3.045244843507739,
+   "updates": 877
+  },
+  {
+   "events": 113664,
+   "source": "body",
+   "loss": 0.4366654521814439,
+   "reference": -2.342095461477323,
+   "updates": 885
+  },
+  {
+   "events": 114688,
+   "source": "text",
+   "loss": 3.261323473532684,
+   "reference": 3.0843981549567343,
+   "updates": 893
+  },
+  {
+   "events": 115712,
+   "source": "market",
+   "loss": -1.0823630017825963,
+   "reference": -1.2108006890268415,
+   "updates": 901
+  },
+  {
+   "events": 116736,
+   "source": "body",
+   "loss": -0.859754783975724,
+   "reference": -2.5581039746292706,
+   "updates": 909
+  },
+  {
+   "events": 117760,
+   "source": "market",
+   "loss": -1.207779857630726,
+   "reference": -1.4214887725716594,
+   "updates": 917
+  },
+  {
+   "events": 118784,
+   "source": "market",
+   "loss": -1.2002161051182156,
+   "reference": -1.5048437019679335,
+   "updates": 925
+  },
+  {
+   "events": 119808,
+   "source": "body",
+   "loss": -0.5624801130809658,
+   "reference": -2.4085893517604715,
+   "updates": 933
+  },
+  {
+   "events": 120832,
+   "source": "body",
+   "loss": 0.14097428548188873,
+   "reference": -2.7032229852922947,
+   "updates": 941
+  },
+  {
+   "events": 121856,
+   "source": "text",
+   "loss": 3.297408731887117,
+   "reference": 3.0695768008714883,
+   "updates": 949
+  },
+  {
+   "events": 122880,
+   "source": "audio",
+   "loss": -0.22901300838407224,
+   "reference": -0.7340740267630809,
+   "updates": 957
+  },
+  {
+   "events": 123904,
+   "source": "text",
+   "loss": 3.2549114930443466,
+   "reference": 3.0701344356876015,
+   "updates": 965
+  },
+  {
+   "events": 124928,
+   "source": "body",
+   "loss": -0.07310671084339049,
+   "reference": -2.5813192869057686,
+   "updates": 973
+  },
+  {
+   "events": 125952,
+   "source": "body",
+   "loss": 0.5989648694785501,
+   "reference": -2.602132911599436,
+   "updates": 981
+  },
+  {
+   "events": 126976,
+   "source": "market",
+   "loss": -1.1009434278621484,
+   "reference": -1.4620914902946207,
+   "updates": 989
+  },
+  {
+   "events": 128000,
+   "source": "weather",
+   "loss": -1.0198221405016739,
+   "reference": -2.876868885469166,
+   "updates": 997
+  },
+  {
+   "events": 129024,
+   "source": "text",
+   "loss": 3.328093071701005,
+   "reference": 3.072067434680656,
+   "updates": 1005
+  },
+  {
+   "events": 130048,
+   "source": "weather",
+   "loss": -1.0610748811877784,
+   "reference": -3.152091248009428,
+   "updates": 1013
+  },
+  {
+   "events": 131072,
+   "source": "weather",
+   "loss": -0.7897914994260873,
+   "reference": -3.274545668557479,
+   "updates": 1021
+  },
+  {
+   "events": 132096,
+   "source": "weather",
+   "loss": -0.3273471244672237,
+   "reference": -2.8125190446103026,
+   "updates": 1029
+  },
+  {
+   "events": 133120,
+   "source": "market",
+   "loss": -1.268050304676791,
+   "reference": -1.5887000681446557,
+   "updates": 1037
+  },
+  {
+   "events": 134144,
+   "source": "body",
+   "loss": -1.0749828123180123,
+   "reference": -2.494203461492917,
+   "updates": 1045
+  },
+  {
+   "events": 135168,
+   "source": "body",
+   "loss": -0.12733606861490898,
+   "reference": -2.142464860113825,
+   "updates": 1053
+  },
+  {
+   "events": 136192,
+   "source": "market",
+   "loss": -1.014287113184082,
+   "reference": -1.2734447422944413,
+   "updates": 1061
+  },
+  {
+   "events": 137216,
+   "source": "text",
+   "loss": 3.2421276730601676,
+   "reference": 3.0805118231176567,
+   "updates": 1069
+  },
+  {
+   "events": 138240,
+   "source": "weather",
+   "loss": -0.7376505552624621,
+   "reference": -2.859755793857722,
+   "updates": 1077
+  },
+  {
+   "events": 139264,
+   "source": "weather",
+   "loss": -0.09565742094912366,
+   "reference": -2.8640881314167244,
+   "updates": 1085
+  },
+  {
+   "events": 140288,
+   "source": "body",
+   "loss": 1.0917535347815601,
+   "reference": -2.66164882708907,
+   "updates": 1093
+  },
+  {
+   "events": 141312,
+   "source": "grid",
+   "loss": 0.3642576911929609,
+   "reference": -1.0029622192489531,
+   "updates": 1101
+  },
+  {
+   "events": 142336,
+   "source": "grid",
+   "loss": -0.07760288949492633,
+   "reference": -0.8705248545245292,
+   "updates": 1109
+  },
+  {
+   "events": 143360,
+   "source": "market",
+   "loss": -1.164408909931126,
+   "reference": -1.2118809773348849,
+   "updates": 1117
+  },
+  {
+   "events": 144384,
+   "source": "body",
+   "loss": -0.9683623667562244,
+   "reference": -2.2121037842203553,
+   "updates": 1125
+  },
+  {
+   "events": 145408,
+   "source": "body",
+   "loss": -1.03701226924386,
+   "reference": -0.5138172759027018,
+   "updates": 1133
+  },
+  {
+   "events": 146432,
+   "source": "grid",
+   "loss": 0.18978470692263727,
+   "reference": -0.8952868414725468,
+   "updates": 1141
+  },
+  {
+   "events": 147456,
+   "source": "body",
+   "loss": -0.30426036564008996,
+   "reference": -2.316155765479072,
+   "updates": 1149
+  },
+  {
+   "events": 148480,
+   "source": "market",
+   "loss": -1.2369986573512506,
+   "reference": -1.4214053085934306,
+   "updates": 1157
+  },
+  {
+   "events": 149504,
+   "source": "market",
+   "loss": -1.2483423494174986,
+   "reference": -1.5044322564957382,
+   "updates": 1165
+  },
+  {
+   "events": 150528,
+   "source": "text",
+   "loss": 3.1295721897040494,
+   "reference": 3.017982757467348,
+   "updates": 1173
+  },
+  {
+   "events": 151552,
+   "source": "weather",
+   "loss": -1.3060802509252767,
+   "reference": -3.283785418608887,
+   "updates": 1181
+  },
+  {
+   "events": 152576,
+   "source": "weather",
+   "loss": -0.4357998112968744,
+   "reference": -2.7774226810880482,
+   "updates": 1189
+  },
+  {
+   "events": 153600,
+   "source": "text",
+   "loss": 3.4456652362132445,
+   "reference": 3.074218204770296,
+   "updates": 1197
+  },
+  {
+   "events": 154624,
+   "source": "weather",
+   "loss": -0.13722795409296396,
+   "reference": -2.503333513293151,
+   "updates": 1205
+  },
+  {
+   "events": 155648,
+   "source": "market",
+   "loss": -1.167870939969589,
+   "reference": -1.4619129884587692,
+   "updates": 1213
+  },
+  {
+   "events": 156672,
+   "source": "market",
+   "loss": -1.407508196642084,
+   "reference": -1.5881110535430596,
+   "updates": 1221
+  },
+  {
+   "events": 157696,
+   "source": "grid",
+   "loss": -0.08012776715500536,
+   "reference": -0.9048335015767782,
+   "updates": 1229
+  },
+  {
+   "events": 158720,
+   "source": "body",
+   "loss": -0.5981900932742974,
+   "reference": -2.5658841350994517,
+   "updates": 1237
+  },
+  {
+   "events": 159744,
+   "source": "body",
+   "loss": 0.16920724025112577,
+   "reference": -2.480418388698527,
+   "updates": 1245
+  },
+  {
+   "events": 160768,
+   "source": "market",
+   "loss": -1.1062451967529796,
+   "reference": -1.2739576091823088,
+   "updates": 1253
+  },
+  {
+   "events": 161792,
+   "source": "grid",
+   "loss": -0.1589913341264264,
+   "reference": -0.8693609319628107,
+   "updates": 1261
+  },
+  {
+   "events": 162816,
+   "source": "audio",
+   "loss": -1.2930046452770512,
+   "reference": -1.065479814849634,
+   "updates": 1269
+  },
+  {
+   "events": 163840,
+   "source": "text",
+   "loss": 3.3400107673951425,
+   "reference": 3.1607169169552587,
+   "updates": 1277
+  },
+  {
+   "events": 164864,
+   "source": "audio",
+   "loss": -1.6367468473299596,
+   "reference": -1.116599702052763,
+   "updates": 1285
+  },
+  {
+   "events": 165888,
+   "source": "weather",
+   "loss": -0.49993436690147064,
+   "reference": -2.8387051331587227,
+   "updates": 1293
+  },
+  {
+   "events": 166912,
+   "source": "weather",
+   "loss": -0.9558453414642827,
+   "reference": -3.3533679251370527,
+   "updates": 1301
+  },
+  {
+   "events": 167936,
+   "source": "audio",
+   "loss": 1.227497557480774,
+   "reference": 1.4044425998252736,
+   "updates": 1309
+  },
+  {
+   "events": 168960,
+   "source": "grid",
+   "loss": -0.10827650490716678,
+   "reference": -0.8520180260239839,
+   "updates": 1317
+  },
+  {
+   "events": 169984,
+   "source": "text",
+   "loss": 3.2119256840087473,
+   "reference": 3.034858244645914,
+   "updates": 1325
+  },
+  {
+   "events": 171008,
+   "source": "weather",
+   "loss": -1.5920658491215818,
+   "reference": -3.3682999274602197,
+   "updates": 1333
+  },
+  {
+   "events": 172032,
+   "source": "grid",
+   "loss": 0.2448102750399812,
+   "reference": -0.9472613760841805,
+   "updates": 1341
+  },
+  {
+   "events": 173056,
+   "source": "market",
+   "loss": -1.2113565207198462,
+   "reference": -1.2124546237375182,
+   "updates": 1349
+  },
+  {
+   "events": 174080,
+   "source": "grid",
+   "loss": -0.3793195666721658,
+   "reference": -0.9973768581579682,
+   "updates": 1357
+  },
+  {
+   "events": 175104,
+   "source": "market",
+   "loss": -1.3410533122003017,
+   "reference": -1.4213558038696843,
+   "updates": 1365
+  },
+  {
+   "events": 176128,
+   "source": "weather",
+   "loss": -1.6093856221341412,
+   "reference": -3.3615077639029103,
+   "updates": 1373
+  },
+  {
+   "events": 177152,
+   "source": "grid",
+   "loss": 0.0590448867014004,
+   "reference": -0.9805170819566381,
+   "updates": 1381
+  },
+  {
+   "events": 178176,
+   "source": "weather",
+   "loss": -1.6181732162513072,
+   "reference": -3.353477017250145,
+   "updates": 1389
+  },
+  {
+   "events": 179200,
+   "source": "audio",
+   "loss": 0.5636648025547402,
+   "reference": -0.3022019735436162,
+   "updates": 1397
+  },
+  {
+   "events": 180224,
+   "source": "market",
+   "loss": -1.3193053795835112,
+   "reference": -1.504207247757166,
+   "updates": 1405
+  },
+  {
+   "events": 181248,
+   "source": "weather",
+   "loss": -1.2403302249383614,
+   "reference": -3.27466468385673,
+   "updates": 1413
+  },
+  {
+   "events": 182272,
+   "source": "market",
+   "loss": -1.2563964749751904,
+   "reference": -1.4618137318324391,
+   "updates": 1421
+  },
+  {
+   "events": 183296,
+   "source": "market",
+   "loss": -1.47528322789708,
+   "reference": -1.587791413118693,
+   "updates": 1429
+  },
+  {
+   "events": 184320,
+   "source": "audio",
+   "loss": -0.7626814417600656,
+   "reference": -0.8421263907379888,
+   "updates": 1437
+  },
+  {
+   "events": 185344,
+   "source": "market",
+   "loss": -1.1755315598438756,
+   "reference": -1.2742313623572081,
+   "updates": 1445
+  },
+  {
+   "events": 186368,
+   "source": "audio",
+   "loss": -1.3547129427279287,
+   "reference": -0.932898247809805,
+   "updates": 1453
+  },
+  {
+   "events": 187392,
+   "source": "weather",
+   "loss": -0.85394676911028,
+   "reference": -3.2570958047492815,
+   "updates": 1461
+  },
+  {
+   "events": 188416,
+   "source": "audio",
+   "loss": 1.056234610838601,
+   "reference": 0.9070059427731633,
+   "updates": 1469
+  },
+  {
+   "events": 189440,
+   "source": "text",
+   "loss": 3.2247723974869587,
+   "reference": 3.0806136970675215,
+   "updates": 1477
+  },
+  {
+   "events": 190464,
+   "source": "grid",
+   "loss": 0.3608767544060356,
+   "reference": -0.9617880475937933,
+   "updates": 1485
+  },
+  {
+   "events": 191488,
+   "source": "market",
+   "loss": -1.2273266144514992,
+   "reference": -1.2127618406917622,
+   "updates": 1493
+  },
+  {
+   "events": 192512,
+   "source": "market",
+   "loss": -1.3988518249752815,
+   "reference": -1.421327763994488,
+   "updates": 1501
+  },
+  {
+   "events": 193536,
+   "source": "text",
+   "loss": 3.1680206299643032,
+   "reference": 3.1161005538060706,
+   "updates": 1509
+  },
+  {
+   "events": 194560,
+   "source": "weather",
+   "loss": -0.682312435488484,
+   "reference": -3.121181479448834,
+   "updates": 1517
+  },
+  {
+   "events": 195584,
+   "source": "grid",
+   "loss": 0.09301033515191648,
+   "reference": -1.0928827928248377,
+   "updates": 1525
+  },
+  {
+   "events": 196608,
+   "source": "grid",
+   "loss": -0.22467479957231262,
+   "reference": -1.0504567701207654,
+   "updates": 1533
+  },
+  {
+   "events": 197632,
+   "source": "market",
+   "loss": -1.3898644737682844,
+   "reference": -1.5040848212721025,
+   "updates": 1541
+  },
+  {
+   "events": 198656,
+   "source": "text",
+   "loss": 3.013368471234571,
+   "reference": 3.0362772062584575,
+   "updates": 1549
+  },
+  {
+   "events": 199680,
+   "source": "body",
+   "loss": 0.1642175912677999,
+   "reference": -2.428352453655283,
+   "updates": 1557
+  },
+  {
+   "events": 200704,
+   "source": "audio",
+   "loss": 0.26306245213390866,
+   "reference": -0.4548461735696069,
+   "updates": 1565
+  },
+  {
+   "events": 201728,
+   "source": "text",
+   "loss": 3.118307688710047,
+   "reference": 3.0026032698574947,
+   "updates": 1573
+  },
+  {
+   "events": 202752,
+   "source": "text",
+   "loss": 3.152717817341909,
+   "reference": 3.19792337766986,
+   "updates": 1581
+  },
+  {
+   "events": 203776,
+   "source": "weather",
+   "loss": -0.8964593972979742,
+   "reference": -2.911154725261952,
+   "updates": 1589
+  },
+  {
+   "events": 204800,
+   "source": "text",
+   "loss": 3.1401559617370367,
+   "reference": 3.082377178122863,
+   "updates": 1597
+  },
+  {
+   "events": 205824,
+   "source": "text",
+   "loss": 3.01322325997171,
+   "reference": 3.1463023168790474,
+   "updates": 1605
+  },
+  {
+   "events": 206848,
+   "source": "text",
+   "loss": 2.930735988309607,
+   "reference": 3.0600497294094464,
+   "updates": 1613
+  },
+  {
+   "events": 207872,
+   "source": "market",
+   "loss": -1.184952377204354,
+   "reference": -1.4617592564689634,
+   "updates": 1621
+  },
+  {
+   "events": 208896,
+   "source": "weather",
+   "loss": -1.1670709040861311,
+   "reference": -2.92945456064835,
+   "updates": 1629
+  },
+  {
+   "events": 209920,
+   "source": "body",
+   "loss": 0.8100742909475471,
+   "reference": -2.5527924337692527,
+   "updates": 1637
+  },
+  {
+   "events": 210944,
+   "source": "text",
+   "loss": 3.08154232436209,
+   "reference": 3.106409302170785,
+   "updates": 1645
+  },
+  {
+   "events": 211968,
+   "source": "market",
+   "loss": -1.4900820390216722,
+   "reference": -1.5876182062309983,
+   "updates": 1653
+  },
+  {
+   "events": 212992,
+   "source": "weather",
+   "loss": -0.8834682648836747,
+   "reference": -2.8243236400049225,
+   "updates": 1661
+  },
+  {
+   "events": 214016,
+   "source": "weather",
+   "loss": -0.7764033119598821,
+   "reference": -2.9236194001576035,
+   "updates": 1669
+  },
+  {
+   "events": 215040,
+   "source": "text",
+   "loss": 3.2920174036553362,
+   "reference": 3.0814909560614887,
+   "updates": 1677
+  },
+  {
+   "events": 216064,
+   "source": "grid",
+   "loss": 0.10305654479671489,
+   "reference": -0.9264005055538062,
+   "updates": 1685
+  },
+  {
+   "events": 217088,
+   "source": "audio",
+   "loss": -0.6315756909809096,
+   "reference": -0.8244555014359713,
+   "updates": 1693
+  },
+  {
+   "events": 218112,
+   "source": "market",
+   "loss": -1.2368406779346515,
+   "reference": -1.2743783833890427,
+   "updates": 1701
+  },
+  {
+   "events": 219136,
+   "source": "audio",
+   "loss": -1.596112193898989,
+   "reference": -0.953832657888057,
+   "updates": 1709
+  },
+  {
+   "events": 220160,
+   "source": "body",
+   "loss": -0.3553697335240713,
+   "reference": -2.51993001058384,
+   "updates": 1717
+  },
+  {
+   "events": 221184,
+   "source": "weather",
+   "loss": -0.5632187289003241,
+   "reference": -2.994097446610367,
+   "updates": 1725
+  },
+  {
+   "events": 222208,
+   "source": "audio",
+   "loss": -0.37248773108024125,
+   "reference": -0.24700420010000848,
+   "updates": 1733
+  },
+  {
+   "events": 223232,
+   "source": "body",
+   "loss": -0.6820452530306511,
+   "reference": -2.4747013689863384,
+   "updates": 1741
+  },
+  {
+   "events": 224256,
+   "source": "weather",
+   "loss": -0.5093124037784946,
+   "reference": -2.913508192642605,
+   "updates": 1749
+  },
+  {
+   "events": 225280,
+   "source": "body",
+   "loss": -0.15490303702449637,
+   "reference": -2.487338903008485,
+   "updates": 1757
+  },
+  {
+   "events": 226304,
+   "source": "body",
+   "loss": 0.17901220839826237,
+   "reference": -2.4841998032918386,
+   "updates": 1765
+  },
+  {
+   "events": 227328,
+   "source": "weather",
+   "loss": -0.3124836578671193,
+   "reference": -2.7024355568977687,
+   "updates": 1773
+  },
+  {
+   "events": 228352,
+   "source": "audio",
+   "loss": 0.3141317727547528,
+   "reference": -0.1267501686231851,
+   "updates": 1781
+  },
+  {
+   "events": 229376,
+   "source": "text",
+   "loss": 3.352043037855765,
+   "reference": 3.073581099740769,
+   "updates": 1789
+  },
+  {
+   "events": 230400,
+   "source": "grid",
+   "loss": 0.15087305269926787,
+   "reference": -0.7959279719329084,
+   "updates": 1797
+  },
+  {
+   "events": 231424,
+   "source": "market",
+   "loss": -1.2611042305859428,
+   "reference": -1.2129271334935414,
+   "updates": 1805
+  },
+  {
+   "events": 232448,
+   "source": "text",
+   "loss": 3.185409422410885,
+   "reference": 3.1531134613779868,
+   "updates": 1813
+  },
+  {
+   "events": 233472,
+   "source": "grid",
+   "loss": -0.026136808250505794,
+   "reference": -0.9074448995577863,
+   "updates": 1821
+  },
+  {
+   "events": 234496,
+   "source": "grid",
+   "loss": -0.6167051554360796,
+   "reference": -1.1700451120682778,
+   "updates": 1829
+  },
+  {
+   "events": 235520,
+   "source": "grid",
+   "loss": -0.21915259174363655,
+   "reference": -0.9010179304485953,
+   "updates": 1837
+  },
+  {
+   "events": 236544,
+   "source": "text",
+   "loss": 3.3958742299873848,
+   "reference": 3.1724996000366517,
+   "updates": 1845
+  },
+  {
+   "events": 237568,
+   "source": "weather",
+   "loss": -0.7234579169836479,
+   "reference": -2.7290567523755964,
+   "updates": 1853
+  },
+  {
+   "events": 238592,
+   "source": "weather",
+   "loss": -0.9576690637823049,
+   "reference": -3.1167005553682436,
+   "updates": 1861
+  },
+  {
+   "events": 239616,
+   "source": "market",
+   "loss": -1.3587567749241316,
+   "reference": -1.4213122289024265,
+   "updates": 1869
+  },
+  {
+   "events": 240640,
+   "source": "grid",
+   "loss": 0.0038539388783647155,
+   "reference": -0.49234370190734017,
+   "updates": 1877
+  },
+  {
+   "events": 241664,
+   "source": "grid",
+   "loss": 0.12300109387695102,
+   "reference": -0.7272033870164367,
+   "updates": 1885
+  },
+  {
+   "events": 242688,
+   "source": "weather",
+   "loss": -0.9110665628197978,
+   "reference": -3.251687173038975,
+   "updates": 1893
+  },
+  {
+   "events": 243712,
+   "source": "body",
+   "loss": -0.536865161760602,
+   "reference": -2.5843487018818125,
+   "updates": 1901
+  },
+  {
+   "events": 244736,
+   "source": "body",
+   "loss": 0.21300176454542452,
+   "reference": -2.2489008137690445,
+   "updates": 1909
+  },
+  {
+   "events": 245760,
+   "source": "body",
+   "loss": 0.30758035300550546,
+   "reference": -2.3854437008000557,
+   "updates": 1917
+  },
+  {
+   "events": 246784,
+   "source": "grid",
+   "loss": 0.5471355311071591,
+   "reference": -0.512874004506197,
+   "updates": 1925
+  },
+  {
+   "events": 247808,
+   "source": "weather",
+   "loss": -1.0237367395891823,
+   "reference": -3.0116853359355797,
+   "updates": 1933
+  },
+  {
+   "events": 248832,
+   "source": "weather",
+   "loss": -0.970622969782653,
+   "reference": -3.295789077506808,
+   "updates": 1941
+  },
+  {
+   "events": 249856,
+   "source": "market",
+   "loss": -1.3614121380326054,
+   "reference": -1.504018387003176,
+   "updates": 1949
+  },
+  {
+   "events": 250880,
+   "source": "market",
+   "loss": -1.3623178964955969,
+   "reference": -1.4617295594646835,
+   "updates": 1957
+  },
+  {
+   "events": 251904,
+   "source": "market",
+   "loss": -1.544365985784907,
+   "reference": -1.5875244209703565,
+   "updates": 1965
+  },
+  {
+   "events": 252928,
+   "source": "body",
+   "loss": -1.299230179516215,
+   "reference": -2.3561611340043305,
+   "updates": 1973
+  },
+  {
+   "events": 253952,
+   "source": "body",
+   "loss": -0.45360396032808126,
+   "reference": -1.2614663894649016,
+   "updates": 1981
+  },
+  {
+   "events": 254976,
+   "source": "market",
+   "loss": -1.2338650383944891,
+   "reference": -1.2744576058989676,
+   "updates": 1989
+  },
+  {
+   "events": 256000,
+   "source": "market",
+   "loss": -1.274767666020125,
+   "reference": -1.2130162896611991,
+   "updates": 1997
+  },
+  {
+   "events": 257024,
+   "source": "grid",
+   "loss": -0.06448415331874457,
+   "reference": -0.4853488868500401,
+   "updates": 2005
+  },
+  {
+   "events": 258048,
+   "source": "market",
+   "loss": -1.4025199876998613,
+   "reference": -1.4213037179462675,
+   "updates": 2013
+  },
+  {
+   "events": 259072,
+   "source": "weather",
+   "loss": -1.0515375037674914,
+   "reference": -2.8019443618386703,
+   "updates": 2021
+  },
+  {
+   "events": 260096,
+   "source": "body",
+   "loss": -0.6393261111827542,
+   "reference": -2.582174092180542,
+   "updates": 2029
+  },
+  {
+   "events": 261120,
+   "source": "weather",
+   "loss": -0.7514579186913579,
+   "reference": -2.6892088750429735,
+   "updates": 2037
+  },
+  {
+   "events": 262144,
+   "source": "grid",
+   "loss": 0.195017098248627,
+   "reference": -0.6797800683246775,
+   "updates": 2045
+  },
+  {
+   "events": 263168,
+   "source": "weather",
+   "loss": -1.0132444546479746,
+   "reference": -3.2395627626869388,
+   "updates": 2053
+  },
+  {
+   "events": 264192,
+   "source": "weather",
+   "loss": -1.2279843476408132,
+   "reference": -3.3586182581042427,
+   "updates": 2061
+  },
+  {
+   "events": 265216,
+   "source": "text",
+   "loss": 3.393241764162667,
+   "reference": 3.1156695596240658,
+   "updates": 2069
+  },
+  {
+   "events": 266240,
+   "source": "grid",
+   "loss": 0.22350011201865527,
+   "reference": -0.6422027574253301,
+   "updates": 2077
+  },
+  {
+   "events": 267264,
+   "source": "weather",
+   "loss": -1.2597205611157278,
+   "reference": -3.193207855054947,
+   "updates": 2085
+  },
+  {
+   "events": 268288,
+   "source": "audio",
+   "loss": 0.3508599237254657,
+   "reference": -0.5533667729838821,
+   "updates": 2093
+  },
+  {
+   "events": 269312,
+   "source": "body",
+   "loss": -0.6349384125305733,
+   "reference": -2.439480598245643,
+   "updates": 2101
+  },
+  {
+   "events": 270336,
+   "source": "text",
+   "loss": 3.4535107596602757,
+   "reference": 3.1639025910513743,
+   "updates": 2109
+  },
+  {
+   "events": 271360,
+   "source": "grid",
+   "loss": 0.15889704423375406,
+   "reference": -0.6694503024906404,
+   "updates": 2117
+  },
+  {
+   "events": 272384,
+   "source": "grid",
+   "loss": -0.12809888586423313,
+   "reference": -0.574189009774094,
+   "updates": 2125
+  },
+  {
+   "events": 273408,
+   "source": "body",
+   "loss": -0.7378168651389387,
+   "reference": -2.428993878432097,
+   "updates": 2133
+  },
+  {
+   "events": 274432,
+   "source": "grid",
+   "loss": 0.035879442691339136,
+   "reference": -0.5936614430896731,
+   "updates": 2141
+  },
+  {
+   "events": 275456,
+   "source": "weather",
+   "loss": -1.2031108993551243,
+   "reference": -3.152371665242368,
+   "updates": 2149
+  },
+  {
+   "events": 276480,
+   "source": "body",
+   "loss": 0.061018823255380994,
+   "reference": -2.267099539845214,
+   "updates": 2157
+  },
+  {
+   "events": 277504,
+   "source": "weather",
+   "loss": -0.8423452679735419,
+   "reference": -3.164847482684247,
+   "updates": 2165
+  },
+  {
+   "events": 278528,
+   "source": "text",
+   "loss": 3.3812825414934196,
+   "reference": 3.080915358802989,
+   "updates": 2173
+  },
+  {
+   "events": 279552,
+   "source": "grid",
+   "loss": 0.13411864006047836,
+   "reference": -0.5696445990158093,
+   "updates": 2181
+  },
+  {
+   "events": 280576,
+   "source": "body",
+   "loss": -1.1714558466751441,
+   "reference": -2.7763662467253036,
+   "updates": 2189
+  },
+  {
+   "events": 281600,
+   "source": "audio",
+   "loss": -1.6157795383651319,
+   "reference": -0.9628545627855232,
+   "updates": 2197
+  },
+  {
+   "events": 282624,
+   "source": "audio",
+   "loss": -1.3440078045387054,
+   "reference": -0.9548588657295248,
+   "updates": 2205
+  },
+  {
+   "events": 283648,
+   "source": "market",
+   "loss": -1.463508789865955,
+   "reference": -1.503982387844932,
+   "updates": 2213
+  },
+  {
+   "events": 284672,
+   "source": "body",
+   "loss": -1.134166591416374,
+   "reference": -2.197389855891769,
+   "updates": 2221
+  },
+  {
+   "events": 285696,
+   "source": "audio",
+   "loss": 0.6833064288118749,
+   "reference": 0.31713388665462444,
+   "updates": 2229
+  },
+  {
+   "events": 286720,
+   "source": "grid",
+   "loss": 0.14968047272179774,
+   "reference": -0.18949599469863213,
+   "updates": 2237
+  },
+  {
+   "events": 287744,
+   "source": "market",
+   "loss": -1.3628375376301847,
+   "reference": -1.4617134277393664,
+   "updates": 2245
+  },
+  {
+   "events": 288768,
+   "source": "weather",
+   "loss": -0.9734160481718845,
+   "reference": -3.0122128355410256,
+   "updates": 2253
+  },
+  {
+   "events": 289792,
+   "source": "weather",
+   "loss": -1.201733084015359,
+   "reference": -3.23765198749607,
+   "updates": 2261
+  },
+  {
+   "events": 290816,
+   "source": "grid",
+   "loss": 0.20053169410152805,
+   "reference": -0.5565688654755482,
+   "updates": 2269
+  },
+  {
+   "events": 291840,
+   "source": "grid",
+   "loss": 0.2699339394416427,
+   "reference": -0.5483720786401646,
+   "updates": 2277
+  },
+  {
+   "events": 292864,
+   "source": "market",
+   "loss": -1.5564904383904832,
+   "reference": -1.5874736605026816,
+   "updates": 2285
+  },
+  {
+   "events": 293888,
+   "source": "market",
+   "loss": -1.3220562369623394,
+   "reference": -1.274500372379091,
+   "updates": 2293
+  },
+  {
+   "events": 294912,
+   "source": "body",
+   "loss": -1.0051086074664966,
+   "reference": -2.4820410385495553,
+   "updates": 2301
+  },
+  {
+   "events": 295936,
+   "source": "audio",
+   "loss": 0.0716154798228672,
+   "reference": -0.6863830503594118,
+   "updates": 2309
+  },
+  {
+   "events": 296960,
+   "source": "body",
+   "loss": -0.646535167114962,
+   "reference": -2.33503350318966,
+   "updates": 2317
+  },
+  {
+   "events": 297984,
+   "source": "market",
+   "loss": -1.2675512630204366,
+   "reference": -1.2130644443454455,
+   "updates": 2325
+  },
+  {
+   "events": 299008,
+   "source": "body",
+   "loss": -1.0173172928234635,
+   "reference": -2.412863652322178,
+   "updates": 2333
+  },
+  {
+   "events": 300032,
+   "source": "weather",
+   "loss": -1.200675319588072,
+   "reference": -3.4238936301548377,
+   "updates": 2341
+  },
+  {
+   "events": 301056,
+   "source": "audio",
+   "loss": -1.234188804990481,
+   "reference": -0.9761916069303398,
+   "updates": 2349
+  },
+  {
+   "events": 302080,
+   "source": "audio",
+   "loss": -2.007016844865575,
+   "reference": -1.0526128999730135,
+   "updates": 2357
+  },
+  {
+   "events": 303104,
+   "source": "audio",
+   "loss": -1.3651054196088808,
+   "reference": -1.0560646816252708,
+   "updates": 2365
+  },
+  {
+   "events": 304128,
+   "source": "audio",
+   "loss": 0.10692962933035233,
+   "reference": -0.39599302968921524,
+   "updates": 2373
+  },
+  {
+   "events": 305152,
+   "source": "text",
+   "loss": 3.2048052877216833,
+   "reference": 3.0675422593761876,
+   "updates": 2381
+  },
+  {
+   "events": 306176,
+   "source": "weather",
+   "loss": -0.9570366035219422,
+   "reference": -2.8747422830788962,
+   "updates": 2389
+  },
+  {
+   "events": 307200,
+   "source": "audio",
+   "loss": 0.43762469401008275,
+   "reference": -0.7201211956025935,
+   "updates": 2397
+  },
+  {
+   "events": 308224,
+   "source": "text",
+   "loss": 3.1762388643692248,
+   "reference": 3.215386482081733,
+   "updates": 2405
+  },
+  {
+   "events": 309248,
+   "source": "audio",
+   "loss": -1.4602278745740023,
+   "reference": -1.1234129209998513,
+   "updates": 2413
+  },
+  {
+   "events": 310272,
+   "source": "audio",
+   "loss": -1.9240238939564733,
+   "reference": -1.1767819029996869,
+   "updates": 2421
+  },
+  {
+   "events": 311296,
+   "source": "audio",
+   "loss": -0.4804317841462762,
+   "reference": -0.4982989682618412,
+   "updates": 2429
+  },
+  {
+   "events": 312320,
+   "source": "body",
+   "loss": -0.9911879614744521,
+   "reference": -2.472442934567699,
+   "updates": 2437
+  },
+  {
+   "events": 313344,
+   "source": "body",
+   "loss": -0.07185741228374809,
+   "reference": -2.1838206259866273,
+   "updates": 2445
+  },
+  {
+   "events": 314368,
+   "source": "text",
+   "loss": 3.2028276304190513,
+   "reference": 3.0889610372299336,
+   "updates": 2453
+  },
+  {
+   "events": 315392,
+   "source": "weather",
+   "loss": -0.8832515256627858,
+   "reference": -2.7985386874339695,
+   "updates": 2461
+  },
+  {
+   "events": 316416,
+   "source": "weather",
+   "loss": -0.4788322343601976,
+   "reference": -2.4044685030013038,
+   "updates": 2469
+  },
+  {
+   "events": 317440,
+   "source": "text",
+   "loss": 3.3866393543721642,
+   "reference": 3.1423724963871376,
+   "updates": 2477
+  },
+  {
+   "events": 318464,
+   "source": "weather",
+   "loss": -1.158098706833698,
+   "reference": -3.2116814628610144,
+   "updates": 2485
+  },
+  {
+   "events": 319488,
+   "source": "text",
+   "loss": 3.266919448855333,
+   "reference": 3.119720510381226,
+   "updates": 2493
+  },
+  {
+   "events": 320512,
+   "source": "grid",
+   "loss": 0.07415279402653141,
+   "reference": -0.8939116510440724,
+   "updates": 2501
+  },
+  {
+   "events": 321536,
+   "source": "weather",
+   "loss": -1.217714259963941,
+   "reference": -3.3568618330036637,
+   "updates": 2509
+  },
+  {
+   "events": 322560,
+   "source": "grid",
+   "loss": -0.06900347952648644,
+   "reference": -0.661916390774847,
+   "updates": 2517
+  },
+  {
+   "events": 323584,
+   "source": "grid",
+   "loss": -0.17064128723438898,
+   "reference": -0.8419155494460442,
+   "updates": 2525
+  },
+  {
+   "events": 324608,
+   "source": "grid",
+   "loss": -0.03311208739737026,
+   "reference": -0.5469432927929906,
+   "updates": 2533
+  },
+  {
+   "events": 325632,
+   "source": "market",
+   "loss": -1.4750702598807948,
+   "reference": -1.4212990824887242,
+   "updates": 2541
+  },
+  {
+   "events": 326656,
+   "source": "text",
+   "loss": 3.1477115489542484,
+   "reference": 3.133079827809922,
+   "updates": 2549
+  },
+  {
+   "events": 327680,
+   "source": "text",
+   "loss": 3.020109002944082,
+   "reference": 3.1293891697176037,
+   "updates": 2557
+  },
+  {
+   "events": 328704,
+   "source": "weather",
+   "loss": -1.0569048255007658,
+   "reference": -3.21798918095862,
+   "updates": 2565
+  },
+  {
+   "events": 329728,
+   "source": "weather",
+   "loss": -0.49272004632371136,
+   "reference": -2.914790900649561,
+   "updates": 2573
+  },
+  {
+   "events": 330752,
+   "source": "market",
+   "loss": -1.367871980818677,
+   "reference": -1.5039628955937094,
+   "updates": 2581
+  },
+  {
+   "events": 331776,
+   "source": "text",
+   "loss": 3.14218188211089,
+   "reference": 3.159896884872426,
+   "updates": 2589
+  },
+  {
+   "events": 332800,
+   "source": "market",
+   "loss": -1.0736796923110887,
+   "reference": -1.4617046814292813,
+   "updates": 2597
+  },
+  {
+   "events": 333824,
+   "source": "weather",
+   "loss": -1.0429259045441626,
+   "reference": -2.944523584221366,
+   "updates": 2605
+  },
+  {
+   "events": 334848,
+   "source": "grid",
+   "loss": -0.24209159027441274,
+   "reference": -0.9031294506204194,
+   "updates": 2613
+  },
+  {
+   "events": 335872,
+   "source": "market",
+   "loss": -1.5427815351285972,
+   "reference": -1.5874461928978019,
+   "updates": 2621
+  },
+  {
+   "events": 336896,
+   "source": "market",
+   "loss": -1.3285821979825414,
+   "reference": -1.2745234815357183,
+   "updates": 2629
+  },
+  {
+   "events": 337920,
+   "source": "text",
+   "loss": 3.208402586984448,
+   "reference": 3.1065299983996946,
+   "updates": 2637
+  },
+  {
+   "events": 338944,
+   "source": "grid",
+   "loss": 0.28891226794030445,
+   "reference": -0.7066928092625377,
+   "updates": 2645
+  },
+  {
+   "events": 339968,
+   "source": "weather",
+   "loss": -0.8949812005142803,
+   "reference": -2.645539324827712,
+   "updates": 2653
+  },
+  {
+   "events": 340992,
+   "source": "body",
+   "loss": -0.36767581227664436,
+   "reference": -2.70321260268223,
+   "updates": 2661
+  },
+  {
+   "events": 342016,
+   "source": "body",
+   "loss": -0.14122945002077358,
+   "reference": -2.368905313131571,
+   "updates": 2669
+  },
+  {
+   "events": 343040,
+   "source": "text",
+   "loss": 3.214194609055994,
+   "reference": 3.1363757895835613,
+   "updates": 2677
+  },
+  {
+   "events": 344064,
+   "source": "body",
+   "loss": -1.1926451214416147,
+   "reference": -2.257112781200434,
+   "updates": 2685
+  },
+  {
+   "events": 345088,
+   "source": "body",
+   "loss": -0.3685449838175714,
+   "reference": -2.3575636405476503,
+   "updates": 2693
+  },
+  {
+   "events": 346112,
+   "source": "weather",
+   "loss": -0.8458507533459851,
+   "reference": -3.188400002597846,
+   "updates": 2701
+  },
+  {
+   "events": 347136,
+   "source": "weather",
+   "loss": -0.6949952967340209,
+   "reference": -2.753717263496803,
+   "updates": 2709
+  },
+  {
+   "events": 348160,
+   "source": "weather",
+   "loss": -0.7187563113975557,
+   "reference": -2.8831380862091667,
+   "updates": 2717
+  },
+  {
+   "events": 349184,
+   "source": "grid",
+   "loss": 0.21948375325825964,
+   "reference": -0.718038221744099,
+   "updates": 2725
+  },
+  {
+   "events": 350208,
+   "source": "grid",
+   "loss": -0.07657508190118278,
+   "reference": -0.7196758992853374,
+   "updates": 2733
+  },
+  {
+   "events": 351232,
+   "source": "market",
+   "loss": -1.2867801727563801,
+   "reference": -1.2130904725924028,
+   "updates": 2741
+  },
+  {
+   "events": 352256,
+   "source": "weather",
+   "loss": -1.0891700027895865,
+   "reference": -3.2536132559145274,
+   "updates": 2749
+  },
+  {
+   "events": 353280,
+   "source": "text",
+   "loss": 3.311380823201034,
+   "reference": 3.1260305767411944,
+   "updates": 2757
+  },
+  {
+   "events": 354304,
+   "source": "weather",
+   "loss": -0.9403995413632344,
+   "reference": -2.8100614579823007,
+   "updates": 2765
+  },
+  {
+   "events": 355328,
+   "source": "grid",
+   "loss": 0.07777393115213727,
+   "reference": -0.6819692610826352,
+   "updates": 2773
+  },
+  {
+   "events": 356352,
+   "source": "text",
+   "loss": 3.0252140708471416,
+   "reference": 3.124048536310746,
+   "updates": 2781
+  },
+  {
+   "events": 357376,
+   "source": "text",
+   "loss": 2.8723362662130967,
+   "reference": 3.0632500085195256,
+   "updates": 2789
+  },
+  {
+   "events": 358400,
+   "source": "grid",
+   "loss": -0.41750922494702536,
+   "reference": -0.7049904018178614,
+   "updates": 2797
+  },
+  {
+   "events": 359424,
+   "source": "grid",
+   "loss": -0.2980185330769132,
+   "reference": -0.8405586722527412,
+   "updates": 2805
+  },
+  {
+   "events": 360448,
+   "source": "text",
+   "loss": 3.035832998531987,
+   "reference": 3.0847826872273414,
+   "updates": 2813
+  },
+  {
+   "events": 361472,
+   "source": "grid",
+   "loss": -0.2688028852783191,
+   "reference": -0.767892976810736,
+   "updates": 2821
+  },
+  {
+   "events": 362496,
+   "source": "body",
+   "loss": -0.7630826809797782,
+   "reference": -2.594637935735377,
+   "updates": 2829
+  },
+  {
+   "events": 363520,
+   "source": "weather",
+   "loss": -0.5482992957868476,
+   "reference": -2.9029366010745323,
+   "updates": 2837
+  },
+  {
+   "events": 364544,
+   "source": "audio",
+   "loss": 1.2240554928249594,
+   "reference": -0.008392312784001632,
+   "updates": 2845
+  },
+  {
+   "events": 365568,
+   "source": "body",
+   "loss": -0.5789782320118206,
+   "reference": -2.542926092315808,
+   "updates": 2853
+  },
+  {
+   "events": 366592,
+   "source": "grid",
+   "loss": -0.04119903481591791,
+   "reference": -0.84625074865746,
+   "updates": 2861
+  },
+  {
+   "events": 367616,
+   "source": "market",
+   "loss": -1.4918744003231268,
+   "reference": -1.4212965656726813,
+   "updates": 2869
+  },
+  {
+   "events": 368640,
+   "source": "body",
+   "loss": -1.219904746708039,
+   "reference": -2.509215109984098,
+   "updates": 2877
+  },
+  {
+   "events": 369664,
+   "source": "text",
+   "loss": 3.3762670723663177,
+   "reference": 3.1356008064146925,
+   "updates": 2885
+  },
+  {
+   "events": 370688,
+   "source": "body",
+   "loss": -0.9603155057943695,
+   "reference": -2.6457572029457386,
+   "updates": 2893
+  },
+  {
+   "events": 371712,
+   "source": "weather",
+   "loss": -0.7800808420972771,
+   "reference": -1.8538783313162746,
+   "updates": 2901
+  },
+  {
+   "events": 372736,
+   "source": "market",
+   "loss": -1.4554414518461272,
+   "reference": -1.5039523455630075,
+   "updates": 2909
+  },
+  {
+   "events": 373760,
+   "source": "market",
+   "loss": -1.3994814106595186,
+   "reference": -1.4616999441787337,
+   "updates": 2917
+  },
+  {
+   "events": 374784,
+   "source": "market",
+   "loss": -1.5850823295656937,
+   "reference": -1.5874313313408461,
+   "updates": 2925
+  },
+  {
+   "events": 375808,
+   "source": "grid",
+   "loss": -0.1979883723133753,
+   "reference": -0.8451261837955606,
+   "updates": 2933
+  },
+  {
+   "events": 376832,
+   "source": "body",
+   "loss": -0.881146608637664,
+   "reference": -2.4879201057165443,
+   "updates": 2941
+  },
+  {
+   "events": 377856,
+   "source": "market",
+   "loss": -1.3085380503880515,
+   "reference": -1.27453597535277,
+   "updates": 2949
+  },
+  {
+   "events": 378880,
+   "source": "market",
+   "loss": -1.2990430813295006,
+   "reference": -1.2131045468034922,
+   "updates": 2957
+  },
+  {
+   "events": 379904,
+   "source": "weather",
+   "loss": -0.895192168803078,
+   "reference": -2.7666004158152524,
+   "updates": 2965
+  },
+  {
+   "events": 380928,
+   "source": "weather",
+   "loss": -0.6663324645336957,
+   "reference": -2.5369264621091374,
+   "updates": 2973
+  },
+  {
+   "events": 381952,
+   "source": "body",
+   "loss": -0.6546124352981906,
+   "reference": -2.5780334986925992,
+   "updates": 2981
+  },
+  {
+   "events": 382976,
+   "source": "text",
+   "loss": 3.4247114819008857,
+   "reference": 3.170286712991304,
+   "updates": 2989
+  },
+  {
+   "events": 384000,
+   "source": "market",
+   "loss": -1.4782702241118386,
+   "reference": -1.4212952014537912,
+   "updates": 2997
+  },
+  {
+   "events": 385024,
+   "source": "body",
+   "loss": -1.3796937766335304,
+   "reference": -2.8511088941067024,
+   "updates": 3005
+  },
+  {
+   "events": 386048,
+   "source": "body",
+   "loss": -0.5180105971489866,
+   "reference": -2.346589707420176,
+   "updates": 3013
+  },
+  {
+   "events": 387072,
+   "source": "text",
+   "loss": 3.2689477036474273,
+   "reference": 3.0821264535605777,
+   "updates": 3021
+  },
+  {
+   "events": 388096,
+   "source": "market",
+   "loss": -1.4480592714207887,
+   "reference": -1.5039466367023042,
+   "updates": 3029
+  },
+  {
+   "events": 389120,
+   "source": "grid",
+   "loss": 0.0963186920573662,
+   "reference": -0.9647210268488914,
+   "updates": 3037
+  },
+  {
+   "events": 390144,
+   "source": "weather",
+   "loss": -0.7807257383987576,
+   "reference": -2.6539296060731337,
+   "updates": 3045
+  },
+  {
+   "events": 391168,
+   "source": "weather",
+   "loss": -0.6589348014763345,
+   "reference": -0.396557598369342,
+   "updates": 3053
+  },
+  {
+   "events": 392192,
+   "source": "weather",
+   "loss": -0.722051984464315,
+   "reference": -2.9061305941841624,
+   "updates": 3061
+  },
+  {
+   "events": 393216,
+   "source": "body",
+   "loss": 0.5025424430981893,
+   "reference": -2.5454191218693816,
+   "updates": 3069
+  },
+  {
+   "events": 394240,
+   "source": "weather",
+   "loss": -0.24636632113265478,
+   "reference": -2.8157592745752518,
+   "updates": 3077
+  },
+  {
+   "events": 395264,
+   "source": "weather",
+   "loss": -0.5388496040402515,
+   "reference": -2.1580367293889475,
+   "updates": 3085
+  },
+  {
+   "events": 396288,
+   "source": "market",
+   "loss": -1.337629352417025,
+   "reference": -1.4616973797574786,
+   "updates": 3093
+  },
+  {
+   "events": 397312,
+   "source": "weather",
+   "loss": -0.8822155572395332,
+   "reference": -2.5118304451617686,
+   "updates": 3101
+  },
+  {
+   "events": 398336,
+   "source": "weather",
+   "loss": -0.9604892862303132,
+   "reference": -2.966272136629604,
+   "updates": 3109
+  },
+  {
+   "events": 399360,
+   "source": "text",
+   "loss": 3.1717188439215533,
+   "reference": 3.0625943376350175,
+   "updates": 3117
+  },
+  {
+   "events": 400384,
+   "source": "weather",
+   "loss": -0.7858129167278776,
+   "reference": -2.5364645366262786,
+   "updates": 3125
+  },
+  {
+   "events": 401408,
+   "source": "market",
+   "loss": -1.5184556738272477,
+   "reference": -1.5874232908985473,
+   "updates": 3133
+  },
+  {
+   "events": 402432,
+   "source": "text",
+   "loss": 2.9086927576572634,
+   "reference": 2.9926123413071632,
+   "updates": 3141
+  },
+  {
+   "events": 403456,
+   "source": "text",
+   "loss": 2.975996642955579,
+   "reference": 3.1620039113500353,
+   "updates": 3149
+  },
+  {
+   "events": 404480,
+   "source": "text",
+   "loss": 2.9015128518803976,
+   "reference": 3.110100703378514,
+   "updates": 3157
+  },
+  {
+   "events": 405504,
+   "source": "audio",
+   "loss": 0.5695858910976312,
+   "reference": -0.5353664663368634,
+   "updates": 3165
+  },
+  {
+   "events": 406528,
+   "source": "market",
+   "loss": -1.3229634216384056,
+   "reference": -1.2745427319948295,
+   "updates": 3173
+  },
+  {
+   "events": 407552,
+   "source": "text",
+   "loss": 2.9746355211827904,
+   "reference": 3.057294677977679,
+   "updates": 3181
+  },
+  {
+   "events": 408576,
+   "source": "market",
+   "loss": -1.2917115119144,
+   "reference": -1.2131121587667302,
+   "updates": 3189
+  },
+  {
+   "events": 409600,
+   "source": "text",
+   "loss": 2.9145243985694833,
+   "reference": 3.0292229464477476,
+   "updates": 3197
+  },
+  {
+   "events": 410624,
+   "source": "text",
+   "loss": 2.9280131215928122,
+   "reference": 3.1344482856954605,
+   "updates": 3205
+  },
+  {
+   "events": 411648,
+   "source": "weather",
+   "loss": -0.6456336936749381,
+   "reference": -2.7125369229783463,
+   "updates": 3213
+  },
+  {
+   "events": 412672,
+   "source": "text",
+   "loss": 3.101549989078194,
+   "reference": 3.1706394986013375,
+   "updates": 3221
+  },
+  {
+   "events": 413696,
+   "source": "weather",
+   "loss": -0.5790350434653249,
+   "reference": -2.496803245711424,
+   "updates": 3229
+  },
+  {
+   "events": 414720,
+   "source": "weather",
+   "loss": -0.15775632864256295,
+   "reference": -1.9980929287606484,
+   "updates": 3237
+  },
+  {
+   "events": 415744,
+   "source": "text",
+   "loss": 3.0092065566277597,
+   "reference": 3.070062313499254,
+   "updates": 3245
+  },
+  {
+   "events": 416768,
+   "source": "grid",
+   "loss": -0.18517854667322808,
+   "reference": -0.9397856389232047,
+   "updates": 3253
+  },
+  {
+   "events": 417792,
+   "source": "text",
+   "loss": 3.17698006471619,
+   "reference": 3.148842453887147,
+   "updates": 3261
+  },
+  {
+   "events": 418816,
+   "source": "grid",
+   "loss": -0.06523476538879436,
+   "reference": -0.8654540364754469,
+   "updates": 3269
+  },
+  {
+   "events": 419840,
+   "source": "audio",
+   "loss": -1.6582266354744206,
+   "reference": -1.1262700100244123,
+   "updates": 3277
+  },
+  {
+   "events": 420864,
+   "source": "audio",
+   "loss": -1.9794268440562064,
+   "reference": -1.1885731396160553,
+   "updates": 3285
+  },
+  {
+   "events": 421888,
+   "source": "audio",
+   "loss": -1.5112331487689517,
+   "reference": -1.1724514770915795,
+   "updates": 3293
+  },
+  {
+   "events": 422912,
+   "source": "weather",
+   "loss": -0.7753294324828914,
+   "reference": -2.7662878817021723,
+   "updates": 3301
+  },
+  {
+   "events": 423936,
+   "source": "grid",
+   "loss": 0.06416143691581055,
+   "reference": -0.8444431250515698,
+   "updates": 3309
+  },
+  {
+   "events": 424960,
+   "source": "market",
+   "loss": -1.513913357632191,
+   "reference": -1.4212944626557158,
+   "updates": 3317
+  },
+  {
+   "events": 425984,
+   "source": "audio",
+   "loss": 0.48486587760089606,
+   "reference": 0.5764571425655308,
+   "updates": 3325
+  },
+  {
+   "events": 427008,
+   "source": "text",
+   "loss": 3.0346534527488984,
+   "reference": 3.062659014239346,
+   "updates": 3333
+  },
+  {
+   "events": 428032,
+   "source": "text",
+   "loss": 2.8756591446581297,
+   "reference": 3.116186542435183,
+   "updates": 3341
+  },
+  {
+   "events": 429056,
+   "source": "body",
+   "loss": -0.45132690739819736,
+   "reference": -2.355319871316483,
+   "updates": 3349
+  },
+  {
+   "events": 430080,
+   "source": "text",
+   "loss": 2.993370506388601,
+   "reference": 3.177960040796125,
+   "updates": 3357
+  },
+  {
+   "events": 431104,
+   "source": "grid",
+   "loss": -0.16361322914474385,
+   "reference": -0.8833920895288108,
+   "updates": 3365
+  },
+  {
+   "events": 432128,
+   "source": "grid",
+   "loss": -0.09411567489775052,
+   "reference": -0.9973793975866619,
+   "updates": 3373
+  },
+  {
+   "events": 433152,
+   "source": "grid",
+   "loss": -0.3619217028324897,
+   "reference": -0.994979296744501,
+   "updates": 3381
+  },
+  {
+   "events": 434176,
+   "source": "weather",
+   "loss": -0.6783264699524807,
+   "reference": -2.594095333279007,
+   "updates": 3389
+  },
+  {
+   "events": 435200,
+   "source": "weather",
+   "loss": -0.20776958429415515,
+   "reference": 0.5781929183765302,
+   "updates": 3397
+  },
+  {
+   "events": 436224,
+   "source": "text",
+   "loss": 3.09343068904127,
+   "reference": 3.1566164550898894,
+   "updates": 3405
+  },
+  {
+   "events": 437248,
+   "source": "body",
+   "loss": -0.9189052861608502,
+   "reference": -2.618253402167428,
+   "updates": 3413
+  },
+  {
+   "events": 438272,
+   "source": "market",
+   "loss": -1.4794513520905639,
+   "reference": -1.503943547877262,
+   "updates": 3421
+  },
+  {
+   "events": 439296,
+   "source": "body",
+   "loss": -1.2860912993785405,
+   "reference": -2.4580640399733613,
+   "updates": 3429
+  },
+  {
+   "events": 440320,
+   "source": "body",
+   "loss": -1.0649482902290401,
+   "reference": -1.7399344209661176,
+   "updates": 3437
+  },
+  {
+   "events": 441344,
+   "source": "market",
+   "loss": -1.366483247451015,
+   "reference": -1.4616959919678123,
+   "updates": 3445
+  },
+  {
+   "events": 442368,
+   "source": "weather",
+   "loss": -0.859614798657276,
+   "reference": -2.4549794672974588,
+   "updates": 3453
+  },
+  {
+   "events": 443392,
+   "source": "grid",
+   "loss": -0.3023865240179475,
+   "reference": -1.024921766702163,
+   "updates": 3461
+  },
+  {
+   "events": 444416,
+   "source": "body",
+   "loss": -1.0966627642308424,
+   "reference": -2.3401310149716945,
+   "updates": 3469
+  },
+  {
+   "events": 445440,
+   "source": "text",
+   "loss": 3.153522945503937,
+   "reference": 3.0888316722304947,
+   "updates": 3477
+  },
+  {
+   "events": 446464,
+   "source": "market",
+   "loss": -1.5628527004491843,
+   "reference": -1.5874189409862816,
+   "updates": 3485
+  },
+  {
+   "events": 447488,
+   "source": "text",
+   "loss": 3.1441523268877063,
+   "reference": 3.2026529466700797,
+   "updates": 3493
+  },
+  {
+   "events": 448512,
+   "source": "body",
+   "loss": -0.6790190089238877,
+   "reference": -2.3735883445317034,
+   "updates": 3501
+  },
+  {
+   "events": 449536,
+   "source": "body",
+   "loss": -0.3143748931450716,
+   "reference": -2.5570569834876844,
+   "updates": 3509
+  },
+  {
+   "events": 450560,
+   "source": "grid",
+   "loss": -0.017710214371163602,
+   "reference": -0.9063810128915829,
+   "updates": 3517
+  },
+  {
+   "events": 451584,
+   "source": "weather",
+   "loss": -0.7395094071557651,
+   "reference": -2.5461815424348293,
+   "updates": 3525
+  },
+  {
+   "events": 452608,
+   "source": "grid",
+   "loss": -0.17225750946340668,
+   "reference": -0.8730356718872498,
+   "updates": 3533
+  },
+  {
+   "events": 453632,
+   "source": "market",
+   "loss": -1.357781497445103,
+   "reference": -1.2745463865470423,
+   "updates": 3541
+  },
+  {
+   "events": 454656,
+   "source": "body",
+   "loss": -1.087885849461827,
+   "reference": -2.4230931069648793,
+   "updates": 3549
+  },
+  {
+   "events": 455680,
+   "source": "body",
+   "loss": -0.4977571841819213,
+   "reference": -2.549461522950629,
+   "updates": 3557
+  },
+  {
+   "events": 456704,
+   "source": "audio",
+   "loss": 0.9800632348556633,
+   "reference": -0.050776175571658456,
+   "updates": 3565
+  },
+  {
+   "events": 457728,
+   "source": "text",
+   "loss": 3.1178235601983033,
+   "reference": 3.1625169430096642,
+   "updates": 3573
+  },
+  {
+   "events": 458752,
+   "source": "weather",
+   "loss": -0.60345251023233,
+   "reference": -2.3190164023668642,
+   "updates": 3581
+  },
+  {
+   "events": 459776,
+   "source": "text",
+   "loss": 2.9672219558997313,
+   "reference": 3.1959148463556,
+   "updates": 3589
+  },
+  {
+   "events": 460800,
+   "source": "body",
+   "loss": -0.5253045154087204,
+   "reference": -2.4239982386192005,
+   "updates": 3597
+  },
+  {
+   "events": 461824,
+   "source": "weather",
+   "loss": -0.5862255429074139,
+   "reference": -2.719050056164401,
+   "updates": 3605
+  },
+  {
+   "events": 462848,
+   "source": "text",
+   "loss": 3.0682368272391614,
+   "reference": 3.058993774821847,
+   "updates": 3613
+  },
+  {
+   "events": 463872,
+   "source": "text",
+   "loss": 2.750123792560771,
+   "reference": 3.054635234174288,
+   "updates": 3621
+  },
+  {
+   "events": 464896,
+   "source": "audio",
+   "loss": -1.1080441411822903,
+   "reference": -1.0220164679318673,
+   "updates": 3629
+  },
+  {
+   "events": 465920,
+   "source": "audio",
+   "loss": -1.777768229463618,
+   "reference": -1.127460671942926,
+   "updates": 3637
+  },
+  {
+   "events": 466944,
+   "source": "audio",
+   "loss": -0.5156594062391378,
+   "reference": -0.8507917512072972,
+   "updates": 3645
+  },
+  {
+   "events": 467968,
+   "source": "grid",
+   "loss": -0.24369651916754265,
+   "reference": -0.9891642588625138,
+   "updates": 3653
+  },
+  {
+   "events": 468992,
+   "source": "grid",
+   "loss": -0.4555022176614898,
+   "reference": -0.9522877232999868,
+   "updates": 3661
+  },
+  {
+   "events": 470016,
+   "source": "text",
+   "loss": 2.9805536190251587,
+   "reference": 3.1450114157100706,
+   "updates": 3669
+  },
+  {
+   "events": 471040,
+   "source": "grid",
+   "loss": -0.2692863667157326,
+   "reference": -0.9667366911907935,
+   "updates": 3677
+  },
+  {
+   "events": 472064,
+   "source": "body",
+   "loss": -0.6071125322796433,
+   "reference": -2.4706525491522218,
+   "updates": 3685
+  },
+  {
+   "events": 473088,
+   "source": "body",
+   "loss": 0.07731912524452156,
+   "reference": -2.432985902631428,
+   "updates": 3693
+  },
+  {
+   "events": 474112,
+   "source": "weather",
+   "loss": 0.21389078349284318,
+   "reference": -2.5812507684135806,
+   "updates": 3701
+  },
+  {
+   "events": 475136,
+   "source": "grid",
+   "loss": 0.17046677801783972,
+   "reference": -0.860755961541331,
+   "updates": 3709
+  },
+  {
+   "events": 476160,
+   "source": "grid",
+   "loss": -0.2130664721552762,
+   "reference": -0.8896878663779431,
+   "updates": 3717
+  },
+  {
+   "events": 477184,
+   "source": "text",
+   "loss": 2.8190279850095976,
+   "reference": 3.0974892177612574,
+   "updates": 3725
+  },
+  {
+   "events": 478208,
+   "source": "text",
+   "loss": 2.87344993109582,
+   "reference": 3.1443163821941105,
+   "updates": 3733
+  },
+  {
+   "events": 479232,
+   "source": "weather",
+   "loss": -0.7583006135230335,
+   "reference": -2.6532488102358456,
+   "updates": 3741
+  },
+  {
+   "events": 480256,
+   "source": "grid",
+   "loss": -0.014957544047092597,
+   "reference": -0.9681338195974706,
+   "updates": 3749
+  },
+  {
+   "events": 481280,
+   "source": "audio",
+   "loss": -0.39661570428825144,
+   "reference": -0.7859232412424062,
+   "updates": 3757
+  },
+  {
+   "events": 482304,
+   "source": "weather",
+   "loss": -0.6800205739973535,
+   "reference": -2.233711797329348,
+   "updates": 3765
+  },
+  {
+   "events": 483328,
+   "source": "weather",
+   "loss": -0.7509690164866356,
+   "reference": -2.510640100979492,
+   "updates": 3773
+  },
+  {
+   "events": 484352,
+   "source": "body",
+   "loss": -0.6207434026632654,
+   "reference": -2.5571865968059773,
+   "updates": 3781
+  },
+  {
+   "events": 485376,
+   "source": "weather",
+   "loss": -0.9060447953599606,
+   "reference": -3.05115286394107,
+   "updates": 3789
+  },
+  {
+   "events": 486400,
+   "source": "weather",
+   "loss": -0.7643093817444822,
+   "reference": -2.9343472349428814,
+   "updates": 3797
+  },
+  {
+   "events": 487424,
+   "source": "body",
+   "loss": -0.3547869366964491,
+   "reference": -1.9742798092527087,
+   "updates": 3805
+  },
+  {
+   "events": 488448,
+   "source": "market",
+   "loss": -1.2215115858564332,
+   "reference": -1.2131162761365877,
+   "updates": 3813
+  },
+  {
+   "events": 489472,
+   "source": "weather",
+   "loss": -0.9547298862544267,
+   "reference": -2.776992836160768,
+   "updates": 3821
+  },
+  {
+   "events": 490496,
+   "source": "weather",
+   "loss": -0.6063212035564902,
+   "reference": -2.413996865072832,
+   "updates": 3829
+  },
+  {
+   "events": 491520,
+   "source": "text",
+   "loss": 3.145330755825853,
+   "reference": 3.114925510351981,
+   "updates": 3837
+  },
+  {
+   "events": 492544,
+   "source": "weather",
+   "loss": -0.7952496267162132,
+   "reference": -2.2723354779237193,
+   "updates": 3845
+  },
+  {
+   "events": 493568,
+   "source": "weather",
+   "loss": -0.9229220410402377,
+   "reference": -2.7845308113224667,
+   "updates": 3853
+  },
+  {
+   "events": 494592,
+   "source": "weather",
+   "loss": -0.45165661180362804,
+   "reference": -2.463343231657382,
+   "updates": 3861
+  },
+  {
+   "events": 495616,
+   "source": "grid",
+   "loss": -0.06641917313561407,
+   "reference": -0.8620135704781664,
+   "updates": 3869
+  },
+  {
+   "events": 496640,
+   "source": "weather",
+   "loss": -0.7543279251808599,
+   "reference": -2.574743325561064,
+   "updates": 3877
+  },
+  {
+   "events": 497664,
+   "source": "text",
+   "loss": 3.0070071064983495,
+   "reference": 3.1567047237126715,
+   "updates": 3885
+  },
+  {
+   "events": 498688,
+   "source": "weather",
+   "loss": -0.7538268737969247,
+   "reference": -2.531537337032983,
+   "updates": 3893
+  },
+  {
+   "events": 499712,
+   "source": "text",
+   "loss": 3.041166462266119,
+   "reference": 3.159885618736334,
+   "updates": 3901
+  },
+  {
+   "events": 500736,
+   "source": "market",
+   "loss": -1.4649817256046163,
+   "reference": -1.4212940627509558,
+   "updates": 3909
+  },
+  {
+   "events": 501760,
+   "source": "market",
+   "loss": -1.5392959867365335,
+   "reference": -1.5039418767514798,
+   "updates": 3917
+  },
+  {
+   "events": 502784,
+   "source": "grid",
+   "loss": -0.22897392143249817,
+   "reference": -0.869554507574629,
+   "updates": 3925
+  },
+  {
+   "events": 503808,
+   "source": "grid",
+   "loss": -0.15899899645148707,
+   "reference": -0.8735178721262722,
+   "updates": 3933
+  },
+  {
+   "events": 504832,
+   "source": "grid",
+   "loss": -0.2252207002513842,
+   "reference": -0.8569726640023666,
+   "updates": 3941
+  },
+  {
+   "events": 505856,
+   "source": "weather",
+   "loss": -1.2532414882944067,
+   "reference": -2.3222106704588192,
+   "updates": 3949
+  },
+  {
+   "events": 506880,
+   "source": "weather",
+   "loss": -0.998192565301224,
+   "reference": -2.8752532501889174,
+   "updates": 3957
+  },
+  {
+   "events": 507904,
+   "source": "weather",
+   "loss": -0.8105946742934975,
+   "reference": -2.5805065251903088,
+   "updates": 3965
+  },
+  {
+   "events": 508928,
+   "source": "grid",
+   "loss": -0.2833808322328455,
+   "reference": -0.8454823996015796,
+   "updates": 3973
+  },
+  {
+   "events": 509952,
+   "source": "market",
+   "loss": -1.3827773805726338,
+   "reference": -1.4616952410569832,
+   "updates": 3981
+  },
+  {
+   "events": 510976,
+   "source": "grid",
+   "loss": -0.1600013559798299,
+   "reference": -0.9080309558648721,
+   "updates": 3989
+  },
+  {
+   "events": 512000,
+   "source": "weather",
+   "loss": -0.8488182807011526,
+   "reference": -2.5717172140895093,
+   "updates": 3997
+  },
+  {
+   "events": 513024,
+   "source": "body",
+   "loss": -0.7343824199448363,
+   "reference": -2.2131611697793754,
+   "updates": 4005
+  },
+  {
+   "events": 514048,
+   "source": "text",
+   "loss": 3.127473484200891,
+   "reference": 3.1751584093364755,
+   "updates": 4013
+  },
+  {
+   "events": 515072,
+   "source": "market",
+   "loss": -1.5871076814269998,
+   "reference": -1.587416587710053,
+   "updates": 4021
+  },
+  {
+   "events": 516096,
+   "source": "audio",
+   "loss": -1.553106524080249,
+   "reference": -1.1474843942245734,
+   "updates": 4029
+  },
+  {
+   "events": 517120,
+   "source": "audio",
+   "loss": -1.949070063950785,
+   "reference": -1.2453279559401702,
+   "updates": 4037
+  },
+  {
+   "events": 518144,
+   "source": "audio",
+   "loss": -0.12037858621806663,
+   "reference": 0.583092209623136,
+   "updates": 4045
+  },
+  {
+   "events": 519168,
+   "source": "weather",
+   "loss": -0.6712161417803486,
+   "reference": -2.2748591921020327,
+   "updates": 4053
+  },
+  {
+   "events": 520192,
+   "source": "grid",
+   "loss": -0.33533425624591473,
+   "reference": -0.966482738768715,
+   "updates": 4061
+  },
+  {
+   "events": 521216,
+   "source": "body",
+   "loss": -1.1996469336536393,
+   "reference": -1.3756392200330871,
+   "updates": 4069
+  },
+  {
+   "events": 522240,
+   "source": "grid",
+   "loss": -0.26657320504999404,
+   "reference": -0.9476576804375837,
+   "updates": 4077
+  },
+  {
+   "events": 523264,
+   "source": "audio",
+   "loss": 0.1366631356219159,
+   "reference": 0.23989387176955465,
+   "updates": 4085
+  },
+  {
+   "events": 524288,
+   "source": "grid",
+   "loss": -0.2795709853135122,
+   "reference": -0.9252465361203502,
+   "updates": 4093
+  },
+  {
+   "events": 525312,
+   "source": "body",
+   "loss": -0.7418414721237241,
+   "reference": -2.367754930064124,
+   "updates": 4101
+  },
+  {
+   "events": 526336,
+   "source": "weather",
+   "loss": -0.7593149271464767,
+   "reference": -2.5418000799627243,
+   "updates": 4109
+  },
+  {
+   "events": 527360,
+   "source": "grid",
+   "loss": -0.2182197273065185,
+   "reference": -1.0482812147790905,
+   "updates": 4117
+  },
+  {
+   "events": 528384,
+   "source": "market",
+   "loss": -1.3551713875012865,
+   "reference": -1.2745483633980725,
+   "updates": 4125
+  },
+  {
+   "events": 529408,
+   "source": "weather",
+   "loss": -0.9184065086056847,
+   "reference": -2.891920240104936,
+   "updates": 4133
+  },
+  {
+   "events": 530432,
+   "source": "grid",
+   "loss": -0.35153823142547935,
+   "reference": -1.0210289286194787,
+   "updates": 4141
+  },
+  {
+   "events": 531456,
+   "source": "weather",
+   "loss": -0.8384407927294433,
+   "reference": -2.8174020771634054,
+   "updates": 4149
+  },
+  {
+   "events": 532480,
+   "source": "text",
+   "loss": 2.931392876227619,
+   "reference": 3.0498441076907525,
+   "updates": 4157
+  },
+  {
+   "events": 533504,
+   "source": "grid",
+   "loss": -0.22026479846635993,
+   "reference": -0.9748349830539482,
+   "updates": 4165
+  },
+  {
+   "events": 534528,
+   "source": "body",
+   "loss": -1.1016099664600354,
+   "reference": -2.428313300721104,
+   "updates": 4173
+  },
+  {
+   "events": 535552,
+   "source": "audio",
+   "loss": 0.25856031380089917,
+   "reference": -0.6681635719832291,
+   "updates": 4181
+  },
+  {
+   "events": 536576,
+   "source": "weather",
+   "loss": -0.7429655536975588,
+   "reference": -1.9166909333442725,
+   "updates": 4189
+  },
+  {
+   "events": 537600,
+   "source": "audio",
+   "loss": -1.6023298080799577,
+   "reference": -1.0706185082363346,
+   "updates": 4197
+  },
+  {
+   "events": 538624,
+   "source": "audio",
+   "loss": 0.04091813550445522,
+   "reference": 1.4442327998196907,
+   "updates": 4205
+  },
+  {
+   "events": 539648,
+   "source": "grid",
+   "loss": -0.08348321442463202,
+   "reference": -0.9102636929368911,
+   "updates": 4213
+  },
+  {
+   "events": 540672,
+   "source": "body",
+   "loss": -0.8915557667288851,
+   "reference": -2.227972064810548,
+   "updates": 4221
+  },
+  {
+   "events": 541696,
+   "source": "grid",
+   "loss": -0.24175943163555758,
+   "reference": -0.9997075492976812,
+   "updates": 4229
+  },
+  {
+   "events": 542720,
+   "source": "grid",
+   "loss": -0.731416080863255,
+   "reference": -1.1685181353696372,
+   "updates": 4237
+  },
+  {
+   "events": 543744,
+   "source": "grid",
+   "loss": -0.32487633863053134,
+   "reference": -0.9757995504239331,
+   "updates": 4245
+  },
+  {
+   "events": 544768,
+   "source": "grid",
+   "loss": -0.07187005341575059,
+   "reference": -0.5925098349805973,
+   "updates": 4253
+  },
+  {
+   "events": 545792,
+   "source": "body",
+   "loss": -1.0399236696283651,
+   "reference": -2.48418506094166,
+   "updates": 4261
+  },
+  {
+   "events": 546816,
+   "source": "body",
+   "loss": -0.42841897739651813,
+   "reference": -2.3214447281377733,
+   "updates": 4269
+  },
+  {
+   "events": 547840,
+   "source": "grid",
+   "loss": 0.20350497346908014,
+   "reference": -0.7788626847181053,
+   "updates": 4277
+  },
+  {
+   "events": 548864,
+   "source": "body",
+   "loss": -1.232240998796442,
+   "reference": -2.713757269412187,
+   "updates": 4285
+  },
+  {
+   "events": 549888,
+   "source": "body",
+   "loss": -0.19154573462265034,
+   "reference": -2.3283501444980588,
+   "updates": 4293
+  },
+  {
+   "events": 550912,
+   "source": "grid",
+   "loss": 0.24777016556527087,
+   "reference": -0.6324510773923416,
+   "updates": 4301
+  },
+  {
+   "events": 551936,
+   "source": "market",
+   "loss": -1.2845014112760964,
+   "reference": -1.2131185033941445,
+   "updates": 4309
+  },
+  {
+   "events": 552960,
+   "source": "market",
+   "loss": -1.5225497894923592,
+   "reference": -1.4212938463428753,
+   "updates": 4317
+  },
+  {
+   "events": 553984,
+   "source": "market",
+   "loss": -1.5468462251041046,
+   "reference": -1.5039409726653392,
+   "updates": 4325
+  },
+  {
+   "events": 555008,
+   "source": "market",
+   "loss": -1.4205909594075479,
+   "reference": -1.4616948347863012,
+   "updates": 4333
+  },
+  {
+   "events": 556032,
+   "source": "text",
+   "loss": 2.9784023786487523,
+   "reference": 3.126262552773164,
+   "updates": 4341
+  },
+  {
+   "events": 557056,
+   "source": "weather",
+   "loss": -0.5978385765574785,
+   "reference": -2.279145186594463,
+   "updates": 4349
+  },
+  {
+   "events": 558080,
+   "source": "text",
+   "loss": 2.9710031893337145,
+   "reference": 3.161644482426196,
+   "updates": 4357
+  },
+  {
+   "events": 559104,
+   "source": "market",
+   "loss": -1.5625353120012733,
+   "reference": -1.587415314614765,
+   "updates": 4365
+  },
+  {
+   "events": 560128,
+   "source": "market",
+   "loss": -1.3681123246924471,
+   "reference": -1.2745494327815508,
+   "updates": 4373
+  },
+  {
+   "events": 561152,
+   "source": "weather",
+   "loss": -1.0299827182116132,
+   "reference": -2.645218140506806,
+   "updates": 4381
+  },
+  {
+   "events": 562176,
+   "source": "weather",
+   "loss": -0.7385117493843154,
+   "reference": -2.9012655180975973,
+   "updates": 4389
+  },
+  {
+   "events": 563200,
+   "source": "text",
+   "loss": 3.224196738403407,
+   "reference": 3.0633799981857135,
+   "updates": 4397
+  },
+  {
+   "events": 564224,
+   "source": "text",
+   "loss": 2.7542005197610706,
+   "reference": 3.0770118310336527,
+   "updates": 4405
+  },
+  {
+   "events": 565248,
+   "source": "text",
+   "loss": 2.735209315113025,
+   "reference": 3.1015952417416464,
+   "updates": 4413
+  },
+  {
+   "events": 566272,
+   "source": "text",
+   "loss": 2.73563993172138,
+   "reference": 3.101268281496303,
+   "updates": 4421
+  },
+  {
+   "events": 567296,
+   "source": "weather",
+   "loss": -0.6810731845984037,
+   "reference": -2.784488995335578,
+   "updates": 4429
+  },
+  {
+   "events": 568320,
+   "source": "text",
+   "loss": 2.8420596466457937,
+   "reference": 3.0285696111780642,
+   "updates": 4437
+  },
+  {
+   "events": 569344,
+   "source": "weather",
+   "loss": -0.8283181032709308,
+   "reference": -2.7839473056589643,
+   "updates": 4445
+  },
+  {
+   "events": 570368,
+   "source": "weather",
+   "loss": -0.6262230802983595,
+   "reference": -2.8114819953270858,
+   "updates": 4453
+  },
+  {
+   "events": 571392,
+   "source": "weather",
+   "loss": -0.7334088701186374,
+   "reference": -2.703304769000673,
+   "updates": 4461
+  },
+  {
+   "events": 572416,
+   "source": "weather",
+   "loss": -0.17931625078745128,
+   "reference": -1.156850730584869,
+   "updates": 4469
+  },
+  {
+   "events": 573440,
+   "source": "text",
+   "loss": 2.783235374459764,
+   "reference": 3.059288625769715,
+   "updates": 4477
+  },
+  {
+   "events": 574464,
+   "source": "market",
+   "loss": -1.3136881777636518,
+   "reference": -1.2131197082519791,
+   "updates": 4485
+  },
+  {
+   "events": 575488,
+   "source": "audio",
+   "loss": 0.8025658380582854,
+   "reference": 0.9036144578474293,
+   "updates": 4493
+  },
+  {
+   "events": 576512,
+   "source": "body",
+   "loss": -0.3200076675514083,
+   "reference": -2.476290748466412,
+   "updates": 4501
+  },
+  {
+   "events": 577536,
+   "source": "market",
+   "loss": -1.4402289561548969,
+   "reference": -1.4212937292504453,
+   "updates": 4509
+  },
+  {
+   "events": 578560,
+   "source": "market",
+   "loss": -1.55503063427102,
+   "reference": -1.5039404835601367,
+   "updates": 4517
+  },
+  {
+   "events": 579584,
+   "source": "text",
+   "loss": 2.9206302735983627,
+   "reference": 3.108582065470465,
+   "updates": 4525
+  },
+  {
+   "events": 580608,
+   "source": "market",
+   "loss": -1.4081849126882844,
+   "reference": -1.4616946149890526,
+   "updates": 4533
+  },
+  {
+   "events": 581632,
+   "source": "weather",
+   "loss": -0.6820822094534833,
+   "reference": -2.4088952352779263,
+   "updates": 4541
+  },
+  {
+   "events": 582656,
+   "source": "market",
+   "loss": -1.5609067083266837,
+   "reference": -1.587414625888682,
+   "updates": 4549
+  },
+  {
+   "events": 583680,
+   "source": "body",
+   "loss": -0.9277301254644641,
+   "reference": -2.3973447186849683,
+   "updates": 4557
+  },
+  {
+   "events": 584704,
+   "source": "weather",
+   "loss": -0.6331146015104565,
+   "reference": -2.443677344906817,
+   "updates": 4565
+  },
+  {
+   "events": 585728,
+   "source": "market",
+   "loss": -1.3465543545596574,
+   "reference": -1.2745500112819803,
+   "updates": 4573
+  },
+  {
+   "events": 586752,
+   "source": "weather",
+   "loss": -0.5785717372130961,
+   "reference": -1.7292546785888618,
+   "updates": 4581
+  },
+  {
+   "events": 587776,
+   "source": "body",
+   "loss": -0.6982070772312454,
+   "reference": -2.5742143872442274,
+   "updates": 4589
+  },
+  {
+   "events": 588800,
+   "source": "weather",
+   "loss": -0.5616098558325575,
+   "reference": -2.443709141089423,
+   "updates": 4597
+  },
+  {
+   "events": 589824,
+   "source": "grid",
+   "loss": -0.004893484455351427,
+   "reference": -0.607708192999767,
+   "updates": 4605
+  },
+  {
+   "events": 590848,
+   "source": "weather",
+   "loss": -0.6869004342952962,
+   "reference": -2.2808707813694653,
+   "updates": 4613
+  },
+  {
+   "events": 591872,
+   "source": "audio",
+   "loss": -0.12785083940889308,
+   "reference": -0.5389973448096917,
+   "updates": 4621
+  },
+  {
+   "events": 592896,
+   "source": "audio",
+   "loss": -1.6101434518623137,
+   "reference": -0.8008727234749337,
+   "updates": 4629
+  },
+  {
+   "events": 593920,
+   "source": "text",
+   "loss": 2.7878204976732377,
+   "reference": 3.074944261723193,
+   "updates": 4637
+  },
+  {
+   "events": 594944,
+   "source": "audio",
+   "loss": 0.5649699746563783,
+   "reference": -0.12851756107239334,
+   "updates": 4645
+  },
+  {
+   "events": 595968,
+   "source": "market",
+   "loss": -1.3211614152629636,
+   "reference": -1.2131203600442073,
+   "updates": 4653
+  },
+  {
+   "events": 596992,
+   "source": "market",
+   "loss": -1.5438520327520564,
+   "reference": -1.4212936658998288,
+   "updates": 4661
+  },
+  {
+   "events": 598016,
+   "source": "grid",
+   "loss": 0.03880122718453549,
+   "reference": -0.7111165390723481,
+   "updates": 4669
+  },
+  {
+   "events": 599040,
+   "source": "text",
+   "loss": 2.82444329599457,
+   "reference": 3.0609988289823873,
+   "updates": 4677
+  },
+  {
+   "events": 600064,
+   "source": "text",
+   "loss": 2.649933929758845,
+   "reference": 3.04837930752882,
+   "updates": 4685
+  },
+  {
+   "events": 601088,
+   "source": "body",
+   "loss": -0.572570232495309,
+   "reference": -2.3931789527963,
+   "updates": 4693
+  },
+  {
+   "events": 602112,
+   "source": "weather",
+   "loss": -0.581219369666087,
+   "reference": -2.6106134691320615,
+   "updates": 4701
+  },
+  {
+   "events": 603136,
+   "source": "text",
+   "loss": 3.0394294481375255,
+   "reference": 3.062902792477005,
+   "updates": 4709
+  },
+  {
+   "events": 604160,
+   "source": "grid",
+   "loss": -0.04133375358333069,
+   "reference": -0.7076223088839874,
+   "updates": 4717
+  },
+  {
+   "events": 605184,
+   "source": "market",
+   "loss": -1.5515084909466168,
+   "reference": -1.5039402189598408,
+   "updates": 4725
+  },
+  {
+   "events": 606208,
+   "source": "weather",
+   "loss": -0.5815795531339063,
+   "reference": -1.9541512957103286,
+   "updates": 4733
+  },
+  {
+   "events": 607232,
+   "source": "market",
+   "loss": -1.374708882228333,
+   "reference": -1.4616944960791485,
+   "updates": 4741
+  },
+  {
+   "events": 608256,
+   "source": "weather",
+   "loss": -0.7307701167807181,
+   "reference": -2.4550593399400507,
+   "updates": 4749
+  },
+  {
+   "events": 609280,
+   "source": "weather",
+   "loss": -0.7262059901212865,
+   "reference": -2.288114452920879,
+   "updates": 4757
+  },
+  {
+   "events": 610304,
+   "source": "body",
+   "loss": -0.9755116800415635,
+   "reference": -2.661125085489788,
+   "updates": 4765
+  },
+  {
+   "events": 611328,
+   "source": "audio",
+   "loss": 0.18303864762333433,
+   "reference": -0.5393969122430509,
+   "updates": 4773
+  },
+  {
+   "events": 612352,
+   "source": "body",
+   "loss": -0.9465547898857949,
+   "reference": -2.591706352702392,
+   "updates": 4781
+  },
+  {
+   "events": 613376,
+   "source": "weather",
+   "loss": -0.706830734588948,
+   "reference": -2.594269918357751,
+   "updates": 4789
+  },
+  {
+   "events": 614400,
+   "source": "weather",
+   "loss": -0.8145871978705372,
+   "reference": -2.817554409970985,
+   "updates": 4797
+  },
+  {
+   "events": 615424,
+   "source": "weather",
+   "loss": -0.7186692440353681,
+   "reference": -2.7320962961146793,
+   "updates": 4805
+  },
+  {
+   "events": 616448,
+   "source": "grid",
+   "loss": 0.10652818688201648,
+   "reference": -0.7089662720312111,
+   "updates": 4813
+  },
+  {
+   "events": 617472,
+   "source": "body",
+   "loss": -0.643110360001856,
+   "reference": -2.2806642263107313,
+   "updates": 4821
+  },
+  {
+   "events": 618496,
+   "source": "text",
+   "loss": 3.057912201998988,
+   "reference": 3.128764257857043,
+   "updates": 4829
+  },
+  {
+   "events": 619520,
+   "source": "market",
+   "loss": -1.5826438680887804,
+   "reference": -1.5874142532989706,
+   "updates": 4837
+  },
+  {
+   "events": 620544,
+   "source": "market",
+   "loss": -1.3919515952177335,
+   "reference": -1.274550324235385,
+   "updates": 4845
+  },
+  {
+   "events": 621568,
+   "source": "market",
+   "loss": -1.330315867436184,
+   "reference": -1.213120712647922,
+   "updates": 4853
+  },
+  {
+   "events": 622592,
+   "source": "weather",
+   "loss": -0.7758419232698941,
+   "reference": -2.38573403708968,
+   "updates": 4861
+  },
+  {
+   "events": 623616,
+   "source": "weather",
+   "loss": -1.2581536981795125,
+   "reference": -2.7684765983154476,
+   "updates": 4869
+  },
+  {
+   "events": 624640,
+   "source": "grid",
+   "loss": -0.19970736269760891,
+   "reference": -0.6461865892711369,
+   "updates": 4877
+  },
+  {
+   "events": 625664,
+   "source": "grid",
+   "loss": -0.0945816621715494,
+   "reference": -0.6537386591147294,
+   "updates": 4885
+  },
+  {
+   "events": 626688,
+   "source": "grid",
+   "loss": -0.05167265142404176,
+   "reference": -0.6263381528351579,
+   "updates": 4893
+  },
+  {
+   "events": 627712,
+   "source": "weather",
+   "loss": -0.8901898019954615,
+   "reference": -2.8038036458947952,
+   "updates": 4901
+  },
+  {
+   "events": 628736,
+   "source": "market",
+   "loss": -1.527600682648199,
+   "reference": -1.421293631626609,
+   "updates": 4909
+  },
+  {
+   "events": 629760,
+   "source": "body",
+   "loss": -1.235098233729559,
+   "reference": -2.6239032224181726,
+   "updates": 4917
+  },
+  {
+   "events": 630784,
+   "source": "body",
+   "loss": -0.7690215265688494,
+   "reference": -2.5105400749285796,
+   "updates": 4925
+  },
+  {
+   "events": 631808,
+   "source": "text",
+   "loss": 2.707951345248148,
+   "reference": 3.0703876940337618,
+   "updates": 4933
+  },
+  {
+   "events": 632832,
+   "source": "text",
+   "loss": 2.620476154406788,
+   "reference": 3.032865677441817,
+   "updates": 4941
+  },
+  {
+   "events": 633856,
+   "source": "market",
+   "loss": -1.5115936447754734,
+   "reference": -1.5039400758149184,
+   "updates": 4949
+  },
+  {
+   "events": 634880,
+   "source": "grid",
+   "loss": 0.09781232722230015,
+   "reference": -0.25478491026166583,
+   "updates": 4957
+  },
+  {
+   "events": 635904,
+   "source": "body",
+   "loss": -1.1193832578903766,
+   "reference": -2.1401543999445787,
+   "updates": 4965
+  },
+  {
+   "events": 636928,
+   "source": "audio",
+   "loss": -1.1408096231593845,
+   "reference": -0.8502100587909385,
+   "updates": 4973
+  },
+  {
+   "events": 637952,
+   "source": "body",
+   "loss": -0.6382149471454,
+   "reference": -2.328456791795095,
+   "updates": 4981
+  },
+  {
+   "events": 638976,
+   "source": "audio",
+   "loss": -1.9443285731940705,
+   "reference": -0.9220888942523285,
+   "updates": 4989
+  },
+  {
+   "events": 640000,
+   "source": "grid",
+   "loss": 0.0015283631142892773,
+   "reference": -0.6079479354550913,
+   "updates": 4997
+  },
+  {
+   "events": 641024,
+   "source": "audio",
+   "loss": 0.7216586818240103,
+   "reference": 2.0323718665715154,
+   "updates": 5005
+  },
+  {
+   "events": 642048,
+   "source": "text",
+   "loss": 2.853564275064855,
+   "reference": 3.095286302597797,
+   "updates": 5013
+  },
+  {
+   "events": 643072,
+   "source": "grid",
+   "loss": 0.11562955619695003,
+   "reference": -0.5893717891736013,
+   "updates": 5021
+  },
+  {
+   "events": 644096,
+   "source": "text",
+   "loss": 2.799432985513704,
+   "reference": 3.119648850242179,
+   "updates": 5029
+  },
+  {
+   "events": 645120,
+   "source": "body",
+   "loss": -1.3501011174039377,
+   "reference": -2.7470447726045215,
+   "updates": 5037
+  },
+  {
+   "events": 646144,
+   "source": "weather",
+   "loss": -0.8765468094461539,
+   "reference": -2.5781097439190894,
+   "updates": 5045
+  },
+  {
+   "events": 647168,
+   "source": "text",
+   "loss": 3.0977408833423397,
+   "reference": 3.0136248650630524,
+   "updates": 5053
+  },
+  {
+   "events": 648192,
+   "source": "market",
+   "loss": -1.3965103124569396,
+   "reference": -1.461694431749991,
+   "updates": 5061
+  },
+  {
+   "events": 649216,
+   "source": "body",
+   "loss": -1.158670285826929,
+   "reference": -2.476057266505762,
+   "updates": 5069
+  },
+  {
+   "events": 650240,
+   "source": "market",
+   "loss": -1.5850696384773073,
+   "reference": -1.5874140517342594,
+   "updates": 5077
+  },
+  {
+   "events": 651264,
+   "source": "grid",
+   "loss": -0.20602162681029768,
+   "reference": -0.9062517883764012,
+   "updates": 5085
+  },
+  {
+   "events": 652288,
+   "source": "text",
+   "loss": 2.8836592578154523,
+   "reference": 3.037837864251389,
+   "updates": 5093
+  },
+  {
+   "events": 653312,
+   "source": "weather",
+   "loss": -0.8523227871295376,
+   "reference": -2.746994030433466,
+   "updates": 5101
+  },
+  {
+   "events": 654336,
+   "source": "market",
+   "loss": -1.2954797677018632,
+   "reference": -1.2745504935361098,
+   "updates": 5109
+  },
+  {
+   "events": 655360,
+   "source": "grid",
+   "loss": -0.3035696403312613,
+   "reference": -0.6882275664639739,
+   "updates": 5117
+  },
+  {
+   "events": 656384,
+   "source": "audio",
+   "loss": 0.29651415393777825,
+   "reference": -0.08988004557348206,
+   "updates": 5125
+  },
+  {
+   "events": 657408,
+   "source": "grid",
+   "loss": -0.2381220167542324,
+   "reference": -0.8567206699311357,
+   "updates": 5133
+  },
+  {
+   "events": 658432,
+   "source": "body",
+   "loss": -1.4782691699765564,
+   "reference": -2.79123418063475,
+   "updates": 5141
+  },
+  {
+   "events": 659456,
+   "source": "grid",
+   "loss": -0.10730057866703646,
+   "reference": -0.570887939169669,
+   "updates": 5149
+  },
+  {
+   "events": 660480,
+   "source": "body",
+   "loss": -1.0792760971462485,
+   "reference": -2.515432343134861,
+   "updates": 5157
+  },
+  {
+   "events": 661504,
+   "source": "body",
+   "loss": -1.0148701595226157,
+   "reference": -2.7475595226567195,
+   "updates": 5165
+  },
+  {
+   "events": 662528,
+   "source": "text",
+   "loss": 2.8188807975384407,
+   "reference": 3.0379609357119386,
+   "updates": 5173
+  },
+  {
+   "events": 663552,
+   "source": "text",
+   "loss": 2.7547727508062962,
+   "reference": 3.110400400021446,
+   "updates": 5181
+  },
+  {
+   "events": 664576,
+   "source": "body",
+   "loss": -0.8999636606324657,
+   "reference": -2.4646837209303456,
+   "updates": 5189
+  },
+  {
+   "events": 665600,
+   "source": "text",
+   "loss": 2.9871236707476783,
+   "reference": 3.102720848712958,
+   "updates": 5197
+  },
+  {
+   "events": 666624,
+   "source": "audio",
+   "loss": -1.2544846592091403,
+   "reference": -0.7014494362860623,
+   "updates": 5205
+  },
+  {
+   "events": 667648,
+   "source": "grid",
+   "loss": -0.3257268421874926,
+   "reference": -0.9106860231633391,
+   "updates": 5213
+  },
+  {
+   "events": 668672,
+   "source": "audio",
+   "loss": -0.7831201665542267,
+   "reference": 0.1296502198255117,
+   "updates": 5221
+  },
+  {
+   "events": 669696,
+   "source": "grid",
+   "loss": -0.029681815357889718,
+   "reference": -0.7212686060827082,
+   "updates": 5229
+  },
+  {
+   "events": 670720,
+   "source": "grid",
+   "loss": -0.10430892334750297,
+   "reference": -0.7376215121224486,
+   "updates": 5237
+  },
+  {
+   "events": 671744,
+   "source": "audio",
+   "loss": 1.0888958420950203,
+   "reference": 1.5510666224213923,
+   "updates": 5245
+  },
+  {
+   "events": 672768,
+   "source": "weather",
+   "loss": -0.6615342237882942,
+   "reference": -2.4734796361956155,
+   "updates": 5253
+  },
+  {
+   "events": 673792,
+   "source": "text",
+   "loss": 3.03650112284231,
+   "reference": 3.1628959080740024,
+   "updates": 5261
+  },
+  {
+   "events": 674816,
+   "source": "grid",
+   "loss": -0.12644741514623092,
+   "reference": -0.7378720918538405,
+   "updates": 5269
+  },
+  {
+   "events": 675840,
+   "source": "weather",
+   "loss": -0.7945895501534324,
+   "reference": -2.483760709804325,
+   "updates": 5277
+  },
+  {
+   "events": 676864,
+   "source": "grid",
+   "loss": 0.01661997157600581,
+   "reference": -0.7018674599163557,
+   "updates": 5285
+  },
+  {
+   "events": 677888,
+   "source": "market",
+   "loss": -1.322573059648903,
+   "reference": -1.2131209033989705,
+   "updates": 5293
+  },
+  {
+   "events": 678912,
+   "source": "grid",
+   "loss": -0.5896799380052471,
+   "reference": -0.6940225822639703,
+   "updates": 5301
+  },
+  {
+   "events": 679936,
+   "source": "weather",
+   "loss": -0.8009115668796767,
+   "reference": -2.2325876779659244,
+   "updates": 5309
+  },
+  {
+   "events": 680960,
+   "source": "grid",
+   "loss": -0.36989893683761466,
+   "reference": -0.8306894256965494,
+   "updates": 5317
+  },
+  {
+   "events": 681984,
+   "source": "grid",
+   "loss": -0.4521769806692646,
+   "reference": -0.7569352690933082,
+   "updates": 5325
+  },
+  {
+   "events": 683008,
+   "source": "grid",
+   "loss": -0.2660453280550428,
+   "reference": -0.8369938142654366,
+   "updates": 5333
+  },
+  {
+   "events": 684032,
+   "source": "market",
+   "loss": -1.5470676396712406,
+   "reference": -1.4212936130849239,
+   "updates": 5341
+  },
+  {
+   "events": 685056,
+   "source": "market",
+   "loss": -1.5690371730084962,
+   "reference": -1.503939998375817,
+   "updates": 5349
+  },
+  {
+   "events": 686080,
+   "source": "audio",
+   "loss": 0.3436569006263781,
+   "reference": -0.35491636937335863,
+   "updates": 5357
+  },
+  {
+   "events": 687104,
+   "source": "grid",
+   "loss": -0.2743397347010159,
+   "reference": -0.8362929918892111,
+   "updates": 5365
+  },
+  {
+   "events": 688128,
+   "source": "grid",
+   "loss": -0.1931542703443938,
+   "reference": -0.9570650455985029,
+   "updates": 5373
+  },
+  {
+   "events": 689152,
+   "source": "weather",
+   "loss": -0.8996767030830597,
+   "reference": -2.147484051053427,
+   "updates": 5381
+  },
+  {
+   "events": 690176,
+   "source": "body",
+   "loss": -0.34518889967478117,
+   "reference": -2.57622213033872,
+   "updates": 5389
+  },
+  {
+   "events": 691200,
+   "source": "market",
+   "loss": -1.352174453664702,
+   "reference": -1.4616943969487721,
+   "updates": 5397
+  },
+  {
+   "events": 692224,
+   "source": "weather",
+   "loss": -0.8499768710709645,
+   "reference": -1.7610651455863477,
+   "updates": 5405
+  },
+  {
+   "events": 693248,
+   "source": "audio",
+   "loss": -1.8430646999368037,
+   "reference": -0.5901829060559659,
+   "updates": 5413
+  },
+  {
+   "events": 694272,
+   "source": "market",
+   "loss": -1.608875554561564,
+   "reference": -1.5874139426912712,
+   "updates": 5421
+  },
+  {
+   "events": 695296,
+   "source": "audio",
+   "loss": -0.20305831342159308,
+   "reference": -0.3010439951233908,
+   "updates": 5429
+  },
+  {
+   "events": 696320,
+   "source": "text",
+   "loss": 3.1190163959690835,
+   "reference": 3.163801474830832,
+   "updates": 5437
+  },
+  {
+   "events": 697344,
+   "source": "market",
+   "loss": -1.38092216681207,
+   "reference": -1.2745505851243282,
+   "updates": 5445
+  },
+  {
+   "events": 698368,
+   "source": "grid",
+   "loss": -0.3239380664754208,
+   "reference": -0.9326690207050264,
+   "updates": 5453
+  },
+  {
+   "events": 699392,
+   "source": "text",
+   "loss": 2.9776096933637746,
+   "reference": 3.173099549762496,
+   "updates": 5461
+  },
+  {
+   "events": 700416,
+   "source": "grid",
+   "loss": -0.14296157241972196,
+   "reference": -0.8586028431332434,
+   "updates": 5469
+  },
+  {
+   "events": 701440,
+   "source": "market",
+   "loss": -1.3473445333119969,
+   "reference": -1.2131210065914986,
+   "updates": 5477
+  },
+  {
+   "events": 702464,
+   "source": "text",
+   "loss": 2.7956100661831442,
+   "reference": 3.0810925903158317,
+   "updates": 5485
+  },
+  {
+   "events": 703488,
+   "source": "text",
+   "loss": 2.716166649683146,
+   "reference": 3.193533025985218,
+   "updates": 5493
+  },
+  {
+   "events": 704512,
+   "source": "market",
+   "loss": -1.536619038421577,
+   "reference": -1.421293603054068,
+   "updates": 5501
+  },
+  {
+   "events": 705536,
+   "source": "text",
+   "loss": 2.800518318919785,
+   "reference": 3.0917802493537896,
+   "updates": 5509
+  },
+  {
+   "events": 706560,
+   "source": "weather",
+   "loss": -0.6447272796008292,
+   "reference": -2.4707385489813913,
+   "updates": 5517
+  },
+  {
+   "events": 707584,
+   "source": "text",
+   "loss": 3.0062427409138763,
+   "reference": 3.110254864148192,
+   "updates": 5525
+  },
+  {
+   "events": 708608,
+   "source": "market",
+   "loss": -1.5483447496126246,
+   "reference": -1.503939956482578,
+   "updates": 5533
+  },
+  {
+   "events": 709632,
+   "source": "market",
+   "loss": -1.4580764052066115,
+   "reference": -1.4616943781218474,
+   "updates": 5541
+  },
+  {
+   "events": 710656,
+   "source": "text",
+   "loss": 2.8273775411071256,
+   "reference": 3.1190107938894105,
+   "updates": 5549
+  },
+  {
+   "events": 711680,
+   "source": "grid",
+   "loss": -0.1488981370007707,
+   "reference": -0.8379860977793506,
+   "updates": 5557
+  },
+  {
+   "events": 712704,
+   "source": "weather",
+   "loss": -0.7860202318940992,
+   "reference": -2.5256726454309533,
+   "updates": 5565
+  },
+  {
+   "events": 713728,
+   "source": "text",
+   "loss": 2.863553956063697,
+   "reference": 3.1077091907671615,
+   "updates": 5573
+  },
+  {
+   "events": 714752,
+   "source": "grid",
+   "loss": -0.33792887969661933,
+   "reference": -0.8755703695837248,
+   "updates": 5581
+  },
+  {
+   "events": 715776,
+   "source": "market",
+   "loss": -1.6164529667944407,
+   "reference": -1.5874138837009424,
+   "updates": 5589
+  },
+  {
+   "events": 716800,
+   "source": "weather",
+   "loss": -0.8099610861243036,
+   "reference": -2.5346322223665174,
+   "updates": 5597
+  },
+  {
+   "events": 717824,
+   "source": "grid",
+   "loss": -0.3836678755512821,
+   "reference": -0.9896294186655525,
+   "updates": 5605
+  },
+  {
+   "events": 718848,
+   "source": "grid",
+   "loss": -0.43789253304748854,
+   "reference": -0.9864937579342603,
+   "updates": 5613
+  },
+  {
+   "events": 719872,
+   "source": "text",
+   "loss": 2.8718493521155324,
+   "reference": 3.097483146284379,
+   "updates": 5621
+  },
+  {
+   "events": 720896,
+   "source": "grid",
+   "loss": -0.4297032014369506,
+   "reference": -1.0164173618332915,
+   "updates": 5629
+  },
+  {
+   "events": 721920,
+   "source": "weather",
+   "loss": -0.6876194862414593,
+   "reference": -2.604809253607095,
+   "updates": 5637
+  },
+  {
+   "events": 722944,
+   "source": "text",
+   "loss": 2.774230462615378,
+   "reference": 3.106009873467458,
+   "updates": 5645
+  },
+  {
+   "events": 723968,
+   "source": "text",
+   "loss": 2.58696996087383,
+   "reference": 3.1370569525571863,
+   "updates": 5653
+  },
+  {
+   "events": 724992,
+   "source": "text",
+   "loss": 2.7962761257658713,
+   "reference": 3.17138948196401,
+   "updates": 5661
+  },
+  {
+   "events": 726016,
+   "source": "text",
+   "loss": 2.7400550849270076,
+   "reference": 3.2150577709668604,
+   "updates": 5669
+  },
+  {
+   "events": 727040,
+   "source": "market",
+   "loss": -1.3935462055178505,
+   "reference": -1.2745506346717843,
+   "updates": 5677
+  },
+  {
+   "events": 728064,
+   "source": "weather",
+   "loss": -0.9212484225498656,
+   "reference": -2.4363463487840975,
+   "updates": 5685
+  },
+  {
+   "events": 729088,
+   "source": "audio",
+   "loss": 1.257874119775579,
+   "reference": 1.5263340288098624,
+   "updates": 5693
+  },
+  {
+   "events": 730112,
+   "source": "grid",
+   "loss": -0.34456727148744903,
+   "reference": -0.8998268468147275,
+   "updates": 5701
+  },
+  {
+   "events": 731136,
+   "source": "text",
+   "loss": 2.8524189173112973,
+   "reference": 3.1484892389329415,
+   "updates": 5709
+  },
+  {
+   "events": 732160,
+   "source": "weather",
+   "loss": -0.7694487522666122,
+   "reference": -2.37011289807482,
+   "updates": 5717
+  },
+  {
+   "events": 733184,
+   "source": "weather",
+   "loss": -1.0491319109289634,
+   "reference": -2.5612390551176745,
+   "updates": 5725
+  },
+  {
+   "events": 734208,
+   "source": "market",
+   "loss": -1.285844124363848,
+   "reference": -1.2131210624166944,
+   "updates": 5733
+  },
+  {
+   "events": 735232,
+   "source": "market",
+   "loss": -1.5719070494325251,
+   "reference": -1.421293597627508,
+   "updates": 5741
+  },
+  {
+   "events": 736256,
+   "source": "weather",
+   "loss": -0.9700915362232081,
+   "reference": -2.562490624154745,
+   "updates": 5749
+  },
+  {
+   "events": 737280,
+   "source": "body",
+   "loss": -0.8788097693393411,
+   "reference": -2.734694515759717,
+   "updates": 5757
+  },
+  {
+   "events": 738304,
+   "source": "grid",
+   "loss": -0.09453086651802778,
+   "reference": -0.8672920145371366,
+   "updates": 5765
+  },
+  {
+   "events": 739328,
+   "source": "market",
+   "loss": -1.5860499005395923,
+   "reference": -1.503939933819066,
+   "updates": 5773
+  },
+  {
+   "events": 740352,
+   "source": "body",
+   "loss": -0.9357038248872414,
+   "reference": -2.395883193006563,
+   "updates": 5781
+  },
+  {
+   "events": 741376,
+   "source": "market",
+   "loss": -1.40586584068933,
+   "reference": -1.4616943679367984,
+   "updates": 5789
+  },
+  {
+   "events": 742400,
+   "source": "body",
+   "loss": -1.12944644981485,
+   "reference": -2.572515614184529,
+   "updates": 5797
+  },
+  {
+   "events": 743424,
+   "source": "grid",
+   "loss": -0.4237121006119935,
+   "reference": -0.9815123605891004,
+   "updates": 5805
+  },
+  {
+   "events": 744448,
+   "source": "body",
+   "loss": -1.3203278697001224,
+   "reference": -2.8106468668779425,
+   "updates": 5813
+  },
+  {
+   "events": 745472,
+   "source": "weather",
+   "loss": -0.8636132894340562,
+   "reference": -2.857597072586949,
+   "updates": 5821
+  },
+  {
+   "events": 746496,
+   "source": "market",
+   "loss": -1.5742001679001305,
+   "reference": -1.587413851788231,
+   "updates": 5829
+  },
+  {
+   "events": 747520,
+   "source": "text",
+   "loss": 2.7435643189110124,
+   "reference": 3.1056752372581236,
+   "updates": 5837
+  },
+  {
+   "events": 748544,
+   "source": "body",
+   "loss": -0.956595995992302,
+   "reference": -2.403622979929972,
+   "updates": 5845
+  },
+  {
+   "events": 749568,
+   "source": "market",
+   "loss": -1.396517607333621,
+   "reference": -1.2745506614760296,
+   "updates": 5853
+  },
+  {
+   "events": 750592,
+   "source": "weather",
+   "loss": -0.9235947244555973,
+   "reference": -2.848901744854744,
+   "updates": 5861
+  },
+  {
+   "events": 751616,
+   "source": "market",
+   "loss": -1.3395973816491846,
+   "reference": -1.2131210926170881,
+   "updates": 5869
+  },
+  {
+   "events": 752640,
+   "source": "market",
+   "loss": -1.5699573795627657,
+   "reference": -1.4212935946918286,
+   "updates": 5877
+  },
+  {
+   "events": 753664,
+   "source": "weather",
+   "loss": -1.283977002751726,
+   "reference": -2.93051133252564,
+   "updates": 5885
+  },
+  {
+   "events": 754688,
+   "source": "grid",
+   "loss": -0.3595841768460559,
+   "reference": -0.9454649752387357,
+   "updates": 5893
+  },
+  {
+   "events": 755712,
+   "source": "text",
+   "loss": 2.7364139403798617,
+   "reference": 3.1130094931281844,
+   "updates": 5901
+  },
+  {
+   "events": 756736,
+   "source": "weather",
+   "loss": -1.307122313543914,
+   "reference": -2.8816575427894358,
+   "updates": 5909
+  },
+  {
+   "events": 757760,
+   "source": "text",
+   "loss": 2.674070813387516,
+   "reference": 3.066908724650992,
+   "updates": 5917
+  },
+  {
+   "events": 758784,
+   "source": "weather",
+   "loss": -0.9121001417743173,
+   "reference": -2.8921163460044457,
+   "updates": 5925
+  },
+  {
+   "events": 759808,
+   "source": "body",
+   "loss": 0.5242858872046554,
+   "reference": -2.7329485911003406,
+   "updates": 5933
+  },
+  {
+   "events": 760832,
+   "source": "text",
+   "loss": 2.7031843023432884,
+   "reference": 3.087517243021226,
+   "updates": 5941
+  },
+  {
+   "events": 761856,
+   "source": "grid",
+   "loss": -0.39732095573376114,
+   "reference": -0.9608397204899529,
+   "updates": 5949
+  },
+  {
+   "events": 762880,
+   "source": "market",
+   "loss": -1.5805673849567938,
+   "reference": -1.503939921558509,
+   "updates": 5957
+  },
+  {
+   "events": 763904,
+   "source": "market",
+   "loss": -1.4671915982228256,
+   "reference": -1.4616943624268608,
+   "updates": 5965
+  },
+  {
+   "events": 764928,
+   "source": "grid",
+   "loss": -0.4262702890237051,
+   "reference": -0.8550407208284816,
+   "updates": 5973
+  },
+  {
+   "events": 765952,
+   "source": "weather",
+   "loss": -0.9201854271292405,
+   "reference": -2.53480525240222,
+   "updates": 5981
+  },
+  {
+   "events": 766976,
+   "source": "audio",
+   "loss": 1.2367952663862525,
+   "reference": 0.06186698022974931,
+   "updates": 5989
+  },
+  {
+   "events": 768000,
+   "source": "grid",
+   "loss": -0.2531060325220409,
+   "reference": -0.8813925745696253,
+   "updates": 5997
+  },
+  {
+   "events": 769024,
+   "source": "grid",
+   "loss": -0.4345542012243442,
+   "reference": -0.9613007079166934,
+   "updates": 6005
+  },
+  {
+   "events": 770048,
+   "source": "grid",
+   "loss": -0.3055532572047923,
+   "reference": -0.8571744273974198,
+   "updates": 6013
+  },
+  {
+   "events": 771072,
+   "source": "text",
+   "loss": 2.915974834941153,
+   "reference": 3.1162310314991384,
+   "updates": 6021
+  },
+  {
+   "events": 772096,
+   "source": "grid",
+   "loss": -0.27597366145153046,
+   "reference": -0.863064872076661,
+   "updates": 6029
+  },
+  {
+   "events": 773120,
+   "source": "audio",
+   "loss": -1.0221531224706837,
+   "reference": -0.47399464833834476,
+   "updates": 6037
+  },
+  {
+   "events": 774144,
+   "source": "audio",
+   "loss": -2.062084690474876,
+   "reference": -0.5475450019166191,
+   "updates": 6045
+  },
+  {
+   "events": 775168,
+   "source": "audio",
+   "loss": -0.49079439643287515,
+   "reference": -0.2712921713055333,
+   "updates": 6053
+  },
+  {
+   "events": 776192,
+   "source": "audio",
+   "loss": 0.9718424168007687,
+   "reference": 0.4705534951459514,
+   "updates": 6061
+  },
+  {
+   "events": 777216,
+   "source": "weather",
+   "loss": -0.8390953010532485,
+   "reference": -2.5859045636510944,
+   "updates": 6069
+  },
+  {
+   "events": 778240,
+   "source": "grid",
+   "loss": 0.025857552984632548,
+   "reference": -0.8669624753082972,
+   "updates": 6077
+  },
+  {
+   "events": 779264,
+   "source": "weather",
+   "loss": -0.977096754174454,
+   "reference": -1.9123146270781082,
+   "updates": 6085
+  },
+  {
+   "events": 780288,
+   "source": "weather",
+   "loss": -0.8807339835034327,
+   "reference": -2.4630236799337553,
+   "updates": 6093
+  },
+  {
+   "events": 781312,
+   "source": "body",
+   "loss": 0.5134412050047672,
+   "reference": -2.3981034708529,
+   "updates": 6101
+  },
+  {
+   "events": 782336,
+   "source": "text",
+   "loss": 3.0392814550723415,
+   "reference": 3.1054846390459607,
+   "updates": 6109
+  },
+  {
+   "events": 783360,
+   "source": "grid",
+   "loss": -0.3092107131411126,
+   "reference": -0.851822871893928,
+   "updates": 6117
+  },
+  {
+   "events": 784384,
+   "source": "weather",
+   "loss": -0.7706352848908722,
+   "reference": -2.4216506450417046,
+   "updates": 6125
+  },
+  {
+   "events": 785408,
+   "source": "body",
+   "loss": -0.36803315360748456,
+   "reference": -2.8495446136673874,
+   "updates": 6133
+  },
+  {
+   "events": 786432,
+   "source": "weather",
+   "loss": -0.24999039303702375,
+   "reference": -2.409979050668949,
+   "updates": 6141
+  },
+  {
+   "events": 787456,
+   "source": "market",
+   "loss": -1.533254209351071,
+   "reference": -1.5874138345240232,
+   "updates": 6149
+  },
+  {
+   "events": 788480,
+   "source": "grid",
+   "loss": -0.5389586887545192,
+   "reference": -0.8408723333485713,
+   "updates": 6157
+  },
+  {
+   "events": 789504,
+   "source": "market",
+   "loss": -1.4168689094603906,
+   "reference": -1.2745506759766314,
+   "updates": 6165
+  },
+  {
+   "events": 790528,
+   "source": "market",
+   "loss": -1.3718873085701944,
+   "reference": -1.2131211089549472,
+   "updates": 6173
+  },
+  {
+   "events": 791552,
+   "source": "body",
+   "loss": -1.2316068943739538,
+   "reference": -1.8000084257422106,
+   "updates": 6181
+  },
+  {
+   "events": 792576,
+   "source": "body",
+   "loss": -0.4650678997220439,
+   "reference": -1.677078937664109,
+   "updates": 6189
+  },
+  {
+   "events": 793600,
+   "source": "audio",
+   "loss": 1.27248062458807,
+   "reference": -0.3046915148738374,
+   "updates": 6197
+  },
+  {
+   "events": 794624,
+   "source": "grid",
+   "loss": -0.48935444373711334,
+   "reference": -0.9007973887974692,
+   "updates": 6205
+  },
+  {
+   "events": 795648,
+   "source": "weather",
+   "loss": -0.9578681352516014,
+   "reference": -2.4412157719306284,
+   "updates": 6213
+  },
+  {
+   "events": 796672,
+   "source": "weather",
+   "loss": -0.7522894787516634,
+   "reference": -2.2269787903949547,
+   "updates": 6221
+  },
+  {
+   "events": 797696,
+   "source": "weather",
+   "loss": -0.7055722325760598,
+   "reference": -1.990584907778011,
+   "updates": 6229
+  },
+  {
+   "events": 798720,
+   "source": "grid",
+   "loss": -0.039100423689561126,
+   "reference": -0.9603486853367164,
+   "updates": 6237
+  },
+  {
+   "events": 799744,
+   "source": "body",
+   "loss": -1.2847421265764751,
+   "reference": -2.723155853221368,
+   "updates": 6245
+  },
+  {
+   "events": 800768,
+   "source": "body",
+   "loss": -0.687128107074443,
+   "reference": -2.526571617400778,
+   "updates": 6253
+  },
+  {
+   "events": 801792,
+   "source": "market",
+   "loss": -1.484908620494025,
+   "reference": -1.4212935931036703,
+   "updates": 6261
+  },
+  {
+   "events": 802816,
+   "source": "body",
+   "loss": -1.3607845510716743,
+   "reference": -2.628893653506399,
+   "updates": 6269
+  },
+  {
+   "events": 803840,
+   "source": "market",
+   "loss": -1.5523356539450788,
+   "reference": -1.5039399149257626,
+   "updates": 6277
+  },
+  {
+   "events": 804864,
+   "source": "weather",
+   "loss": -0.9629184744105714,
+   "reference": -2.410352929124434,
+   "updates": 6285
+  },
+  {
+   "events": 805888,
+   "source": "body",
+   "loss": -0.9037267967610205,
+   "reference": -2.5225769997485337,
+   "updates": 6293
+  },
+  {
+   "events": 806912,
+   "source": "weather",
+   "loss": -0.9862200018998237,
+   "reference": -2.6716743815845194,
+   "updates": 6301
+  },
+  {
+   "events": 807936,
+   "source": "market",
+   "loss": -1.3814772524553973,
+   "reference": -1.461694359446081,
+   "updates": 6309
+  },
+  {
+   "events": 808960,
+   "source": "text",
+   "loss": 2.80159734337758,
+   "reference": 3.159597525439749,
+   "updates": 6317
+  },
+  {
+   "events": 809984,
+   "source": "grid",
+   "loss": -0.4191168944494166,
+   "reference": -0.9412048156322839,
+   "updates": 6325
+  },
+  {
+   "events": 811008,
+   "source": "body",
+   "loss": -1.454612974290967,
+   "reference": -2.861690691815014,
+   "updates": 6333
+  },
+  {
+   "events": 812032,
+   "source": "weather",
+   "loss": -0.9177396051239413,
+   "reference": -2.8191183032800544,
+   "updates": 6341
+  },
+  {
+   "events": 813056,
+   "source": "market",
+   "loss": -1.4996971189448232,
+   "reference": -1.5874138251843968,
+   "updates": 6349
+  },
+  {
+   "events": 814080,
+   "source": "grid",
+   "loss": -0.3713424512525876,
+   "reference": -0.9186774016280187,
+   "updates": 6357
+  },
+  {
+   "events": 815104,
+   "source": "body",
+   "loss": -0.7262374159111005,
+   "reference": -2.4355373027560425,
+   "updates": 6365
+  },
+  {
+   "events": 816128,
+   "source": "grid",
+   "loss": -0.525526353465466,
+   "reference": -1.0412186944631658,
+   "updates": 6373
+  },
+  {
+   "events": 817152,
+   "source": "grid",
+   "loss": -0.4404791401800594,
+   "reference": -1.015305755847161,
+   "updates": 6381
+  },
+  {
+   "events": 818176,
+   "source": "weather",
+   "loss": -0.9436057066777721,
+   "reference": -2.417421421205185,
+   "updates": 6389
+  },
+  {
+   "events": 819200,
+   "source": "text",
+   "loss": 3.0303862536748056,
+   "reference": 3.127636182607264,
+   "updates": 6397
+  },
+  {
+   "events": 820224,
+   "source": "text",
+   "loss": 2.7025950807728805,
+   "reference": 3.1697278145246517,
+   "updates": 6405
+  },
+  {
+   "events": 821248,
+   "source": "weather",
+   "loss": -1.0055350687864575,
+   "reference": -2.5711315401988806,
+   "updates": 6413
+  },
+  {
+   "events": 822272,
+   "source": "text",
+   "loss": 2.8290997615695233,
+   "reference": 3.074326279200731,
+   "updates": 6421
+  },
+  {
+   "events": 823296,
+   "source": "text",
+   "loss": 2.634767944298801,
+   "reference": 3.0797867366059677,
+   "updates": 6429
+  },
+  {
+   "events": 824320,
+   "source": "text",
+   "loss": 2.646840050147148,
+   "reference": 3.0765708602676805,
+   "updates": 6437
+  },
+  {
+   "events": 825344,
+   "source": "text",
+   "loss": 2.586025798911578,
+   "reference": 3.048686014261958,
+   "updates": 6445
+  },
+  {
+   "events": 826368,
+   "source": "text",
+   "loss": 2.593608387687709,
+   "reference": 3.0839724530494648,
+   "updates": 6453
+  },
+  {
+   "events": 827392,
+   "source": "weather",
+   "loss": -0.8219946804538267,
+   "reference": -2.5380815232296547,
+   "updates": 6461
+  },
+  {
+   "events": 828416,
+   "source": "text",
+   "loss": 2.593618566461373,
+   "reference": 3.0015319028667236,
+   "updates": 6469
+  },
+  {
+   "events": 829440,
+   "source": "text",
+   "loss": 2.458429566177074,
+   "reference": 3.0365052465140474,
+   "updates": 6477
+  },
+  {
+   "events": 830464,
+   "source": "text",
+   "loss": 2.479438657290302,
+   "reference": 3.021559962660233,
+   "updates": 6485
+  },
+  {
+   "events": 831488,
+   "source": "grid",
+   "loss": -0.24087724714468095,
+   "reference": -0.9752713832830823,
+   "updates": 6493
+  },
+  {
+   "events": 832512,
+   "source": "market",
+   "loss": -1.409947550900597,
+   "reference": -1.274550683821197,
+   "updates": 6501
+  },
+  {
+   "events": 833536,
+   "source": "market",
+   "loss": -1.3652632973163463,
+   "reference": -1.2131211177934382,
+   "updates": 6509
+  },
+  {
+   "events": 834560,
+   "source": "weather",
+   "loss": -0.8471741809512423,
+   "reference": -2.24168752363367,
+   "updates": 6517
+  },
+  {
+   "events": 835584,
+   "source": "text",
+   "loss": 2.9686325973598287,
+   "reference": 3.060691660333493,
+   "updates": 6525
+  },
+  {
+   "events": 836608,
+   "source": "body",
+   "loss": -0.9631968455846618,
+   "reference": -2.5375947361720006,
+   "updates": 6533
+  },
+  {
+   "events": 837632,
+   "source": "grid",
+   "loss": -0.1908522401963637,
+   "reference": -0.9164574364638003,
+   "updates": 6541
+  },
+  {
+   "events": 838656,
+   "source": "market",
+   "loss": -1.5727700813578167,
+   "reference": -1.421293592244505,
+   "updates": 6549
+  },
+  {
+   "events": 839680,
+   "source": "market",
+   "loss": -1.5984399023745937,
+   "reference": -1.503939911337568,
+   "updates": 6557
+  },
+  {
+   "events": 840704,
+   "source": "weather",
+   "loss": -1.1226907839027263,
+   "reference": -2.6164841287283127,
+   "updates": 6565
+  },
+  {
+   "events": 841728,
+   "source": "body",
+   "loss": -0.7909174453193373,
+   "reference": -2.704708469692766,
+   "updates": 6573
+  },
+  {
+   "events": 842752,
+   "source": "body",
+   "loss": -0.15115403177918552,
+   "reference": -2.4281910857868643,
+   "updates": 6581
+  },
+  {
+   "events": 843776,
+   "source": "market",
+   "loss": -1.3942816260587279,
+   "reference": -1.461694357833531,
+   "updates": 6589
+  },
+  {
+   "events": 844800,
+   "source": "weather",
+   "loss": -1.0527582368081312,
+   "reference": -2.5645815210734937,
+   "updates": 6597
+  },
+  {
+   "events": 845824,
+   "source": "weather",
+   "loss": -0.6620781697965867,
+   "reference": -2.598242918778547,
+   "updates": 6605
+  },
+  {
+   "events": 846848,
+   "source": "body",
+   "loss": 0.40705352727763966,
+   "reference": -2.3482919695652087,
+   "updates": 6613
+  },
+  {
+   "events": 847872,
+   "source": "text",
+   "loss": 3.0450041269068606,
+   "reference": 3.072931666475302,
+   "updates": 6621
+  },
+  {
+   "events": 848896,
+   "source": "weather",
+   "loss": -0.7383298946337931,
+   "reference": -1.9224772630339872,
+   "updates": 6629
+  },
+  {
+   "events": 849920,
+   "source": "text",
+   "loss": 2.886304730171105,
+   "reference": 3.096119943028061,
+   "updates": 6637
+  },
+  {
+   "events": 850944,
+   "source": "grid",
+   "loss": -0.37730980749893206,
+   "reference": -1.0050423201022287,
+   "updates": 6645
+  },
+  {
+   "events": 851968,
+   "source": "market",
+   "loss": -1.6209077814060038,
+   "reference": -1.587413820131825,
+   "updates": 6653
+  },
+  {
+   "events": 852992,
+   "source": "market",
+   "loss": -1.4376998483055559,
+   "reference": -1.2745506880649633,
+   "updates": 6661
+  },
+  {
+   "events": 854016,
+   "source": "text",
+   "loss": 2.675006292280159,
+   "reference": 3.077812660465415,
+   "updates": 6669
+  },
+  {
+   "events": 855040,
+   "source": "market",
+   "loss": -1.3806922634378225,
+   "reference": -1.213121122574898,
+   "updates": 6677
+  },
+  {
+   "events": 856064,
+   "source": "body",
+   "loss": -1.111959428566479,
+   "reference": -2.51172027121544,
+   "updates": 6685
+  },
+  {
+   "events": 857088,
+   "source": "market",
+   "loss": -1.522656041700202,
+   "reference": -1.4212935917797127,
+   "updates": 6693
+  },
+  {
+   "events": 858112,
+   "source": "body",
+   "loss": -0.49793335272443073,
+   "reference": -1.9219486061532436,
+   "updates": 6701
+  },
+  {
+   "events": 859136,
+   "source": "audio",
+   "loss": -1.5560106995098977,
+   "reference": -0.5870348758826469,
+   "updates": 6709
+  },
+  {
+   "events": 860160,
+   "source": "body",
+   "loss": -1.0019050036239605,
+   "reference": -2.590072172575076,
+   "updates": 6717
+  },
+  {
+   "events": 861184,
+   "source": "audio",
+   "loss": -0.654880979848258,
+   "reference": -0.5941885767612957,
+   "updates": 6725
+  },
+  {
+   "events": 862208,
+   "source": "market",
+   "loss": -1.5037825675840395,
+   "reference": -1.5039399093964205,
+   "updates": 6733
+  },
+  {
+   "events": 863232,
+   "source": "body",
+   "loss": -1.3475752293852565,
+   "reference": -2.6793199587661674,
+   "updates": 6741
+  },
+  {
+   "events": 864256,
+   "source": "body",
+   "loss": -0.9561473783473957,
+   "reference": -2.1762273420887706,
+   "updates": 6749
+  },
+  {
+   "events": 865280,
+   "source": "audio",
+   "loss": 1.2275208344841744,
+   "reference": 1.2412169045775996,
+   "updates": 6757
+  },
+  {
+   "events": 866304,
+   "source": "grid",
+   "loss": -0.8758437534570476,
+   "reference": -1.1662583897192333,
+   "updates": 6765
+  },
+  {
+   "events": 867328,
+   "source": "body",
+   "loss": -0.7298833045085757,
+   "reference": -2.3587202753103567,
+   "updates": 6773
+  },
+  {
+   "events": 868352,
+   "source": "body",
+   "loss": -0.6814105961001076,
+   "reference": -2.658266910712582,
+   "updates": 6781
+  },
+  {
+   "events": 869376,
+   "source": "weather",
+   "loss": -0.4847698132215328,
+   "reference": -1.3861480210777697,
+   "updates": 6789
+  },
+  {
+   "events": 870400,
+   "source": "market",
+   "loss": -1.3518335284078944,
+   "reference": -1.461694356961172,
+   "updates": 6797
+  },
+  {
+   "events": 871424,
+   "source": "text",
+   "loss": 2.6498810670746025,
+   "reference": 3.0188274894559624,
+   "updates": 6805
+  },
+  {
+   "events": 872448,
+   "source": "body",
+   "loss": -1.028078103110147,
+   "reference": -2.3633810119961343,
+   "updates": 6813
+  },
+  {
+   "events": 873472,
+   "source": "body",
+   "loss": -0.163791755749628,
+   "reference": -2.6387880152432563,
+   "updates": 6821
+  },
+  {
+   "events": 874496,
+   "source": "text",
+   "loss": 3.0297746490396094,
+   "reference": 3.052529452442932,
+   "updates": 6829
+  },
+  {
+   "events": 875520,
+   "source": "grid",
+   "loss": -0.3701704370668324,
+   "reference": -0.9807507750020176,
+   "updates": 6837
+  },
+  {
+   "events": 876544,
+   "source": "body",
+   "loss": -0.8638282789281675,
+   "reference": -2.516992892677495,
+   "updates": 6845
+  },
+  {
+   "events": 877568,
+   "source": "audio",
+   "loss": 1.1800160179704164,
+   "reference": 0.047542382458052417,
+   "updates": 6853
+  },
+  {
+   "events": 878592,
+   "source": "body",
+   "loss": -0.6066238525583287,
+   "reference": -2.5034869438868323,
+   "updates": 6861
+  },
+  {
+   "events": 879616,
+   "source": "market",
+   "loss": -1.5630186619041524,
+   "reference": -1.5874138173984758,
+   "updates": 6869
+  },
+  {
+   "events": 880640,
+   "source": "weather",
+   "loss": -0.8214406049141871,
+   "reference": -2.146457443833136,
+   "updates": 6877
+  },
+  {
+   "events": 881664,
+   "source": "body",
+   "loss": -0.12370329497029786,
+   "reference": -2.4708214389909537,
+   "updates": 6885
+  },
+  {
+   "events": 882688,
+   "source": "market",
+   "loss": -1.3403395094904909,
+   "reference": -1.2745506903607635,
+   "updates": 6893
+  },
+  {
+   "events": 883712,
+   "source": "market",
+   "loss": -1.369225603654968,
+   "reference": -1.213121125161581,
+   "updates": 6901
+  },
+  {
+   "events": 884736,
+   "source": "market",
+   "loss": -1.594684355631216,
+   "reference": -1.4212935915282705,
+   "updates": 6909
+  },
+  {
+   "events": 885760,
+   "source": "grid",
+   "loss": -0.1085681979795936,
+   "reference": -0.5996009934889286,
+   "updates": 6917
+  },
+  {
+   "events": 886784,
+   "source": "market",
+   "loss": -1.605135573782718,
+   "reference": -1.5039399083462948,
+   "updates": 6925
+  },
+  {
+   "events": 887808,
+   "source": "weather",
+   "loss": -1.0732096438614462,
+   "reference": -2.384876715110294,
+   "updates": 6933
+  },
+  {
+   "events": 888832,
+   "source": "weather",
+   "loss": -0.6748019992479612,
+   "reference": -2.3500172652347473,
+   "updates": 6941
+  },
+  {
+   "events": 889856,
+   "source": "text",
+   "loss": 2.6691065554477973,
+   "reference": 3.06389568067206,
+   "updates": 6949
+  },
+  {
+   "events": 890880,
+   "source": "body",
+   "loss": -1.119244532022094,
+   "reference": -2.573135334259346,
+   "updates": 6957
+  },
+  {
+   "events": 891904,
+   "source": "body",
+   "loss": -0.1982396061662257,
+   "reference": -2.631020917742238,
+   "updates": 6965
+  },
+  {
+   "events": 892928,
+   "source": "text",
+   "loss": 2.6978113681834657,
+   "reference": 3.1550644918217894,
+   "updates": 6973
+  },
+  {
+   "events": 893952,
+   "source": "market",
+   "loss": -1.4684610746289763,
+   "reference": -1.4616943564892444,
+   "updates": 6981
+  },
+  {
+   "events": 894976,
+   "source": "market",
+   "loss": -1.6469527051572186,
+   "reference": -1.5874138159197844,
+   "updates": 6989
+  },
+  {
+   "events": 896000,
+   "source": "market",
+   "loss": -1.45582677949551,
+   "reference": -1.2745506916027514,
+   "updates": 6997
+  },
+  {
+   "events": 897024,
+   "source": "weather",
+   "loss": -0.9102506551425904,
+   "reference": -2.5720739918049977,
+   "updates": 7005
+  },
+  {
+   "events": 898048,
+   "source": "text",
+   "loss": 2.6461949612712488,
+   "reference": 3.1491990938879817,
+   "updates": 7013
+  },
+  {
+   "events": 899072,
+   "source": "grid",
+   "loss": -0.06566426954010751,
+   "reference": -0.7822445885624899,
+   "updates": 7021
+  },
+  {
+   "events": 900096,
+   "source": "market",
+   "loss": -1.398365787543412,
+   "reference": -1.21312112656093,
+   "updates": 7029
+  },
+  {
+   "events": 901120,
+   "source": "audio",
+   "loss": -1.0397834682740381,
+   "reference": -0.5084315501778514,
+   "updates": 7037
+  },
+  {
+   "events": 902144,
+   "source": "market",
+   "loss": -1.593326750342385,
+   "reference": -1.4212935913922429,
+   "updates": 7045
+  },
+  {
+   "events": 903168,
+   "source": "audio",
+   "loss": -1.653128257966273,
+   "reference": -0.5689750817980043,
+   "updates": 7053
+  },
+  {
+   "events": 904192,
+   "source": "text",
+   "loss": 3.0188416490000236,
+   "reference": 3.1702147215828793,
+   "updates": 7061
+  },
+  {
+   "events": 905216,
+   "source": "audio",
+   "loss": 1.1802011640957062,
+   "reference": 2.4984940965185554,
+   "updates": 7069
+  },
+  {
+   "events": 906240,
+   "source": "body",
+   "loss": -0.0971231213993633,
+   "reference": -2.501380359178317,
+   "updates": 7077
+  },
+  {
+   "events": 907264,
+   "source": "text",
+   "loss": 2.6407569130969932,
+   "reference": 3.088501072015818,
+   "updates": 7085
+  },
+  {
+   "events": 908288,
+   "source": "text",
+   "loss": 2.546676854180987,
+   "reference": 3.1222789206761963,
+   "updates": 7093
+  },
+  {
+   "events": 909312,
+   "source": "weather",
+   "loss": -0.838776690040504,
+   "reference": -2.5108477161032394,
+   "updates": 7101
+  },
+  {
+   "events": 910336,
+   "source": "weather",
+   "loss": -0.8289054557387772,
+   "reference": -2.0640897954583535,
+   "updates": 7109
+  },
+  {
+   "events": 911360,
+   "source": "grid",
+   "loss": 0.3326779569798646,
+   "reference": -0.6446946111572232,
+   "updates": 7117
+  },
+  {
+   "events": 912384,
+   "source": "weather",
+   "loss": -0.996927290121846,
+   "reference": -2.7317976673545723,
+   "updates": 7125
+  },
+  {
+   "events": 913408,
+   "source": "text",
+   "loss": 2.9254598768020514,
+   "reference": 3.2231092476568004,
+   "updates": 7133
+  },
+  {
+   "events": 914432,
+   "source": "grid",
+   "loss": -0.048184688563480904,
+   "reference": -0.62202689677818,
+   "updates": 7141
+  },
+  {
+   "events": 915456,
+   "source": "text",
+   "loss": 2.78658394239028,
+   "reference": 3.111035665174551,
+   "updates": 7149
+  },
+  {
+   "events": 916480,
+   "source": "grid",
+   "loss": 0.04488059215736939,
+   "reference": -0.7137265318673391,
+   "updates": 7157
+  },
+  {
+   "events": 917504,
+   "source": "market",
+   "loss": -1.5984312420314382,
+   "reference": -1.5039399077781912,
+   "updates": 7165
+  },
+  {
+   "events": 918528,
+   "source": "grid",
+   "loss": 0.07822390670480672,
+   "reference": -0.7162663037554177,
+   "updates": 7173
+  },
+  {
+   "events": 919552,
+   "source": "market",
+   "loss": -1.420335264730113,
+   "reference": -1.461694356233937,
+   "updates": 7181
+  },
+  {
+   "events": 920576,
+   "source": "market",
+   "loss": -1.6517409829803,
+   "reference": -1.587413815119837,
+   "updates": 7189
+  },
+  {
+   "events": 921600,
+   "source": "body",
+   "loss": -1.2505355602015698,
+   "reference": -2.5651942022697565,
+   "updates": 7197
+  },
+  {
+   "events": 922624,
+   "source": "market",
+   "loss": -1.4085739529818966,
+   "reference": -1.274550692274641,
+   "updates": 7205
+  },
+  {
+   "events": 923648,
+   "source": "body",
+   "loss": -1.1102349081509857,
+   "reference": -2.5236933726523563,
+   "updates": 7213
+  },
+  {
+   "events": 924672,
+   "source": "market",
+   "loss": -1.3475825278392222,
+   "reference": -1.2131211273179547,
+   "updates": 7221
+  },
+  {
+   "events": 925696,
+   "source": "grid",
+   "loss": -0.13740196050400755,
+   "reference": -0.7139365114619783,
+   "updates": 7229
+  },
+  {
+   "events": 926720,
+   "source": "body",
+   "loss": -1.013825006717525,
+   "reference": -2.717869396327541,
+   "updates": 7237
+  },
+  {
+   "events": 927744,
+   "source": "weather",
+   "loss": -0.671473713619207,
+   "reference": -2.5091804696148388,
+   "updates": 7245
+  },
+  {
+   "events": 928768,
+   "source": "weather",
+   "loss": -0.8487768686707113,
+   "reference": -2.4304119673061058,
+   "updates": 7253
+  },
+  {
+   "events": 929792,
+   "source": "text",
+   "loss": 3.0315227633109316,
+   "reference": 3.0192828353663033,
+   "updates": 7261
+  },
+  {
+   "events": 930816,
+   "source": "text",
+   "loss": 2.5259408300335053,
+   "reference": 3.0777830547028495,
+   "updates": 7269
+  },
+  {
+   "events": 931840,
+   "source": "weather",
+   "loss": -1.0159725025396256,
+   "reference": -2.706503746722502,
+   "updates": 7277
+  },
+  {
+   "events": 932864,
+   "source": "weather",
+   "loss": -0.8677649549886155,
+   "reference": -2.6068195722184098,
+   "updates": 7285
+  },
+  {
+   "events": 933888,
+   "source": "body",
+   "loss": -0.24353940924117978,
+   "reference": -2.2367767930592177,
+   "updates": 7293
+  },
+  {
+   "events": 934912,
+   "source": "weather",
+   "loss": -0.7217841795431923,
+   "reference": -2.6793908723359348,
+   "updates": 7301
+  },
+  {
+   "events": 935936,
+   "source": "grid",
+   "loss": -0.001401683267658882,
+   "reference": -0.6573260982535676,
+   "updates": 7309
+  },
+  {
+   "events": 936960,
+   "source": "text",
+   "loss": 2.8674807894567493,
+   "reference": 3.1536948564422214,
+   "updates": 7317
+  },
+  {
+   "events": 937984,
+   "source": "market",
+   "loss": -1.5972282902138204,
+   "reference": -1.421293591318656,
+   "updates": 7325
+  },
+  {
+   "events": 939008,
+   "source": "market",
+   "loss": -1.6203058471182885,
+   "reference": -1.503939907470862,
+   "updates": 7333
+  },
+  {
+   "events": 940032,
+   "source": "grid",
+   "loss": -0.0793862365694622,
+   "reference": -0.6636952709268926,
+   "updates": 7341
+  },
+  {
+   "events": 941056,
+   "source": "market",
+   "loss": -1.4938706625553095,
+   "reference": -1.4616943560958207,
+   "updates": 7349
+  },
+  {
+   "events": 942080,
+   "source": "text",
+   "loss": 2.7520652978937505,
+   "reference": 3.1041027369403453,
+   "updates": 7357
+  },
+  {
+   "events": 943104,
+   "source": "text",
+   "loss": 2.5165529142541345,
+   "reference": 3.049699903443491,
+   "updates": 7365
+  },
+  {
+   "events": 944128,
+   "source": "grid",
+   "loss": -0.10951723990797291,
+   "reference": -0.6367704992094064,
+   "updates": 7373
+  },
+  {
+   "events": 945152,
+   "source": "text",
+   "loss": 2.7880872459936654,
+   "reference": 3.1151398116762254,
+   "updates": 7381
+  },
+  {
+   "events": 946176,
+   "source": "market",
+   "loss": -1.6333353063582763,
+   "reference": -1.5874138146870849,
+   "updates": 7389
+  },
+  {
+   "events": 947200,
+   "source": "weather",
+   "loss": -0.985384787657722,
+   "reference": -2.642600120828199,
+   "updates": 7397
+  },
+  {
+   "events": 948224,
+   "source": "text",
+   "loss": 2.941453392370022,
+   "reference": 3.1485820393701083,
+   "updates": 7405
+  },
+  {
+   "events": 949248,
+   "source": "market",
+   "loss": -1.4385252942521447,
+   "reference": -1.2745506926381225,
+   "updates": 7413
+  },
+  {
+   "events": 950272,
+   "source": "grid",
+   "loss": 0.09644211467849573,
+   "reference": -0.2685703930438178,
+   "updates": 7421
+  },
+  {
+   "events": 951296,
+   "source": "weather",
+   "loss": -1.047254189710202,
+   "reference": -2.4347471601944886,
+   "updates": 7429
+  },
+  {
+   "events": 952320,
+   "source": "market",
+   "loss": -1.3622124283410812,
+   "reference": -1.213121127727488,
+   "updates": 7437
+  },
+  {
+   "events": 953344,
+   "source": "audio",
+   "loss": 0.5859901655837803,
+   "reference": -0.13470503639486536,
+   "updates": 7445
+  },
+  {
+   "events": 954368,
+   "source": "weather",
+   "loss": -0.8660157410440661,
+   "reference": -2.469896810253172,
+   "updates": 7453
+  },
+  {
+   "events": 955392,
+   "source": "text",
+   "loss": 2.7167880903580226,
+   "reference": 3.133138762238747,
+   "updates": 7461
+  },
+  {
+   "events": 956416,
+   "source": "text",
+   "loss": 2.6478532822511625,
+   "reference": 3.194359642524578,
+   "updates": 7469
+  },
+  {
+   "events": 957440,
+   "source": "text",
+   "loss": 2.583670905834879,
+   "reference": 3.1236566310172926,
+   "updates": 7477
+  },
+  {
+   "events": 958464,
+   "source": "text",
+   "loss": 2.577626798010897,
+   "reference": 3.1802042900628074,
+   "updates": 7485
+  },
+  {
+   "events": 959488,
+   "source": "text",
+   "loss": 2.626754707758664,
+   "reference": 3.1416095793509347,
+   "updates": 7493
+  },
+  {
+   "events": 960512,
+   "source": "text",
+   "loss": 2.5716198591690045,
+   "reference": 3.1308904079762248,
+   "updates": 7501
+  },
+  {
+   "events": 961536,
+   "source": "body",
+   "loss": -1.0368800025614746,
+   "reference": -2.623239228941554,
+   "updates": 7509
+  },
+  {
+   "events": 962560,
+   "source": "text",
+   "loss": 2.704164888491505,
+   "reference": 3.0910380070890753,
+   "updates": 7517
+  },
+  {
+   "events": 963584,
+   "source": "weather",
+   "loss": -1.0957531855015077,
+   "reference": -2.609620833535417,
+   "updates": 7525
+  },
+  {
+   "events": 964608,
+   "source": "text",
+   "loss": 2.6189258447266184,
+   "reference": 3.1210080040934103,
+   "updates": 7533
+  },
+  {
+   "events": 965632,
+   "source": "body",
+   "loss": -1.1512463242728472,
+   "reference": -2.62740022771983,
+   "updates": 7541
+  },
+  {
+   "events": 966656,
+   "source": "weather",
+   "loss": -1.0881797692328519,
+   "reference": -2.685997345489364,
+   "updates": 7549
+  },
+  {
+   "events": 967680,
+   "source": "body",
+   "loss": -0.7480224115861347,
+   "reference": -1.126398730651154,
+   "updates": 7557
+  },
+  {
+   "events": 968704,
+   "source": "weather",
+   "loss": -0.9753862994077735,
+   "reference": -2.7013173970419215,
+   "updates": 7565
+  },
+  {
+   "events": 969728,
+   "source": "body",
+   "loss": -0.4087661186368905,
+   "reference": -2.3177911016520865,
+   "updates": 7573
+  },
+  {
+   "events": 970752,
+   "source": "audio",
+   "loss": -0.2254210165499444,
+   "reference": -0.3874496672369241,
+   "updates": 7581
+  },
+  {
+   "events": 971776,
+   "source": "text",
+   "loss": 2.7598638452764135,
+   "reference": 3.0819803693760233,
+   "updates": 7589
+  },
+  {
+   "events": 972800,
+   "source": "audio",
+   "loss": -1.2929001666975068,
+   "reference": -0.2817464802566532,
+   "updates": 7597
+  },
+  {
+   "events": 973824,
+   "source": "grid",
+   "loss": 0.08850422861803509,
+   "reference": -0.6194602280866132,
+   "updates": 7605
+  },
+  {
+   "events": 974848,
+   "source": "audio",
+   "loss": 0.7294794596230076,
+   "reference": 0.22856799937104416,
+   "updates": 7613
+  },
+  {
+   "events": 975872,
+   "source": "weather",
+   "loss": -0.9909301309294278,
+   "reference": -2.5928298060257036,
+   "updates": 7621
+  },
+  {
+   "events": 976896,
+   "source": "grid",
+   "loss": 0.1573292092311931,
+   "reference": -0.599254058481207,
+   "updates": 7629
+  },
+  {
+   "events": 977920,
+   "source": "text",
+   "loss": 2.68506196924136,
+   "reference": 3.101394163631215,
+   "updates": 7637
+  },
+  {
+   "events": 978944,
+   "source": "text",
+   "loss": 2.5266644565272145,
+   "reference": 3.090554607284034,
+   "updates": 7645
+  },
+  {
+   "events": 979968,
+   "source": "body",
+   "loss": -1.3136065818882798,
+   "reference": -2.6047312271465626,
+   "updates": 7653
+  },
+  {
+   "events": 980992,
+   "source": "text",
+   "loss": 2.88858413916023,
+   "reference": 3.0934420224199406,
+   "updates": 7661
+  },
+  {
+   "events": 982016,
+   "source": "body",
+   "loss": -1.37880153585661,
+   "reference": -2.8430423677456567,
+   "updates": 7669
+  },
+  {
+   "events": 983040,
+   "source": "grid",
+   "loss": -0.15282723271121768,
+   "reference": -0.9088330744255549,
+   "updates": 7677
+  },
+  {
+   "events": 984064,
+   "source": "body",
+   "loss": -1.0298302414348655,
+   "reference": -2.5903634185242477,
+   "updates": 7685
+  },
+  {
+   "events": 985088,
+   "source": "weather",
+   "loss": -0.8740612360353452,
+   "reference": -2.438140499370746,
+   "updates": 7693
+  },
+  {
+   "events": 986112,
+   "source": "body",
+   "loss": -0.8452828983827203,
+   "reference": -2.8352767306620614,
+   "updates": 7701
+  },
+  {
+   "events": 987136,
+   "source": "grid",
+   "loss": -0.10982386445334669,
+   "reference": -0.6948368926996596,
+   "updates": 7709
+  },
+  {
+   "events": 988160,
+   "source": "grid",
+   "loss": -0.20725143049332928,
+   "reference": -0.8605861616293222,
+   "updates": 7717
+  },
+  {
+   "events": 989184,
+   "source": "body",
+   "loss": -0.4895692406807939,
+   "reference": -2.586249683991232,
+   "updates": 7725
+  },
+  {
+   "events": 990208,
+   "source": "market",
+   "loss": -1.5367747013820008,
+   "reference": -1.4212935912788445,
+   "updates": 7733
+  },
+  {
+   "events": 991232,
+   "source": "weather",
+   "loss": -0.7632753062800361,
+   "reference": -2.161857730278329,
+   "updates": 7741
+  },
+  {
+   "events": 992256,
+   "source": "grid",
+   "loss": 0.08623129293755483,
+   "reference": -0.577432671840296,
+   "updates": 7749
+  },
+  {
+   "events": 993280,
+   "source": "market",
+   "loss": -1.5877455054305756,
+   "reference": -1.5039399073046014,
+   "updates": 7757
+  },
+  {
+   "events": 994304,
+   "source": "grid",
+   "loss": -0.4599073957048745,
+   "reference": -0.9127795790545766,
+   "updates": 7765
+  },
+  {
+   "events": 995328,
+   "source": "grid",
+   "loss": -0.0454376197660622,
+   "reference": -0.7257699440232308,
+   "updates": 7773
+  },
+  {
+   "events": 996352,
+   "source": "body",
+   "loss": -1.2155453578141078,
+   "reference": -2.728579255552898,
+   "updates": 7781
+  },
+  {
+   "events": 997376,
+   "source": "market",
+   "loss": -1.428197672092665,
+   "reference": -1.4616943560211029,
+   "updates": 7789
+  },
+  {
+   "events": 998400,
+   "source": "body",
+   "loss": -1.1681761984209516,
+   "reference": -2.598029121500735,
+   "updates": 7797
+  },
+  {
+   "events": 999424,
+   "source": "body",
+   "loss": -0.720397559069653,
+   "reference": -2.5172827942317637,
+   "updates": 7805
+  },
+  {
+   "events": 1000448,
+   "source": "audio",
+   "loss": 0.9440614160670862,
+   "reference": -0.154329202696569,
+   "updates": 7813
+  }
+ ],
+ "probes": [
+  {
+   "events": 0,
+   "loss": {
+    "weather": -0.8227153420448303,
+    "grid": 0.04843704029917717,
+    "market": -0.3542685806751251,
+    "audio": -1.7631934881210327,
+    "text": 5.047795295715332,
+    "body": -0.7629563212394714
+   }
+  },
+  {
+   "events": 200000,
+   "minutes": 36.4140544851621,
+   "loss": {
+    "weather": -0.9201453328132629,
+    "grid": -0.03807193413376808,
+    "market": -0.6360064148902893,
+    "audio": -1.8771404027938843,
+    "text": 4.052303791046143,
+    "body": -0.9180446267127991
+   }
+  },
+  {
+   "events": 400000,
+   "minutes": 72.62427936792373,
+   "loss": {
+    "weather": -0.9410445690155029,
+    "grid": -0.05466513708233833,
+    "market": -0.6527062058448792,
+    "audio": -1.9162787199020386,
+    "text": 3.6051177978515625,
+    "body": -1.102458119392395
+   }
+  },
+  {
+   "events": 600000,
+   "minutes": 108.77795981963476,
+   "loss": {
+    "weather": -0.998259425163269,
+    "grid": -0.07609827071428299,
+    "market": -0.6198174953460693,
+    "audio": -1.9387221336364746,
+    "text": 3.3450403213500977,
+    "body": -1.1147065162658691
+   }
+  },
+  {
+   "events": 800000,
+   "minutes": 144.8469978650411,
+   "loss": {
+    "weather": -1.0387136936187744,
+    "grid": -0.09505413472652435,
+    "market": -0.5517454147338867,
+    "audio": -1.9306694269180298,
+    "text": 3.470125913619995,
+    "body": -1.120452642440796
+   }
+  },
+  {
+   "events": 1000000,
+   "minutes": 181.42765556176502,
+   "loss": {
+    "weather": -1.0763795375823975,
+    "grid": -0.11398541182279587,
+    "market": -0.5282171368598938,
+    "audio": -1.9315009117126465,
+    "text": 3.2024261951446533,
+    "body": -1.1311442852020264
+   }
+  },
+  {
+   "events": 1000448,
+   "minutes": 181.53011600573856,
+   "loss": {
+    "weather": -1.0762816667556763,
+    "grid": -0.11453024297952652,
+    "market": -0.5254380106925964,
+    "audio": -1.9315264225006104,
+    "text": 3.2678568363189697,
+    "body": -1.1317275762557983
+   }
+  }
+ ],
+ "lived_events": 1000448,
+ "updates": 7813,
+ "minutes": 181.57047794262567,
+ "attention_share": {
+  "weather": 0.19754350051177072,
+  "grid": 0.1780962128966223,
+  "market": 0.1750255885363357,
+  "audio": 0.09109518935516889,
+  "text": 0.19242579324462641,
+  "body": 0.16581371545547594
+ }
+}
