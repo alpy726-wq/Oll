@@ -1,3 +1,4 @@
+import math
 """Exactness of OneMachine (the full machine): vectorized codes, streaming == full pass (incl. memory), invertibility."""
 import math
 import numpy as np
@@ -189,3 +190,36 @@ def test_query_head_streaming_peek_and_state_independence():
             _, st_prev = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st_prev, t_in=t_in[:, t], t_out=t_out[:, t])
         o7, _ = m.step(x[:, -1], s[:, -1], dt[:, -1], torch.full((B,), 7.0), st_prev, t_in=t_in[:, -1], t_out=t_in[:, -1] + 7.0)
         assert torch.allclose(o7, pk[:, 1], atol=1e-4)
+
+
+def test_seasonal_memory_streaming_equals_full_and_recalls_same_hour():
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(4)
+    for qh in (False, True):
+        m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=64, clock=True, seasonal=True, query_head=qh).eval()
+        B, T = 2, 30
+        s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+        dt = torch.ones(B, T); q = torch.ones(B, T) * (5.0 if qh else 1.0)
+        t_in = 4e5 + torch.cumsum(dt.double(), 1); t_out = t_in + q.double()
+        t_in[1, :4] = float("nan"); t_out[1, :4] = float("nan")
+        with torch.no_grad():
+            h = m(x, s, dt, q, t_in=t_in, t_out=t_out)
+            st = m.init_state(B); hs = []
+            for t in range(T):
+                o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
+            assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+            if qh:  # peek == step read-out, seasonal part included
+                pk = m.peek(st, torch.tensor([[5.0]] * B), t_out=t_out[:, -1:])
+                assert torch.allclose(pk[:, 0], hs[-1], atol=1e-4)
+    # recall: a value seen at 15:00 on earlier days is what the seasonal read returns at 15:00 today
+    m = OneMachine(STREAMS_REAL, R=64, L=1, M=4, RM=64, clock=True, seasonal=True).eval()
+    t = torch.arange(0, 24 * 5, dtype=torch.float64)[None] + 4e5 * 24  # hourly, five days, midnight aligned
+    xv = torch.where((t % 24) == 15, torch.tensor(0.7, dtype=torch.float64), torch.tensor(-0.5, dtype=torch.float64))
+    s = torch.full(t.shape, 3)
+    with torch.no_grad():
+        r = m.seasonal_read(m.phases(xv, s), t, t + 1.0)  # each position asks about the next hour
+        c = torch.complex(r[..., :64], r[..., 64:]).double() * torch.exp(-1j * m.psi[3])
+        grid = torch.linspace(-1.2, 1.2, 241, dtype=torch.float64)
+        i = 24 * 4 + 14  # day 5, 14:00, asking about 15:00
+        dens = (c[0, i][None] * torch.exp(-1j * 2 * math.pi * grid[:, None] * m.f / 2.0)).sum(-1).abs() ** 2
+        assert abs(float(grid[dens.argmax()]) - 0.7) < 0.05

@@ -99,8 +99,13 @@ class OneBranch(nn.Module):
 
 class OneMachine(nn.Module):
     def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,),
-                 anticipate=False, clock=False, query_head=False):
+                 anticipate=False, clock=False, query_head=False, seasonal=False):
         super().__init__()
+        # seasonal memory ("time cells"): every event's phase code is bound to the phase of its moment on the day and
+        # week circles (Prop. 1 binding, Fejer-weighted harmonics so the kernel is non-negative); reading with the phase
+        # of the asked moment returns what was there at the same time of day / week before (normalised, decayed).
+        # Linear in the stored pairs, so streaming keeps a constant-size state. Needs absolute times (clock data).
+        self.seasonal = seasonal
         # query head (Sec. 5.2 read-out at any time): the trunk runs at q = 0, so its state never depends on what is
         # asked; one extra continuous-time branch reads the state out at the asked moment t+q (and, with the clock, at
         # that moment's calendar phase). Any future moment can be asked directly, without feeding predictions back.
@@ -151,6 +156,13 @@ class OneMachine(nn.Module):
             g = torch.Generator().manual_seed(777)
             self.clock_in = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
             self.clock_out = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
+        if seasonal:
+            H = 48
+            w = torch.tensor([1 - n / (H + 1) for n in range(1, H + 1)], dtype=torch.float64)
+            self.register_buffer("sea_n", torch.arange(1, H + 1, dtype=torch.float64), persistent=False)
+            self.register_buffer("sea_w", torch.cat([w, w]).sqrt(), persistent=False)
+            self.sea_logmu = nn.Parameter(torch.tensor(math.log(1.0 / (24 * 14))))  # forgetting per hour (two weeks)
+            self.sea_gain = nn.Parameter(torch.full((2 * R,), 0.1))
         if query_head:
             self.QF = OneBranch(R, 2 * (seed * 100 + 95), M)
             self.QF.conv.qmax = 1e4
@@ -274,6 +286,26 @@ class OneMachine(nn.Module):
                 e = e + self.clock_code(t_out) @ self.clock_out.T
         return e
 
+    def sea_key(self, t):
+        """(..., 2H) complex key of absolute time t (hours) on the day and week circles; zero where t is NaN"""
+        ok = torch.isfinite(t)
+        tt = torch.where(ok, t, torch.zeros_like(t)).to(torch.float64)[..., None]
+        ph = torch.cat([2 * math.pi * torch.frac(tt * self.sea_n / 24.0), 2 * math.pi * torch.frac(tt * self.sea_n / 168.0)], -1)
+        return torch.polar(self.sea_w.expand(ph.shape), ph) * ok[..., None]
+
+    def seasonal_read(self, ph, t_in, t_out):
+        """parallel form: r_i = sum_{j<=i} W_ij v_j / sum_j W_ij, W_ij = decay(t_i - t_j) * (1 + Re<k(t_out_i), k(t_j)>)"""
+        v = torch.polar(torch.ones_like(ph), ph)  # (B,T,R) complex128
+        kq, kk = self.sea_key(t_out), self.sea_key(t_in)
+        K = 1.0 + (kq @ kk.conj().transpose(1, 2)).real  # (B,T,T) >= 0 (two Fejer kernels)
+        ti = torch.where(torch.isfinite(t_in), t_in, torch.zeros_like(t_in)).to(torch.float64)
+        age = (ti[:, :, None] - ti[:, None, :]).clamp(min=0)
+        T = t_in.shape[1]
+        ok = torch.isfinite(t_in)[:, None, :] & torch.isfinite(t_out)[:, :, None]
+        W = K * torch.exp(-self.sea_logmu.exp().double() * age) * torch.tril(torch.ones(T, T, dtype=torch.bool, device=ph.device)) * ok
+        r = (W.to(v.dtype) @ v) / (W.sum(-1, keepdim=True) + 1e-6)
+        return torch.cat([r.real, r.imag], -1).float()
+
     def query_features(self, h0, dt, q, t_out=None):
         x1, x2 = h0[..., : self.R], h0[..., self.R:]
         hq = torch.cat([x1 + self.QF(x2, dt, q), x2], -1)
@@ -293,7 +325,10 @@ class OneMachine(nn.Module):
         hq = torch.cat([x1[:, None] + f, x2[:, None].expand_as(f)], -1)
         if self.clock and t_out is not None:
             hq = hq + self.clock_code(t_out) @ self.clock_out.T
-        return self.features(hq)
+        h = self.features(hq)
+        if self.seasonal and t_out is not None and "sP" in st:
+            h = h + self.sea_gain * self._seasonal_query(st, t_out)
+        return h
 
     def trunk_from(self, e, dt, q):
         x1, x2 = e[..., : self.R], e[..., self.R:]
@@ -326,8 +361,12 @@ class OneMachine(nn.Module):
         """value features (asked at time q) and anticipation features (never see q)"""
         e = self.embed(x, s, dt, wg, t_in, t_out)
         if self.query_head:
-            return self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out), self.anticipation(e, dt)
-        return self.features(self.trunk_from(e, dt, q)), self.anticipation(e, dt)
+            h = self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out)
+        else:
+            h = self.features(self.trunk_from(e, dt, q))
+        if self.seasonal and t_in is not None:
+            h = h + self.sea_gain * self.seasonal_read(self.phases(x, s), t_in, t_out)
+        return h, self.anticipation(e, dt)
 
     @staticmethod
     def when_value(q):
@@ -346,8 +385,12 @@ class OneMachine(nn.Module):
         t_in / t_out (optional, B,T): absolute time in hours of each event / of the event being predicted (clock)."""
         e = self.embed(x, s, dt, wg, t_in, t_out)
         if self.query_head:
-            return self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out)
-        return self.features(self.trunk_from(e, dt, q))
+            h = self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out)
+        else:
+            h = self.features(self.trunk_from(e, dt, q))
+        if self.seasonal and t_in is not None:
+            h = h + self.sea_gain * self.seasonal_read(self.phases(x, s), t_in, t_out)
+        return h
 
     # ------------------------------------------------------------------ output
     def coeffs(self, h, s_out):
@@ -400,6 +443,11 @@ class OneMachine(nn.Module):
         no = len(self.mem_orders)
         z = lambda: torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev)
         extra = {"qconv": z()} if self.query_head else {}
+        if self.seasonal:
+            D = 2 * len(self.sea_n)
+            c128 = lambda *sh: torch.zeros(*sh, dtype=torch.complex128, device=dev)
+            extra.update(sP=c128(B, D, self.R), sQ=c128(B, D, self.R), sp=c128(B, D), sS0=c128(B, self.R),
+                         sC0=torch.zeros(B, dtype=torch.float64, device=dev), st_last=torch.full((B,), float("nan"), dtype=torch.float64, device=dev))
         return dict(**extra, conv=[z() for _ in range(2 * self.L)] + ([z(), z()] if self.anticipate else []),
                     M=torch.zeros(no, B, self.RM, self.R, dtype=torch.complex64, device=dev),
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
@@ -447,8 +495,37 @@ class OneMachine(nn.Module):
             if self.clock and t_out is not None:
                 hq = hq + self.clock_code(t_out) @ self.clock_out.T
             out["qconv"], out["h0"] = sq_, h0
-            return self.features(hq), out
-        return self.features(torch.cat([x1, x2], -1)), out
+            h = self.features(hq)
+        else:
+            h = self.features(torch.cat([x1, x2], -1))
+        if self.seasonal and t_in is not None:
+            self._seasonal_write(ph, t_in, st, out)
+            h = h + self.sea_gain * self._seasonal_query(out, t_out[:, None])[:, 0]
+        return h, out
+
+    def _seasonal_write(self, ph, t_in, st, out):
+        ok = torch.isfinite(t_in)
+        ti = torch.where(ok, t_in, torch.zeros_like(t_in)).double()
+        last = st["st_last"]
+        fac = torch.where(ok & torch.isfinite(last), torch.exp(-self.sea_logmu.exp().double() * (ti - torch.nan_to_num(last)).clamp(min=0)),
+                          torch.ones_like(ti))
+        v = torch.polar(torch.ones_like(ph), ph) * ok[:, None]
+        kk = self.sea_key(t_in)
+        f = fac.to(torch.complex128)
+        out["sP"] = f[:, None, None] * st["sP"] + kk.conj()[:, :, None] * v[:, None, :]
+        out["sQ"] = f[:, None, None] * st["sQ"] + kk[:, :, None] * v[:, None, :]
+        out["sp"] = f[:, None] * st["sp"] + kk.conj()
+        out["sS0"] = f[:, None] * st["sS0"] + v
+        out["sC0"] = fac * st["sC0"] + ok.double()
+        out["st_last"] = torch.where(ok, ti, last)
+
+    def _seasonal_query(self, st, t_q):
+        """t_q (B,H) -> (B,H,2R) seasonal read-out from the constant-size state"""
+        kq = self.sea_key(t_q)  # (B,H,D)
+        num = st["sS0"][:, None] + 0.5 * (torch.einsum("bhd,bdr->bhr", kq, st["sP"]) + torch.einsum("bhd,bdr->bhr", kq.conj(), st["sQ"]))
+        den = st["sC0"][:, None] + torch.einsum("bhd,bd->bh", kq, st["sp"]).real
+        r = num / (den[..., None] + 1e-6) * torch.isfinite(t_q)[..., None]
+        return torch.cat([r.real, r.imag], -1).float()
 
     def state_numel(self, st):
         return sum(t.numel() for t in st["conv"]) + st["M"].numel() + st["prev"].numel() + st["hist"].numel()

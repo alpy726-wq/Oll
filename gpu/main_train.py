@@ -31,11 +31,14 @@ ap.add_argument("--v4", default="/oll/data/v4")
 ap.add_argument("--ett_L", type=int, default=512)
 ap.add_argument("--ett_stride_mult", type=int, default=1)
 ap.add_argument("--mem_orders", default="1", help="context-keyed memory orders, e.g. 1,4,8")
+ap.add_argument("--seasonal", action="store_true", help="seasonal (time-bound) memory; implies --clock")
 ap.add_argument("--clock", action="store_true")
 ap.add_argument("--query", action="store_true", help="query head + far targets; ETT answered directly")
 ap.add_argument("--anticipate", action="store_true")
 ap.add_argument("--init", default="", help="warm start: load matching weights from this checkpoint (new parts start fresh)")
 a = ap.parse_args()
+if a.seasonal:
+    a.clock = True
 dev = a.device
 torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
 torch.backends.cuda.matmul.allow_tf32 = True
@@ -44,7 +47,7 @@ mix = {k: float(v) for k, v in (x.split(":") for x in a.mix.split(","))}
 doms, probs = list(mix), np.array(list(mix.values())) / sum(mix.values())
 
 m = OneMachine(STREAMS_BIG, R=a.R, L=a.L, M=a.M, RM=a.RM, seed=a.seed, mem_orders=tuple(int(v) for v in a.mem_orders.split(",")),
-               clock=a.clock, query_head=a.query, anticipate=a.anticipate).to(dev)
+               clock=a.clock, query_head=a.query, anticipate=a.anticipate, seasonal=a.seasonal).to(dev)
 KW = lambda b: dict(t_in=b["t_in"], t_out=b["t_out"])
 opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
 step, log, spent = 0, [], 0.0
