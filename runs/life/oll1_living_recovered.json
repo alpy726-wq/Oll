@@ -1,0 +1,205 @@
+{
+ "source": "recovered from the GitHub Actions job logs of run 45828038968 (the JSON/.pt commit was rejected: 147 MB checkpoint > 100 MB limit)",
+ "setup": "life.py --init models/oll-1.pt --brain --U 512 --W 256 --lr 2e-4 --minutes 300 --probe_every 100000; probes = held-out data never lived",
+ "oll1_living_s0": [
+  {
+   "events": 0,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": 0,
+   "word_accuracy_recent": null
+  },
+  {
+   "events": 100000,
+   "loss": {
+    "weather": -1.297,
+    "grid": -0.566,
+    "market": 0.068,
+    "audio": -2.964,
+    "text": 1.709,
+    "body": -0.139
+   },
+   "words_heard": 11,
+   "word_accuracy_recent": 0.182
+  },
+  {
+   "events": 200000,
+   "loss": {
+    "weather": -1.279,
+    "grid": -0.535,
+    "market": 0.014,
+    "audio": -2.954,
+    "text": 1.729,
+    "body": -0.338
+   },
+   "words_heard": 35,
+   "word_accuracy_recent": 0.571
+  },
+  {
+   "events": 300000,
+   "loss": {
+    "weather": -1.251,
+    "grid": -0.533,
+    "market": -0.01,
+    "audio": -2.971,
+    "text": 1.775,
+    "body": -0.515
+   },
+   "words_heard": 46,
+   "word_accuracy_recent": 0.652
+  },
+  {
+   "events": 400000,
+   "loss": {
+    "weather": -1.285,
+    "grid": -0.534,
+    "market": -0.044,
+    "audio": -2.98,
+    "text": 1.834,
+    "body": -0.566
+   },
+   "words_heard": 54,
+   "word_accuracy_recent": 0.63
+  },
+  {
+   "events": 476160,
+   "loss": {
+    "weather": -1.269,
+    "grid": -0.553,
+    "market": 0.017,
+    "audio": -2.939,
+    "text": 1.956,
+    "body": -0.606
+   },
+   "words_heard": null,
+   "word_accuracy_recent": null
+  }
+ ],
+ "oll1_living_s1": [
+  {
+   "events": 0,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": 0,
+   "word_accuracy_recent": null
+  },
+  {
+   "events": 100000,
+   "loss": {
+    "weather": -1.303,
+    "grid": -0.553,
+    "market": -0.036,
+    "audio": -3.003,
+    "text": 1.674,
+    "body": -0.156
+   },
+   "words_heard": 9,
+   "word_accuracy_recent": 0.111
+  },
+  {
+   "events": 200000,
+   "loss": {
+    "weather": -1.302,
+    "grid": -0.508,
+    "market": 0.041,
+    "audio": -2.976,
+    "text": 1.755,
+    "body": -0.378
+   },
+   "words_heard": 29,
+   "word_accuracy_recent": 0.379
+  },
+  {
+   "events": 300000,
+   "loss": {
+    "weather": -1.283,
+    "grid": -0.543,
+    "market": 0.041,
+    "audio": -2.966,
+    "text": 1.835,
+    "body": -0.484
+   },
+   "words_heard": 42,
+   "word_accuracy_recent": 0.571
+  },
+  {
+   "events": 335872,
+   "loss": {
+    "weather": -1.281,
+    "grid": -0.524,
+    "market": 0.044,
+    "audio": -2.975,
+    "text": 1.769,
+    "body": -0.507
+   },
+   "words_heard": null,
+   "word_accuracy_recent": null
+  }
+ ],
+ "oll1_frozen_s0": [
+  {
+   "events": 0,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": 0,
+   "word_accuracy_recent": null
+  },
+  {
+   "events": 400000,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": 52,
+   "word_accuracy_recent": 0.019
+  },
+  {
+   "events": 800000,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": 94,
+   "word_accuracy_recent": 0.011
+  },
+  {
+   "events": 801792,
+   "loss": {
+    "weather": -1.343,
+    "grid": -0.67,
+    "market": 0.168,
+    "audio": -3.069,
+    "text": 1.544,
+    "body": 0.729
+   },
+   "words_heard": null,
+   "word_accuracy_recent": null
+  }
+ ]
+}

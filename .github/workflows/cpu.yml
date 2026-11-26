@@ -32,6 +32,8 @@ jobs:
         if: always()
         run: |
           git config user.name "oll-cpu-bot"; git config user.email "oll-cpu-bot@users.noreply.github.com"
+          find runs -name '*.pt' -size +90M -print -delete || true   # GitHub rejects files over 100 MB; keep the results
           git add runs || true
           git commit -m "CPU results: ${{ matrix.cmd }}" || exit 0
-          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && break; sleep $((RANDOM % 20 + 5)); done
+          ok=0; for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && ok=1 && break; sleep $((RANDOM % 20 + 5)); done
+          [ $ok = 1 ] || { echo "PUSH FAILED"; exit 1; }
