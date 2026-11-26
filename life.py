@@ -86,6 +86,23 @@ class Reference:
         return out
 
 
+class AnticipationReference:
+    """simple online learner for the same when/which questions: next-sense frequencies given the current sense
+    (add-one counts), and a running Gaussian of the log-gap per current sense"""
+
+    def __init__(self):
+        self.cnt, self.mu, self.var, self.n = {}, {}, {}, {}
+
+    def nll(self, s_prev, s, u):
+        c = self.cnt.setdefault(s_prev, np.ones(len(STREAMS_LIFE)))
+        rc = -math.log(c[s] / c.sum()); c[s] += 1
+        mu, v, n = self.mu.get(s_prev, 0.0), self.var.get(s_prev, 0.25), self.n.get(s_prev, 0)
+        rw = 0.5 * (u - mu) ** 2 / v + 0.5 * math.log(2 * math.pi * v)
+        self.mu[s_prev] = mu + (u - mu) / (n + 1); self.var[s_prev] = max((v * n + (u - mu) ** 2) / (n + 1), 1e-4)
+        self.n[s_prev] = min(n + 1, 10000)
+        return rw, rc
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--events", type=int, default=1_000_000)
@@ -97,6 +114,7 @@ def main():
     ap.add_argument("--attention", default="curious", choices=["curious", "random"])
     ap.add_argument("--no_replay", action="store_true")
     ap.add_argument("--no_learning", action="store_true", help="control: lives the same way but never changes its weights")
+    ap.add_argument("--anticipate", action="store_true", help="also predict WHEN the next event comes and WHICH sense")
     ap.add_argument("--probe_every", type=int, default=100_000)
     ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
     ap.add_argument("--seed", type=int, default=0)
@@ -107,9 +125,9 @@ def main():
     rng = np.random.default_rng(a.seed)
     src = build_sources(); cursor = {k: 0 for k in SOURCES}
     sets = probe_sets()
-    m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed)
+    m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, anticipate=a.anticipate)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
-    ref = Reference()
+    ref, aref = Reference(), AnticipationReference()
     st = m.init_state(1)
     buf = deque(maxlen=a.W + 1)  # recent lived events (x, s, dt)
     store, n_windows = [], 0  # episodic store of lived windows (reservoir), for replay
@@ -117,7 +135,7 @@ def main():
     res = dict(args=vars(a), episodes=[], probes=[dict(events=0, loss=probe(m, sets))])
     print(res["probes"][-1], flush=True)
     t0, lived, updates, since_learn, next_probe = time.time(), 0, 0, 0, a.probe_every
-    pending = None  # prediction (features) for the next event
+    pending, pending_ant, prev_s = None, None, None  # predictions (features) for the next event
     prev_t = None
     while lived < a.events and time.time() - t0 < a.minutes * 60:
         # --- act: choose what to experience next
@@ -134,6 +152,7 @@ def main():
         if i0 + a.episode + 1 >= len(X):
             cursor[k] = i0 = 0  # an archive lived to its end starts over (logged)
         pl, rl, n_pl = 0.0, 0.0, 0
+        aw, ac, rw, rc, n_a = 0.0, 0.0, 0.0, 0.0, 0
         for i in range(i0, i0 + a.episode):
             x, s = float(X[i]), int(S[i])
             dt = 1e3 if prev_t is None or i == i0 else float(np.clip(T[i] - T[i - 1], 0, 1e3))  # attention switch = a long gap
@@ -143,9 +162,15 @@ def main():
                 r = ref.nll(x, s)
                 if r is not None and math.isfinite(l):
                     pl += l; rl += r; n_pl += 1
+                if a.anticipate and i > i0:  # when and which, scored on the real gap and the real next sense
+                    gap = torch.tensor([dt]); w_, c_ = m.anticipation_nll(pending_ant, torch.tensor([s]), gap)
+                    u = float(m.when_value(gap)[0]); rw_, rc_ = aref.nll(prev_s, s, u)
+                    aw += float(w_[0]); ac += float(c_[0]); rw += rw_; rc += rc_; n_a += 1
             q = float(np.clip(T[i + 1] - T[i], 0, 1e3))
             with torch.no_grad():
                 pending, st = m.step(torch.tensor([x], dtype=torch.float64), torch.tensor([s]), torch.tensor([dt]), torch.tensor([q]), st)
+                pending_ant = st.get("h_ant")
+            prev_s = s
             buf.append((x, s, dt)); prev_t = T[i]; lived += 1; since_learn += 1
             # --- learn from what was just lived (+ replay one old moment)
             if since_learn >= a.U and len(buf) == buf.maxlen and not a.no_learning:
@@ -160,8 +185,12 @@ def main():
                 xb = torch.tensor(np.stack([w[:, 0] for w in wins]), dtype=torch.float64)
                 sb = torch.tensor(np.stack([w[:, 1] for w in wins]), dtype=torch.long)
                 db = torch.tensor(np.stack([w[:, 2] for w in wins]), dtype=torch.float32)
-                l = m.nll(m(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:]), sb[:, 1:], xb[:, 1:])[:, 32:]
-                loss = l.mean()
+                if a.anticipate:
+                    h_, ha_ = m.forward_all(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:])
+                    w_, c_ = m.anticipation_nll(ha_, sb[:, 1:], db[:, 1:])
+                    loss = (m.nll(h_, sb[:, 1:], xb[:, 1:]) + w_ + c_)[:, 32:].mean()
+                else:
+                    loss = m.nll(m(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:]), sb[:, 1:], xb[:, 1:])[:, 32:].mean()
                 if torch.isfinite(loss):
                     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); updates += 1
             if lived >= next_probe:
@@ -177,6 +206,8 @@ def main():
                 lp[k] = 0.7 * lp[k] + 0.3 * (last_loss[k] - ep_loss)  # learning progress on this source
             last_loss[k] = ep_loss
             res["episodes"].append(dict(events=lived, source=k, loss=ep_loss, reference=rl / n_pl, updates=updates))
+            if n_a:
+                res["episodes"][-1].update(when=aw / n_a, when_reference=rw / n_a, which=ac / n_a, which_reference=rc / n_a)
             if len(res["episodes"]) % 50 == 0:
                 print(res["episodes"][-1], {s: round(v, 3) for s, v in lp.items()}, f"{(time.time() - t0) / 60:.1f} min", flush=True)
     res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))

@@ -98,8 +98,18 @@ class OneBranch(nn.Module):
 
 
 class OneMachine(nn.Module):
-    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,)):
+    def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,),
+                 anticipate=False):
         super().__init__()
+        # anticipation (Sec. 5.2 continuous time, used for the output too): besides "what value at the asked time", the
+        # machine predicts WHEN the next event comes and WHICH sense it comes from, as two more phase-amplitude read-outs
+        # (a continuous density over log-gap, a discrete one over stream identities). They read a separate continuous-time
+        # pathway that never sees the query time, so nothing about the next event leaks into them.
+        self.anticipate, self.n_in = anticipate, len(streams)
+        if anticipate:
+            streams = list(streams) + [Stream("_when", "continuous", scale=2.0, window=(-1.5, 1.5)),
+                                       Stream("_which", "discrete", scale=1.0, n_symbols=len(streams))]
+            self.WHEN, self.WHICH = len(streams) - 2, len(streams) - 1
         # context-keyed memory: a key of order n is the binding (phase sum, Prop. 1) of the last n events, each under
         # its own fixed permutation, so "France:" and "Italy:" give different keys although both end in ':'
         self.mem_orders = tuple(mem_orders)
@@ -128,6 +138,9 @@ class OneMachine(nn.Module):
         self.G = nn.ModuleList([OneBranch(R, 2 * (seed * 100 + i) + 1, M) for i in range(L)])
         self.P = nn.ModuleList([PhaseLinear(R) for _ in range(L)])
         self.gain = nn.Parameter(torch.ones(2 * R))
+        if anticipate:
+            self.AF, self.AG = OneBranch(R, 2 * (seed * 100 + 90), M), OneBranch(R, 2 * (seed * 100 + 90) + 1, M)
+            self.again = nn.Parameter(torch.ones(2 * R))
         self.mem_beta = nn.Parameter(torch.ones(len(self.streams)))  # per input stream: how much memory read-out enters (born on)
         self.sym_logtemp = nn.Parameter(torch.zeros(len(self.streams)))  # discrete streams: p(c) ~ |s(c)|^(2 tau)
         self.mem_logmu = nn.Parameter(torch.tensor(-6.0))     # memory decay per unit time (continuous)
@@ -251,6 +264,30 @@ class OneMachine(nn.Module):
     def features(self, h):
         return rms(h) * self.gain
 
+    # ------------------------------------------------------------------ anticipation: when and which comes next
+    def anticipation(self, e, dt):
+        z = torch.zeros_like(dt)
+        x1, x2 = e[..., : self.R], e[..., self.R:]
+        x1 = x1 + self.AF(x2, dt, z)
+        x2 = x2 + self.AG(x1, dt, z)
+        return rms(torch.cat([x1, x2], -1)) * self.again
+
+    def forward_all(self, x, s, dt, q):
+        """value features (asked at time q) and anticipation features (never see q)"""
+        e = self.embed(x, s, dt)
+        return self.features(self.trunk_from(e, dt, q)), self.anticipation(e, dt)
+
+    @staticmethod
+    def when_value(q):
+        return torch.log1p(q.to(torch.float64).clamp(0, 1e3)) / 4.0 - 0.75  # log-gap inside the density window
+
+    def anticipation_nll(self, ha, s_next, q):
+        """(when, which) negative log-likelihoods per element"""
+        sh = ha.shape[:-1]
+        w = self.nll(ha, torch.full(sh, self.WHEN, dtype=torch.long, device=ha.device), self.when_value(q))
+        c = self.nll(ha, torch.full(sh, self.WHICH, dtype=torch.long, device=ha.device), s_next.to(torch.float64))
+        return w, c
+
     def forward(self, x, s, dt, q):
         """x,s,dt: events 0..T-1; q: time from event t to the event being predicted. Returns features (B,T,2R)."""
         return self.features(self.trunk_from(self.embed(x, s, dt), dt, q))
@@ -304,7 +341,8 @@ class OneMachine(nn.Module):
         Mm = self.F[0].conv.c_re.shape[1]
         dev = self.f.device
         no = len(self.mem_orders)
-        return dict(conv=[torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev) for _ in range(2 * self.L)],
+        z = lambda: torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev)
+        return dict(conv=[z() for _ in range(2 * self.L)] + ([z(), z()] if self.anticipate else []),
                     M=torch.zeros(no, B, self.RM, self.R, dtype=torch.complex64, device=dev),
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
                     hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev))
@@ -329,7 +367,15 @@ class OneMachine(nn.Module):
             g_, s2 = G.step(x1, dt, q, st["conv"][2 * i + 1]); x2 = x2 + g_
             x1, x2 = P(x1, x2)
             conv += [s1, s2]
-        return self.features(torch.cat([x1, x2], -1)), dict(conv=conv, M=M, prev=torch.stack(keys), hist=hist)
+        out = dict(conv=conv, M=M, prev=torch.stack(keys), hist=hist)
+        if self.anticipate:
+            z = torch.zeros_like(dt)
+            y1, y2 = e[..., : self.R], e[..., self.R:]
+            a_, s3 = self.AF.step(y2, dt, z, st["conv"][2 * self.L]); y1 = y1 + a_
+            b_, s4 = self.AG.step(y1, dt, z, st["conv"][2 * self.L + 1]); y2 = y2 + b_
+            out["conv"] += [s3, s4]
+            out["h_ant"] = rms(torch.cat([y1, y2], -1)) * self.again
+        return self.features(torch.cat([x1, x2], -1)), out
 
     def state_numel(self, st):
         return sum(t.numel() for t in st["conv"]) + st["M"].numel() + st["prev"].numel() + st["hist"].numel()

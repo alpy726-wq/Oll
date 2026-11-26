@@ -103,3 +103,25 @@ def test_context_keyed_memory_streaming_equals_full():
         for t in range(40):
             f, st = m.step(b["x"][:, t], b["s"][:, t], b["dt"][:, t], b["q"][:, t], st); out.append(f)
     assert ((torch.stack(out, 1) - full).norm() / full.norm()) < 1e-5
+
+
+def test_anticipation_streaming_equals_full_and_no_leak():
+    """when/which read-outs: streaming == full, and they do not depend on the query time q (no leak of the future)"""
+    import numpy as np
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(0)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=64, anticipate=True).eval()
+    B, T = 2, 24
+    s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 2
+    with torch.no_grad():
+        h, ha = m.forward_all(x, s, dt, q)
+        _, ha2 = m.forward_all(x, s, dt, q * 0 + 7.0)
+        assert torch.allclose(ha, ha2)  # anticipation never sees q
+        st = m.init_state(B); hs, has_ = [], []
+        for t in range(T):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st); hs.append(o); has_.append(st["h_ant"])
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert torch.allclose(torch.stack(has_, 1), ha, atol=1e-4)
+        w, c = m.anticipation_nll(ha, s, q)
+        assert torch.isfinite(w).all() and torch.isfinite(c).all()
