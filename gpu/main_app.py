@@ -60,6 +60,8 @@ def read_results():
     for f in os.listdir("/vol/results") if os.path.exists("/vol/results") else []:
         if f.endswith((".json", ".txt")):
             out[f] = open(f"/vol/results/{f}").read()
+        elif f.endswith((".pt", ".npz")):
+            out[f] = open(f"/vol/results/{f}", "rb").read()
     return out
 
 
@@ -82,5 +84,5 @@ if __name__ == "__main__":
             res = read_results.remote()
         os.makedirs("runs/gpu/main", exist_ok=True)
         for f, txt in res.items():
-            open(f"runs/gpu/main/{f}", "w").write(txt)
+            open(f"runs/gpu/main/{f}", "wb" if isinstance(txt, bytes) else "w").write(txt)
         print("fetched", list(res))
