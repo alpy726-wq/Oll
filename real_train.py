@@ -31,6 +31,7 @@ ap.add_argument("--mem_orders", default="1", help="comma list, e.g. 1,4,8 (conte
 ap.add_argument("--RM", type=int, default=512)
 ap.add_argument("--clock", action="store_true", help="calendar clock (day/week/year phases of absolute time)")
 ap.add_argument("--anticipate", action="store_true", help="also learn when and which sense comes next")
+ap.add_argument("--query", action="store_true", help="query head: trunk state independent of the asked time; trained to answer far moments directly")
 ap.add_argument("--ett", action="store_true", help="after training: ETT long-horizon protocol (30 windows, with adaptation)")
 a = ap.parse_args()
 torch.set_num_threads(a.threads)
@@ -41,7 +42,7 @@ if a.arch == "gpt":
     m = EventGPT(STREAMS_REAL, d=a.d, L=a.L, T=a.T).to(a.device)
 else:
     m = OneMachine(STREAMS_REAL, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, readout_amp="flatreadout" in abl,
-                   mem_orders=tuple(int(v) for v in a.mem_orders.split(",")), clock=a.clock, anticipate=a.anticipate).to(a.device)
+                   mem_orders=tuple(int(v) for v in a.mem_orders.split(",")), clock=a.clock, anticipate=a.anticipate, query_head=a.query).to(a.device)
 with torch.no_grad():
     if "memory" in abl:
         m.mem_beta.zero_(); m.mem_beta.requires_grad = False
@@ -62,15 +63,34 @@ def domains_at(step):
     return PERCEPTION
 
 
+def far_targets(b, rng):
+    """half of the positions ask about the next event, half about a random later event of the window (target value,
+    its stream, the time until it, its absolute time); anticipation keeps the next-event targets"""
+    X = torch.cat([b["x"], b["y"][:, -1:]], 1); S = torch.cat([b["s"], b["s_out"][:, -1:]], 1)
+    D = torch.cat([b["dt"], b["q"][:, -1:]], 1); TA = torch.cat([b["t_in"], b["t_out"][:, -1:]], 1)
+    Bn, T = b["x"].shape
+    tau = D.double().cumsum(1)
+    i = torch.arange(T, device=X.device)[None].expand(Bn, T)
+    far = torch.from_numpy(rng.random((Bn, T)) < 0.5).to(X.device)
+    jr = i + 1 + (torch.from_numpy(rng.random((Bn, T))).to(X.device) * (T - i).double()).long().clamp(max=T - 1 - i + 0)
+    j = torch.where(far, jr.clamp(max=T), i + 1)
+    g = lambda A: A.gather(1, j)
+    out = dict(b)
+    out.update(y=g(X), s_out=g(S), q=(g(tau) - tau[:, :T]).float(), t_out=g(TA), q_next=b["q"], s_next=b["s_out"])
+    return out
+
+
 t0, log = time.time(), []
 for step in range(a.steps):
     for g in opt.param_groups:
         g["lr"] = (a.lr if a.arch == "machine" else 1e-3) * min(1, (step + 1) / 100) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * step / a.steps)))
     doms = domains_at(step)
     b = make_batch(train, rng, a.B, a.T, [doms[int(rng.integers(len(doms)))]], a.device)
+    if a.arch == "machine" and a.query:
+        b = far_targets(b, rng)
     if a.arch == "machine" and a.anticipate:
         h_, ha_ = m.forward_all(b["x"], b["s"], b["dt"], b["q"], t_in=b["t_in"], t_out=b["t_out"])
-        w_, c_ = m.anticipation_nll(ha_, b["s_out"], b["q"])
+        w_, c_ = m.anticipation_nll(ha_, b.get("s_next", b["s_out"]), b.get("q_next", b["q"]))
         l = m.nll(h_, b["s_out"], b["y"]) + w_ + c_
     elif a.arch == "machine":
         l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], t_in=b["t_in"], t_out=b["t_out"]), b["s_out"], b["y"])
@@ -105,7 +125,8 @@ if a.ett:
     m.eval()
     with torch.no_grad():
         for name, stride in (("ETTh1", 24), ("ETTh2", 24), ("ETTm1", 96)):
-            r = ett_evaluate(m, [SID["ett:" + v] for v in ETT_VARS], name, "data/v4", a.device, L=512, stride=stride, max_windows=30, adapt=True)
+            r = ett_evaluate(m, [SID["ett:" + v] for v in ETT_VARS], name, "data/v4", a.device, L=512, stride=stride, max_windows=30, adapt=True,
+                             direct=a.query)
             res["ett_" + name] = {h: r[h] for h in (96, 336)}
             print(name, json.dumps(res["ett_" + name]), flush=True)
 os.makedirs(os.path.dirname(a.out), exist_ok=True)

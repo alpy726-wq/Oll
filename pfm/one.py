@@ -99,8 +99,12 @@ class OneBranch(nn.Module):
 
 class OneMachine(nn.Module):
     def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,),
-                 anticipate=False, clock=False):
+                 anticipate=False, clock=False, query_head=False):
         super().__init__()
+        # query head (Sec. 5.2 read-out at any time): the trunk runs at q = 0, so its state never depends on what is
+        # asked; one extra continuous-time branch reads the state out at the asked moment t+q (and, with the clock, at
+        # that moment's calendar phase). Any future moment can be asked directly, without feeding predictions back.
+        self.query_head = query_head
         # calendar clock: the phase of every event (and of the moment asked about) on the day / week / year circles,
         # the same phase encoding as the values (Sec. 2) applied to absolute time; NaN time (text, audio) = no clock
         self.clock = clock
@@ -147,6 +151,9 @@ class OneMachine(nn.Module):
             g = torch.Generator().manual_seed(777)
             self.clock_in = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
             self.clock_out = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
+        if query_head:
+            self.QF = OneBranch(R, 2 * (seed * 100 + 95), M)
+            self.QF.conv.qmax = 1e4
         if anticipate:
             self.AF, self.AG = OneBranch(R, 2 * (seed * 100 + 90), M), OneBranch(R, 2 * (seed * 100 + 90) + 1, M)
             self.again = nn.Parameter(torch.ones(2 * R))
@@ -262,8 +269,31 @@ class OneMachine(nn.Module):
         r = self.memory_read(x, s, ph, dt, wg)
         e = c + self.mem_beta[s][..., None] * r * float(self.A.mean())
         if self.clock and t_in is not None:
-            e = e + self.clock_code(t_in) @ self.clock_in.T + self.clock_code(t_out) @ self.clock_out.T
+            e = e + self.clock_code(t_in) @ self.clock_in.T
+            if not self.query_head:  # with a query head the asked moment enters only the query read-out
+                e = e + self.clock_code(t_out) @ self.clock_out.T
         return e
+
+    def query_features(self, h0, dt, q, t_out=None):
+        x1, x2 = h0[..., : self.R], h0[..., self.R:]
+        hq = torch.cat([x1 + self.QF(x2, dt, q), x2], -1)
+        if self.clock and t_out is not None:
+            hq = hq + self.clock_code(t_out) @ self.clock_out.T
+        return self.features(hq)
+
+    def peek(self, st, q, t_out=None):
+        """read the state out at several asked moments without changing it: q (B,H) -> features (B,H,2R)"""
+        h0 = st["h0"]
+        x1, x2 = h0[..., : self.R], h0[..., self.R:]
+        n = rms(x2)
+        a, cc = self.QF.conv.a_cc()
+        qq = q.clamp(max=self.QF.conv.qmax).float()
+        y = (st["qconv"][:, None] * cc * torch.exp(qq[..., None, None] * a)).sum(-1).real  # (B,H,R)
+        f = self.QF.mix(n[:, None], y)
+        hq = torch.cat([x1[:, None] + f, x2[:, None].expand_as(f)], -1)
+        if self.clock and t_out is not None:
+            hq = hq + self.clock_code(t_out) @ self.clock_out.T
+        return self.features(hq)
 
     def trunk_from(self, e, dt, q):
         x1, x2 = e[..., : self.R], e[..., self.R:]
@@ -295,6 +325,8 @@ class OneMachine(nn.Module):
     def forward_all(self, x, s, dt, q, wg=None, t_in=None, t_out=None):
         """value features (asked at time q) and anticipation features (never see q)"""
         e = self.embed(x, s, dt, wg, t_in, t_out)
+        if self.query_head:
+            return self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out), self.anticipation(e, dt)
         return self.features(self.trunk_from(e, dt, q)), self.anticipation(e, dt)
 
     @staticmethod
@@ -312,7 +344,10 @@ class OneMachine(nn.Module):
         """x,s,dt: events 0..T-1; q: time from event t to the event being predicted. Returns features (B,T,2R).
         wg (optional, B,T): strength with which each event is written into the associative memory.
         t_in / t_out (optional, B,T): absolute time in hours of each event / of the event being predicted (clock)."""
-        return self.features(self.trunk_from(self.embed(x, s, dt, wg, t_in, t_out), dt, q))
+        e = self.embed(x, s, dt, wg, t_in, t_out)
+        if self.query_head:
+            return self.query_features(self.trunk_from(e, dt, torch.zeros_like(q)), dt, q, t_out)
+        return self.features(self.trunk_from(e, dt, q))
 
     # ------------------------------------------------------------------ output
     def coeffs(self, h, s_out):
@@ -364,7 +399,8 @@ class OneMachine(nn.Module):
         dev = self.f.device
         no = len(self.mem_orders)
         z = lambda: torch.zeros(B, self.R, Mm, dtype=torch.complex64, device=dev)
-        return dict(conv=[z() for _ in range(2 * self.L)] + ([z(), z()] if self.anticipate else []),
+        extra = {"qconv": z()} if self.query_head else {}
+        return dict(**extra, conv=[z() for _ in range(2 * self.L)] + ([z(), z()] if self.anticipate else []),
                     M=torch.zeros(no, B, self.RM, self.R, dtype=torch.complex64, device=dev),
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
                     hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev))
@@ -382,14 +418,17 @@ class OneMachine(nn.Module):
             keys.append(k)
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
         if self.clock and t_in is not None:
-            e = e + self.clock_code(t_in) @ self.clock_in.T + self.clock_code(t_out) @ self.clock_out.T
+            e = e + self.clock_code(t_in) @ self.clock_in.T
+            if not self.query_head:
+                e = e + self.clock_code(t_out) @ self.clock_out.T
+        qt = torch.zeros_like(q) if self.query_head else q  # with a query head the trunk never sees the asked time
         vw = v if wg is None else v * wg[:, None].to(v.dtype)
         M = M + st["prev"].conj()[:, :, :, None] * vw[None, :, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]
         conv = []
         for i, (F, G, P) in enumerate(zip(self.F, self.G, self.P)):
-            f_, s1 = F.step(x2, dt, q, st["conv"][2 * i]); x1 = x1 + f_
-            g_, s2 = G.step(x1, dt, q, st["conv"][2 * i + 1]); x2 = x2 + g_
+            f_, s1 = F.step(x2, dt, qt, st["conv"][2 * i]); x1 = x1 + f_
+            g_, s2 = G.step(x1, dt, qt, st["conv"][2 * i + 1]); x2 = x2 + g_
             x1, x2 = P(x1, x2)
             conv += [s1, s2]
         out = dict(conv=conv, M=M, prev=torch.stack(keys), hist=hist)
@@ -400,6 +439,15 @@ class OneMachine(nn.Module):
             b_, s4 = self.AG.step(y1, dt, z, st["conv"][2 * self.L + 1]); y2 = y2 + b_
             out["conv"] += [s3, s4]
             out["h_ant"] = rms(torch.cat([y1, y2], -1)) * self.again
+        if self.query_head:
+            h0 = torch.cat([x1, x2], -1)
+            n = rms(x2)
+            yq, sq_ = self.QF.conv.step(n, dt, q, st["qconv"])
+            hq = torch.cat([x1 + self.QF.mix(n, yq), x2], -1)
+            if self.clock and t_out is not None:
+                hq = hq + self.clock_code(t_out) @ self.clock_out.T
+            out["qconv"], out["h0"] = sq_, h0
+            return self.features(hq), out
         return self.features(torch.cat([x1, x2], -1)), out
 
     def state_numel(self, st):

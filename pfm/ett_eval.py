@@ -26,7 +26,7 @@ def load_ett(name, data_dir):
 
 
 @torch.no_grad()
-def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=None, adapt=False, paths=1, seed=0, chunk=256):
+def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=None, adapt=False, paths=1, seed=0, chunk=256, direct=False):
     """adapt=True: sensory adaptation (gain control) -- every window is seen relative to its own lookback level and
     spread (mean/std of the L past values only; RevIN-style), and the forecast is mapped back. No retraining."""
     t, Z, te_start, te_end, per_month = load_ett(name, data_dir)
@@ -63,6 +63,16 @@ def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=
             ck = (lambda k: dict(t_in=tt[:, k], t_out=tt[:, k + 1])) if clk else (lambda k: {})
             for k in range(L):
                 h, st = model.step(x[:, k], sid, one, one, st, **ck(k))
+            if direct:  # ask every future moment directly from the state at the end of the lookback (no feedback)
+                qs = torch.arange(1, H + 1, device=device, dtype=torch.float32)[None].expand(nb, H) * dtc
+                hq = model.peek(st, qs, t_out=tt[:, L - 1:L] + qs.double() if clk else None)
+                hf = hq.reshape(nb * H, -1); med = torch.empty(nb * H, dtype=torch.float64, device=device)
+                for j0 in range(0, nb * H, 256):  # density in row chunks (grid x prime bank is large)
+                    dens = model.density(hf[j0:j0 + 256], int(sids[c]), grid).double()
+                    cdf = (dens / dens.sum(-1, keepdim=True)).cumsum(-1)
+                    med[j0:j0 + 256] = grid[torch.searchsorted(cdf.contiguous(), torch.full((cdf.shape[0], 1), 0.5, dtype=cdf.dtype, device=device)).clamp(max=len(grid) - 1).squeeze(1)]
+                P[r0:r1] = med.reshape(nb, H).cpu().numpy() * 3.0 * sd_w[r0:r1] + mu_w[r0:r1]
+                continue
             for k in range(H):
                 dens = model.density(h, int(sids[c]), grid).double()
                 cdf = (dens / dens.sum(-1, keepdim=True)).cumsum(-1)

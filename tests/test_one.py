@@ -159,3 +159,33 @@ def test_clock_streaming_equals_full():
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
         assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+
+
+def test_query_head_streaming_peek_and_state_independence():
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(3)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=64, clock=True, query_head=True).eval()
+    B, T = 2, 20
+    s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 40  # far queries
+    t_in = 4e5 + torch.cumsum(dt.double(), 1); t_out = t_in + q.double()
+    with torch.no_grad():
+        h = m(x, s, dt, q, t_in=t_in, t_out=t_out)
+        st = m.init_state(B); hs = []
+        for t in range(T):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)  # streaming == full
+        # the state does not depend on the asked time: same events, other queries -> same state
+        st2 = m.init_state(B)
+        for t in range(T):
+            _, st2 = m.step(x[:, t], s[:, t], dt[:, t], q[:, t] * 0 + 3.0, st2, t_in=t_in[:, t], t_out=t_in[:, t] + 3.0)
+        assert torch.allclose(st2["h0"], st["h0"]) and torch.allclose(st2["qconv"], st["qconv"])
+        # peeking several moments from the state == the step read-out at those moments
+        qs = torch.tensor([[1.0, 7.0, 55.0]] * B)
+        pk = m.peek(st, qs, t_out=t_in[:, -1:] + qs.double())
+        assert torch.allclose(pk[:, 2], m.peek(st, qs[:, 2:], t_out=t_in[:, -1:] + 55.0)[:, 0], atol=1e-5)
+        st_prev = m.init_state(B)
+        for t in range(T - 1):
+            _, st_prev = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st_prev, t_in=t_in[:, t], t_out=t_out[:, t])
+        o7, _ = m.step(x[:, -1], s[:, -1], dt[:, -1], torch.full((B,), 7.0), st_prev, t_in=t_in[:, -1], t_out=t_in[:, -1] + 7.0)
+        assert torch.allclose(o7, pk[:, 1], atol=1e-4)

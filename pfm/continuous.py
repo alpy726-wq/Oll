@@ -104,13 +104,14 @@ class CTConv(nn.Module):
         cr[:, 0] += 1.0
         self.c_re = nn.Parameter(cr)
         self.c_im = nn.Parameter(torch.zeros(C, M))
+        self.qmax = DT_MAX  # largest query offset; a query-only read-out (no state update) may look much further
 
     def forward(self, u, dt, q=None):
         """Exact for any clock. Rows whose clock is regular (constant dt and q) share time-invariant kernels and go
         through FFT convolution, grouped by (dt, q); only rows with irregular clocks use the recurrence scan, which is
         recomputed in the backward pass (activation checkpointing) instead of being stored."""
         dt = dt.clamp(max=DT_MAX)
-        q = q.clamp(max=DT_MAX) if q is not None else torch.zeros_like(dt)
+        q = q.clamp(max=self.qmax) if q is not None else torch.zeros_like(dt)
         regular = (dt == dt[:, :1]).all(1) & (q == q[:, :1]).all(1)
         out = torch.empty_like(u)
         if bool(regular.any()):
@@ -163,7 +164,7 @@ class CTConv(nn.Module):
     def step(self, u, dt, q, s):
         """one sample: u (B,C), dt (B,), q (B,), state s (B,C,M) -> y (B,C), new state.  O(C*M) memory."""
         a, cc = self.a_cc()
-        dt, q = dt.clamp(max=DT_MAX), q.clamp(max=DT_MAX)
+        dt, q = dt.clamp(max=DT_MAX), q.clamp(max=self.qmax)
         s = torch.exp(dt[:, None, None].float() * a) * s + u[..., None]
         return (s * cc * torch.exp(q[:, None, None].float() * a)).sum(-1).real, s
 
