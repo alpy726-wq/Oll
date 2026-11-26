@@ -37,7 +37,9 @@ def densities(h, s_out):
     out = torch.empty(h.shape[0], len(GRID), dtype=torch.float64, device=dev)
     for sid in s_out.unique().tolist():
         sel = s_out == sid
-        out[sel] = m.density(h[sel], sid, GRID).double()
+        idx = sel.nonzero().squeeze(1)
+        for j in range(0, len(idx), 32):  # chunks: the grid x prime-bank product is large
+            out[idx[j:j + 32]] = m.density(h[idx[j:j + 32]], sid, GRID).double()
     return out
 
 
