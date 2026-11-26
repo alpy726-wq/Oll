@@ -34,6 +34,8 @@ def caps(args: list):
     os.chdir("/oll")
     vol.reload()
     p = subprocess.run([sys.executable, "gpu/eval_caps.py", *args], capture_output=True, text=True)
+    os.makedirs("/vol/results", exist_ok=True)
+    open("/vol/results/caps_log.txt", "w").write(f"returncode {p.returncode}\n" + (p.stdout + p.stderr)[-8000:])
     vol.commit()
     return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
 
@@ -44,6 +46,9 @@ def script(args: list):
     os.chdir("/oll")
     vol.reload()
     p = subprocess.run([sys.executable, *args], capture_output=True, text=True)
+    os.makedirs("/vol/results", exist_ok=True)
+    name = os.path.splitext(os.path.basename(args[0]))[0]
+    open(f"/vol/results/{name}_log.txt", "w").write(f"returncode {p.returncode}\n" + (p.stdout + p.stderr)[-8000:])
     vol.commit()
     return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
 
@@ -53,7 +58,8 @@ def read_results():
     vol.reload()
     out = {}
     for f in os.listdir("/vol/results") if os.path.exists("/vol/results") else []:
-        out[f] = open(f"/vol/results/{f}").read()
+        if f.endswith((".json", ".txt")):
+            out[f] = open(f"/vol/results/{f}").read()
     return out
 
 
