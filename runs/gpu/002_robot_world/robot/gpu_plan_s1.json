@@ -1,0 +1,9 @@
+{
+ "N": 4,
+ "n": 24,
+ "picked_real_rate": 0.125,
+ "chance": 0.25,
+ "goal_mse_of_pick": 1.2760755971573503,
+ "goal_mse_random": 1.518742341951362,
+ "goal_mse_real_actions": 1.5110360074272429
+}
