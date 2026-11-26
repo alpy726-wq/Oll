@@ -37,6 +37,7 @@ jobs:
           case "${{ github.event.inputs.job }}" in
             main:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py start $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             fetch) python gpu/main_app.py fetch; exit 0;;
+            run:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py run $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             caps:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py caps $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             *.py) modal run "gpu/${{ github.event.inputs.job }}"; exit 0;;
           esac

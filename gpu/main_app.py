@@ -38,6 +38,16 @@ def caps(args: list):
     return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
 
 
+@app.function(image=image, volumes={"/vol": vol}, gpu=GPU, timeout=4 * 3600, cpu=8, memory=32768)
+def script(args: list):
+    """any script under /oll with the main volume (checkpoint and results), e.g. gpu/diag_ett.py"""
+    os.chdir("/oll")
+    vol.reload()
+    p = subprocess.run([sys.executable, *args], capture_output=True, text=True)
+    vol.commit()
+    return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
+
+
 @app.function(image=image, volumes={"/vol": vol}, timeout=600)
 def read_results():
     vol.reload()
@@ -52,6 +62,10 @@ if __name__ == "__main__":
     if cmd == "caps":
         with modal.enable_output(), app.run(detach=True):
             c = caps.spawn(sys.argv[2:])
+            print("SPAWNED", c.object_id)
+    elif cmd == "run":
+        with modal.enable_output(), app.run(detach=True):
+            c = script.spawn(sys.argv[2:])
             print("SPAWNED", c.object_id)
     elif cmd == "start":
         with modal.enable_output(), app.run(detach=True):
