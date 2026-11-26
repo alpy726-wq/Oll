@@ -135,6 +135,7 @@ def main():
     ap.add_argument("--brain", action="store_true", help="all brain functions: anticipation, surprise-gated memory writing, "
                     "surprise-modulated learning rate, speech+word grounding, confidence (metacognition) tracking")
     ap.add_argument("--init", default="", help="be born from a trained machine (e.g. models/oll-1.pt) instead of untrained")
+    ap.add_argument("--rehearse", type=int, default=0, help="per update, this many windows from the original training corpus (keeps old skills)")
     ap.add_argument("--probe_every", type=int, default=100_000)
     ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
     ap.add_argument("--seed", type=int, default=0)
@@ -149,6 +150,7 @@ def main():
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
+    rehearsal_data = RealData("train") if a.rehearse else None
     src = build_sources(); cursor = {k: 0 for k in sources}
     sets = probe_sets()
     if a.init:
@@ -244,6 +246,10 @@ def main():
                 elif rng.random() < 2000 / n_windows:
                     store[int(rng.integers(2000))] = win
                 wins = [win] + ([store[int(rng.integers(len(store)))]] if not a.no_replay and len(store) > 1 else [])
+                for _ in range(a.rehearse):  # rehearsal: a moment of the original training data (real, train split)
+                    d_ = ["weather", "grid", "market", "audio", "text"][int(rng.integers(5))]
+                    xr, sr, dr, _m, _t = rehearsal_data.window(rng, d_, a.W)
+                    wins.append(np.stack([xr, sr, dr, np.ones(len(xr))], 1))
                 xb = torch.tensor(np.stack([w[:, 0] for w in wins]), dtype=torch.float64)
                 sb = torch.tensor(np.stack([w[:, 1] for w in wins]), dtype=torch.long)
                 db = torch.tensor(np.stack([w[:, 2] for w in wins]), dtype=torch.float32)
