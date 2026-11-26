@@ -1,0 +1,18 @@
+returncode 1
+Traceback (most recent call last):
+  File "/oll/gpu/eval_caps.py", line 74, in <module>
+    R["calibration_series_heldout"] = calib(make_batch_big(vd, rng, 32, 256, "series", dev))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/oll/gpu/eval_caps.py", line 51, in calib
+    d = densities(hh, so)
+        ^^^^^^^^^^^^^^^^^
+  File "/oll/gpu/eval_caps.py", line 40, in densities
+    out[sel] = m.density(h[sel], sid, GRID).double()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/oll/pfm/one.py", line 340, in density
+    return (self.amp(c.unsqueeze(-2), xs, st).abs() ** 2 / Z.unsqueeze(-1)).float()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/oll/pfm/one.py", line 306, in amp
+    return (c * (self.A if self.readout_amp else 1.0) * torch.exp(-1j * ph)).sum(-1)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 45.43 GiB. GPU 0 has a total capacity of 22.08 GiB of which 20.50 GiB is free. Process 1 has 1.58 GiB memory in use. Of the allocated memory 1.21 GiB is allocated by PyTorch, and 142.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

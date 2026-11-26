@@ -1,0 +1,15 @@
+returncode 1
+Traceback (most recent call last):
+  File "/oll/gpu/eval_ett_adapt.py", line 21, in <module>
+    out[name + "_adapt_paths16"] = evaluate(m, sids, name, "/oll/data/v4", dev, L=512, stride=stride, adapt=True, paths=16)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/oll/pfm/ett_eval.py", line 57, in evaluate
+    h, st = model.step(x[:, k], sid, one, one, st)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/oll/pfm/one.py", line 366, in step
+    M = M + st["prev"].conj()[:, :, :, None] * vw[None, :, None, :]
+        ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 5.69 GiB. GPU 0 has a total capacity of 22.08 GiB of which 2.44 GiB is free. Process 1 has 19.64 GiB memory in use. Of the allocated memory 19.39 GiB is allocated by PyTorch, and 21.60 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
