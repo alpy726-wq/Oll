@@ -60,7 +60,7 @@ def read_results():
     for f in os.listdir("/vol/results") if os.path.exists("/vol/results") else []:
         if f.endswith((".json", ".txt")):
             out[f] = open(f"/vol/results/{f}").read()
-        elif f.endswith((".pt", ".npz")):
+        elif f.endswith(".npz"):
             out[f] = open(f"/vol/results/{f}", "rb").read()
     return out
 

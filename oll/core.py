@@ -54,15 +54,22 @@ def _adapt(v, w):
 
 
 @torch.no_grad()
-def surprise(model, series, adapt_window=512, stream=GENERIC_STREAM, device="cpu"):
+def surprise(model, series, adapt_window=512, stream=GENERIC_STREAM, device="cpu", normal="running", calm_frac=0.15):
     """series: list of (values, times or None). All series are streamed together (one event at a time, constant
-    memory). Returns a list of arrays: surprise per point (nats; first point = nan)."""
+    memory). Returns a list of arrays: surprise per point (nats; first point = nan).
+    normal="running": values seen relative to the previous `adapt_window` readings (adapts to every new level).
+    normal="calm":    values seen relative to the first `calm_frac` of the series (what normal operation looks like),
+                      so leaving the normal range stays surprising."""
     B = len(series)
     lens = [len(v) for v, _ in series]
     T = max(lens)
     Z = np.zeros((B, T)); D = np.ones((B, T)); Mk = np.zeros((B, T), bool)
     for i, (v, t) in enumerate(series):
-        mu, sd = _adapt(v, adapt_window)
+        if normal == "calm":
+            n0 = max(10, int(calm_frac * len(v))); vv = np.asarray(v, dtype=np.float64)
+            mu, sd = vv[:n0].mean(), vv[:n0].std() + 1e-6 * (abs(vv[:n0].mean()) + 1e-6)
+        else:
+            mu, sd = _adapt(v, adapt_window)
         Z[i, :lens[i]] = np.clip((np.asarray(v) - mu) / sd / 3.0, -1.2, 1.2)
         D[i, :lens[i]] = _gaps(t, lens[i]); Mk[i, :lens[i]] = True
     x = torch.tensor(Z, dtype=torch.float64, device=device)
