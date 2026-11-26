@@ -139,6 +139,46 @@ def imagine(m, W, foreign=None, C=512, device="cpu"):
     return np.array(err)  # (n, 5): group, elapsed frames, model error, hold-last error (std units), row
 
 
+def dream(m, W, C=512, H=700, device="cpu", seed=0):
+    """free dream: after C real events the machine alone decides WHICH sense comes next, WHEN, and its VALUE
+    (motor commands included: it acts in its dream). Returns statistics of the dream next to the real continuation."""
+    g = torch.Generator(device="cpu").manual_seed(seed)
+    x = torch.tensor(np.stack([w[0] for w in W]), dtype=torch.float64, device=device)
+    s = torch.tensor(np.stack([w[1] for w in W]), dtype=torch.long, device=device)
+    dt = torch.tensor(np.stack([w[2] for w in W]), dtype=torch.float32, device=device)
+    B = x.shape[0]
+    grid = torch.linspace(-1.5, 1.5, 601, dtype=torch.float64, device=device)
+    st = m.init_state(B)
+    with torch.no_grad():
+        for k in range(C - 1):
+            _, st = m.step(x[:, k], s[:, k], dt[:, k], dt[:, k + 1], st)
+        cx, cs, cdt = x[:, C - 1], s[:, C - 1], dt[:, C - 1]
+        out_s, out_x, out_gap = [], [], []
+        for k in range(H):
+            _, tmp = m.step(cx, cs, cdt, torch.zeros_like(cdt), st)  # anticipation never depends on q
+            ha = tmp["h_ant"]
+            lg = m.discrete_logits(m.coeffs(ha, torch.full((B,), m.WHICH, device=device)), m.streams[m.WHICH]) * m.sym_logtemp[m.WHICH].exp()
+            nxt = torch.multinomial(torch.softmax(lg.double().cpu(), -1), 1, generator=g).squeeze(1).to(device)
+            dens = m.density(ha, m.WHEN, grid).double(); cdf = (dens / dens.sum(-1, keepdim=True)).cumsum(-1)
+            u = grid[torch.searchsorted(cdf.contiguous(), torch.full((B, 1), 0.5, dtype=cdf.dtype, device=device)).clamp(max=len(grid) - 1).squeeze(1)]
+            gap = torch.expm1((u + 0.75) * 4.0).clamp(min=0).float()
+            h, st = m.step(cx, cs, cdt, gap, st)
+            val = median_next(m, h, nxt, grid)
+            out_s.append(nxt.cpu().numpy()); out_x.append(val.cpu().numpy()); out_gap.append(gap.cpu().numpy())
+            cx, cs, cdt = val, nxt, gap
+    ds, dx, dg = np.stack(out_s, 1), np.stack(out_x, 1), np.stack(out_gap, 1)
+    rs, rx, rg = s[:, C:C + H].cpu().numpy(), x[:, C:C + H].cpu().numpy(), dt[:, C:C + H].cpu().numpy()
+
+    def stats(S_, X_, G_):
+        grp = GROUP[np.clip(S_, 0, len(GROUP) - 1)]
+        pix = grp == 2
+        return dict(share_joints=float((grp == 0).mean()), share_actions=float((grp == 1).mean()), share_pixels=float(pix.mean()),
+                    events_per_second=float(H / max(G_.sum(1).mean() / FPS, 1e-9)),
+                    pixel_events_arriving_together=float((G_[pix] == 0).mean()) if pix.any() else None,
+                    joint_value_std=float(X_[grp == 0].std()) if (grp == 0).any() else None)
+    return dict(dream=stats(ds, dx, dg), real=stats(rs, rx, rg))
+
+
 def summarize_imagination(E_real, E_foreign):
     out = {}
     for g, name in ((0, "joints"), (2, "pixels")):
@@ -164,6 +204,7 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no_actions", action="store_true")
+    ap.add_argument("--anticipate", action="store_true", help="also learn WHEN and WHICH sense comes next; evaluate a free dream")
     ap.add_argument("--threads", type=int, default=int(os.environ.get("THREADS", 4)))
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--out", required=True)
@@ -171,7 +212,7 @@ def main():
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
     tr = RobotData("train", a.no_actions)
-    m = OneMachine(STREAMS_ROBOT, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed).to(a.device)
+    m = OneMachine(STREAMS_ROBOT, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, anticipate=a.anticipate).to(a.device)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
     t0, log, k = time.time(), [], 0
     while k < a.steps and time.time() - t0 < a.minutes * 60:
@@ -179,7 +220,12 @@ def main():
             prog = max(k / a.steps, (time.time() - t0) / (a.minutes * 60))  # whichever budget ends first
             g["lr"] = a.lr * min(1, (k + 1) / 100) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * min(prog, 1.0))))
         b = batch([tr.window(rng, a.T) for _ in range(a.B)], a.device)
-        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+        if a.anticipate:
+            h_, ha_ = m.forward_all(b["x"], b["s"], b["dt"], b["q"])
+            w_, c_ = m.anticipation_nll(ha_, b["s_out"], b["q"])
+            l = m.nll(h_, b["s_out"], b["y"]) + w_ + c_
+        else:
+            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
         loss = (l * b["mask"]).sum() / b["mask"].sum()
         if torch.isfinite(loss):
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
@@ -221,6 +267,30 @@ def main():
         ti = time.time()
         E_r = imagine(m, Wi, None, device=a.device); E_f = imagine(m, Wi, Fi, device=a.device)
         res["imagination_1s"] = summarize_imagination(E_r, E_f); res["imagination_seconds"] = time.time() - ti
+    if a.anticipate:
+        aw, ac = [], []
+        for j in range(0, 40, 8):
+            b = batch(Wt[j:j + 8], a.device)
+            with torch.no_grad():
+                _, ha_ = m.forward_all(b["x"], b["s"], b["dt"], b["q"])
+                w_, c_ = m.anticipation_nll(ha_, b["s_out"], b["q"])
+            aw.append(float(w_[b["mask"]].mean())); ac.append(float(c_[b["mask"]].mean()))
+        # reference from train: next-sense frequencies given the current sense; Gaussian log-gap per current sense
+        cnt = np.ones((len(STREAMS_ROBOT), len(STREAMS_ROBOT))); ug = {}
+        for _ in range(64):
+            x_, s_, d_, *_ = tr.window(rng, 2048)
+            for i in range(len(s_) - 1):
+                cnt[s_[i], s_[i + 1]] += 1; ug.setdefault(s_[i], []).append(float(np.log1p(min(d_[i + 1], 1e3)) / 4 - 0.75))
+        mu = {k: np.mean(v) for k, v in ug.items()}; sd = {k: np.std(v) + 1e-2 for k, v in ug.items()}
+        rw, rc = [], []
+        for x_, s_, d_, *_ in Wt:
+            for i in range(32, len(s_) - 1):
+                p = cnt[s_[i]] / cnt[s_[i]].sum(); rc.append(-np.log(p[s_[i + 1]]))
+                u = np.log1p(min(d_[i + 1], 1e3)) / 4 - 0.75; z = (u - mu.get(s_[i], 0)) / sd.get(s_[i], 1)
+                rw.append(0.5 * z * z + np.log(sd.get(s_[i], 1)) + 0.5 * np.log(2 * np.pi))
+        res["anticipation_test"] = dict(when_nll=float(np.mean(aw)), which_nll=float(np.mean(ac)),
+                                        when_nll_reference=float(np.mean(rw)), which_nll_reference=float(np.mean(rc)))
+        res["free_dream_1s"] = dream(m, [(w[0][:1212], w[1][:1212], w[2][:1212]) for w in Wt[:16]], device=a.device)
     json.dump(res, open(a.out + ".json", "w"), indent=1)
     print(json.dumps({kk: v for kk, v in res.items() if kk not in ("curve", "args")}, indent=1))
 
