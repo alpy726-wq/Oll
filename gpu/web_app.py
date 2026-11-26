@@ -85,7 +85,7 @@ def run(vals, times, horizon, windows=None):
     m = get_model()
     n_an = min(len(vals), 4000)
     v_an = vals[-n_an:]; t_an = None if times is None else times[-n_an:]
-    sc = surprise(m, [(v_an, t_an)], device=dev)[0]
+    sc = surprise(m, [(v_an, t_an)], device=dev, normal="calm")[0]
     fl = alarms(sc)
     fc = forecast(m, vals, times, horizon=horizon, paths=16, lookback=512, device=dev)
     out = []
@@ -112,6 +112,8 @@ def run(vals, times, horizon, windows=None):
     return (f"<div class='card'><img src='data:image/png;base64,{out[0]}'><table><tr><td><b>adım</b></td><td><b>tahmin</b></td>"
             f"<td><b>%10–90</b></td></tr>{table}</table></div><div class='card'><p>{nalarm} alarm bölgesi "
             f"(son {n_an} ölçüm). Eşik: serinin ilk %15'indeki şaşırma ortalaması + 4 standart sapma.</p>"
+            f"<p class='m'>DENEYSEL: alarm özelliği gerçek NAB arızalarında henüz zayıf (47 seri, 110 etiketli arıza: "
+            f"arızaların %33'ü yakalandı, alarmların %16'sı gerçek arızaya denk geldi). Tahmin ve güven aralığı ölçülmüş ve güvenilirdir.</p>"
             f"<img src='data:image/png;base64,{out[1]}'></div>")
 
 

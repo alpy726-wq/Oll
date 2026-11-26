@@ -5,7 +5,7 @@ CSV: "timestamp,value" or just "value" (one per line). Weights: models/oll-1.pt"
 import argparse, csv, io, os
 import numpy as np
 import torch
-from oll.core import load, forecast, surprise
+from oll.core import load, forecast, surprise, alarms
 from oll.alarm_select import relative_alarms
 
 DEFAULT_RULE = dict(W=288, w=6, k=4.0)
@@ -46,8 +46,8 @@ def main():
                 fh.write(f"{k + 1},{f['median'][k]:.6g},{f['q10'][k]:.6g},{f['q90'][k]:.6g}\n")
         print(f"forecast_{name}.csv")
     else:
-        s = surprise(m, [(v, t)], device=dev)[0]
-        fl = relative_alarms(s, **DEFAULT_RULE)
+        s = surprise(m, [(v, t)], device=dev, normal="calm")[0]
+        fl = alarms(s)
         with open(f"alarms_{name}.csv", "w") as fh:
             fh.write("index,value,surprise,alarm\n")
             for i in range(len(v)):

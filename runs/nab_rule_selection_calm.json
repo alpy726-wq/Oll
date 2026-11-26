@@ -1,0 +1,63 @@
+{
+ "fixed_first15pct_rule_all": {
+  "series": 47,
+  "mean_point_auc": 0.5192148074577733,
+  "median_point_auc": 0.5319847264319009,
+  "labelled_windows": 110,
+  "windows_detected": 36,
+  "window_recall": 0.32727272727272727,
+  "alarm_runs": 632,
+  "alarm_runs_inside_windows": 100,
+  "alarm_precision": 0.15822784810126583
+ },
+ "two_fold": [
+  {
+   "chosen_on": "series index %2==0",
+   "rule": {
+    "W": 288,
+    "w": 6,
+    "k": 3.0
+   },
+   "test": {
+    "series": 23,
+    "mean_point_auc": 0.5101616149773028,
+    "median_point_auc": 0.5335466229785291,
+    "labelled_windows": 58,
+    "windows_detected": 6,
+    "window_recall": 0.10344827586206896,
+    "alarm_runs": 55,
+    "alarm_runs_inside_windows": 11,
+    "alarm_precision": 0.2
+   },
+   "test_f1": 0.13636363636363635
+  },
+  {
+   "chosen_on": "series index %2==1",
+   "rule": {
+    "W": 576,
+    "w": 1,
+    "k": 4.0
+   },
+   "test": {
+    "series": 24,
+    "mean_point_auc": 0.5282679999382437,
+    "median_point_auc": 0.5177779992444218,
+    "labelled_windows": 52,
+    "windows_detected": 34,
+    "window_recall": 0.6538461538461539,
+    "alarm_runs": 1006,
+    "alarm_runs_inside_windows": 137,
+    "alarm_precision": 0.13618290258449303
+   },
+   "test_f1": 0.22541618273325587
+  }
+ ],
+ "two_fold_pooled_test": {
+  "windows_detected": 40,
+  "labelled_windows": 110,
+  "window_recall": 0.36363636363636365,
+  "alarm_runs": 1061,
+  "alarm_runs_inside_windows": 148,
+  "alarm_precision": 0.13949104618284638
+ }
+}

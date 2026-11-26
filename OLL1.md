@@ -26,4 +26,6 @@ time-series data.
 - ETT long-horizon protocol, ETTh2 with adaptation: MSE 0.30 / 0.34 / 0.36 / 0.44 (H = 96/192/336/720),
   below repeat-last (0.36–0.56) and one-day seasonal repeat (0.35–0.53).
 - ETTh1 / ETTm1: below repeat-last; above one-day seasonal repeat (daily rhythm is a known weakness).
-- NAB real anomaly series: see runs/nab_rule_selection.json (rule chosen on half the series, scored on the other half).
+- NAB real anomaly series (47 series, 110 labelled windows): EXPERIMENTAL / weak. Calm-period normalisation, fixed rule:
+  33 % of windows detected, 16 % of alarm runs inside windows, point AUC 0.52 (runs/gpu/main/nab_calm.json).
+  Running normalisation was worse (AUC 0.47). Forecasting and uncertainty are the verified functions.
