@@ -34,6 +34,7 @@ ap.add_argument("--mem_orders", default="1", help="context-keyed memory orders, 
 ap.add_argument("--clock", action="store_true")
 ap.add_argument("--query", action="store_true", help="query head + far targets; ETT answered directly")
 ap.add_argument("--anticipate", action="store_true")
+ap.add_argument("--init", default="", help="warm start: load matching weights from this checkpoint (new parts start fresh)")
 a = ap.parse_args()
 dev = a.device
 torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -52,6 +53,12 @@ if os.path.exists(a.ckpt + ".pt"):  # resume
     ck = torch.load(a.ckpt + ".pt", map_location=dev)
     m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); step, log, spent = ck["step"], ck["log"], ck["spent"]
     rng = np.random.default_rng(a.seed + step)
+if a.init and step == 0:
+    src = torch.load(a.init, map_location=dev)["model"]
+    own = m.state_dict()
+    keep = {k: v for k, v in src.items() if k in own and own[k].shape == v.shape}
+    m.load_state_dict(keep, strict=False)
+    print("warm start:", len(keep), "tensors loaded,", len(own) - len(keep), "new", flush=True)
 data = BigData(a.big, "train")
 params = sum(p.numel() for p in m.parameters())
 print("params", params, "resume step", step, flush=True)
