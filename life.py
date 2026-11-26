@@ -1,0 +1,192 @@
+"""A continuous life on a computer (real data only, nothing synthetic).
+
+The machine is born untrained (only its innate structure: frozen prime basis, continuous time, memory) and then lives
+ONE uninterrupted stream of real events. Its internal state is never reset. At every event it first predicts the
+next one (before seeing it), then sees it; every U events it learns from what it just lived (weights change while it
+lives) and, if replay is on, also re-lives one old moment from its episodic store ("sleep"/replay against forgetting).
+It acts: it chooses what to attend to next (which real source to experience), by curiosity = its own learning progress.
+Sources (train splits, each walked forward in real time order, never repeated):
+  weather (Jena), grid (ETT), market (VIX), audio (spoken digits), text (books), body (real robot arm: joints, motor
+  commands, camera pixels).
+Measured over the life:
+  - prequential loss: the loss on each event BEFORE learning from it (every event is new; this is the standard measure
+    of learning from experience), next to a no-learning-structure reference running on the same events
+  - held-out probes (val/test data never lived) every --probe_every events: learning that generalises, and forgetting."""
+import argparse, json, math, os, time
+from collections import deque
+import numpy as np
+import torch
+from pfm.one import OneMachine
+from pfm.realworld import STREAMS_REAL, SID, RealData, JENA_VARS, ETT_VARS, fixed_eval_set
+from robot_world import STREAMS_ROBOT, RobotData, batch as robot_batch
+
+STREAMS_LIFE = STREAMS_REAL + STREAMS_ROBOT
+ROBOT0 = len(STREAMS_REAL)
+TEXT = SID["text"]
+SOURCES = ["weather", "grid", "market", "audio", "text", "body"]
+
+
+def build_sources():
+    d = RealData("train")
+    src = {}
+
+    def multivar(t, X, sid0):
+        n, k = X.shape
+        tt = np.repeat(t, k); ss = np.tile(sid0 + np.arange(k), n); xx = X.reshape(-1)
+        ok = ~np.isnan(xx)
+        return xx[ok], ss[ok], tt[ok]
+    src["weather"] = multivar(d.jena_t, d.jena, SID["jena:" + JENA_VARS[0]])
+    src["grid"] = multivar(d.ett_t, d.ett, SID["ett:" + ETT_VARS[0]])
+    src["market"] = (d.vix, np.full(len(d.vix), SID["vix"]), d.vix_t)
+    a = np.clip(d.audio[: d.aoff[-1]] * 4.0, -1.2, 1.2)
+    at = np.concatenate([np.arange(l) / 8.0 + 3000.0 * i for i, l in enumerate(d.alen)])  # ms; 3 s silence between utterances
+    src["audio"] = (a, np.full(len(a), SID["audio"]), at)
+    src["text"] = (d.text.astype(np.float64), np.full(len(d.text), TEXT), np.arange(len(d.text), dtype=np.float64))
+    r = RobotData("train")
+    src["body"] = (r.x, r.s + ROBOT0, r.t)
+    return {k: (np.asarray(x, np.float64), np.asarray(s, np.int64), np.asarray(t, np.float64)) for k, (x, s, t) in src.items()}
+
+
+def probe_sets():
+    ev = fixed_eval_set("val", n_per_domain=16, T=128, seed=999)
+    sets = {k: ev[k] for k in ("weather", "grid", "market", "audio", "text")}
+    te = RobotData("test"); rng = np.random.default_rng(999)
+    b = robot_batch([te.window(rng, 256) for _ in range(16)])
+    b["s"] = b["s"] + ROBOT0; b["s_out"] = b["s_out"] + ROBOT0
+    sets["body"] = b
+    return sets
+
+
+def probe(m, sets):
+    out = {}
+    with torch.no_grad():
+        for k, b in sets.items():
+            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+            out[k] = float((l * b["mask"]).sum() / b["mask"].sum())
+    return out
+
+
+class Reference:
+    """no-learning-structure reference on the same lived events: last value of the stream with a running Gaussian width
+    (continuous), running byte frequencies (text). It also adapts online, so it is a fair 'simple learner' baseline."""
+
+    def __init__(self):
+        self.last, self.var, self.n, self.cnt = {}, {}, {}, np.ones(256)
+
+    def nll(self, x, s):
+        if s == TEXT:
+            p = self.cnt[int(x)] / self.cnt.sum(); self.cnt[int(x)] += 1
+            return -math.log(p)
+        if s not in self.last:
+            self.last[s] = x; return None
+        r = x - self.last[s]; self.last[s] = x
+        v = self.var.get(s, 0.05); n = self.n.get(s, 0)
+        out = 0.5 * r * r / v + 0.5 * math.log(2 * math.pi * v)
+        self.var[s] = max((v * n + r * r) / (n + 1), 1e-6); self.n[s] = min(n + 1, 10000)
+        return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--events", type=int, default=1_000_000)
+    ap.add_argument("--minutes", type=float, default=300)
+    ap.add_argument("--episode", type=int, default=1024, help="events per attention choice")
+    ap.add_argument("--U", type=int, default=128, help="learn every U lived events")
+    ap.add_argument("--W", type=int, default=384, help="learning window (most recent lived events)")
+    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--attention", default="curious", choices=["curious", "random"])
+    ap.add_argument("--no_replay", action="store_true")
+    ap.add_argument("--no_learning", action="store_true", help="control: lives the same way but never changes its weights")
+    ap.add_argument("--probe_every", type=int, default=100_000)
+    ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--threads", type=int, default=int(os.environ.get("THREADS", 4)))
+    ap.add_argument("--out", required=True)
+    a = ap.parse_args()
+    torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
+    rng = np.random.default_rng(a.seed)
+    src = build_sources(); cursor = {k: 0 for k in SOURCES}
+    sets = probe_sets()
+    m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed)
+    opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
+    ref = Reference()
+    st = m.init_state(1)
+    buf = deque(maxlen=a.W + 1)  # recent lived events (x, s, dt)
+    store, n_windows = [], 0  # episodic store of lived windows (reservoir), for replay
+    lp = {k: 0.0 for k in SOURCES}; last_loss = {k: None for k in SOURCES}
+    res = dict(args=vars(a), episodes=[], probes=[dict(events=0, loss=probe(m, sets))])
+    print(res["probes"][-1], flush=True)
+    t0, lived, updates, since_learn, next_probe = time.time(), 0, 0, 0, a.probe_every
+    pending = None  # prediction (features) for the next event
+    prev_t = None
+    while lived < a.events and time.time() - t0 < a.minutes * 60:
+        # --- act: choose what to experience next
+        unseen = [k for k in SOURCES if last_loss[k] is None]
+        if unseen:
+            k = unseen[0]
+        elif a.attention == "random" or rng.random() < 0.2:
+            k = SOURCES[int(rng.integers(len(SOURCES)))]
+        else:
+            w = np.array([lp[s] for s in SOURCES]); w = np.exp((w - w.max()) / (np.std(w) + 1e-6))
+            k = SOURCES[int(rng.choice(len(SOURCES), p=w / w.sum()))]
+        X, S, T = src[k]
+        i0 = cursor[k]
+        if i0 + a.episode + 1 >= len(X):
+            cursor[k] = i0 = 0  # an archive lived to its end starts over (logged)
+        pl, rl, n_pl = 0.0, 0.0, 0
+        for i in range(i0, i0 + a.episode):
+            x, s = float(X[i]), int(S[i])
+            dt = 1e3 if prev_t is None or i == i0 else float(np.clip(T[i] - T[i - 1], 0, 1e3))  # attention switch = a long gap
+            if pending is not None:  # score the prediction made before this event was seen
+                with torch.no_grad():
+                    l = float(m.nll(pending, torch.tensor([s]), torch.tensor([x], dtype=torch.float64))[0])
+                r = ref.nll(x, s)
+                if r is not None and math.isfinite(l):
+                    pl += l; rl += r; n_pl += 1
+            q = float(np.clip(T[i + 1] - T[i], 0, 1e3))
+            with torch.no_grad():
+                pending, st = m.step(torch.tensor([x], dtype=torch.float64), torch.tensor([s]), torch.tensor([dt]), torch.tensor([q]), st)
+            buf.append((x, s, dt)); prev_t = T[i]; lived += 1; since_learn += 1
+            # --- learn from what was just lived (+ replay one old moment)
+            if since_learn >= a.U and len(buf) == buf.maxlen and not a.no_learning:
+                since_learn = 0
+                win = np.array(buf)
+                n_windows += 1
+                if len(store) < 2000:
+                    store.append(win)
+                elif rng.random() < 2000 / n_windows:
+                    store[int(rng.integers(2000))] = win
+                wins = [win] + ([store[int(rng.integers(len(store)))]] if not a.no_replay and len(store) > 1 else [])
+                xb = torch.tensor(np.stack([w[:, 0] for w in wins]), dtype=torch.float64)
+                sb = torch.tensor(np.stack([w[:, 1] for w in wins]), dtype=torch.long)
+                db = torch.tensor(np.stack([w[:, 2] for w in wins]), dtype=torch.float32)
+                l = m.nll(m(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:]), sb[:, 1:], xb[:, 1:])[:, 32:]
+                loss = l.mean()
+                if torch.isfinite(loss):
+                    opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); updates += 1
+            if lived >= next_probe:
+                next_probe += a.probe_every
+                res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))
+                print(res["probes"][-1], flush=True)
+                torch.save(m.state_dict(), a.out + ".pt")
+                json.dump(res, open(a.out + ".json", "w"), indent=1)
+        cursor[k] = i0 + a.episode
+        if n_pl:
+            ep_loss = pl / n_pl
+            if last_loss[k] is not None:
+                lp[k] = 0.7 * lp[k] + 0.3 * (last_loss[k] - ep_loss)  # learning progress on this source
+            last_loss[k] = ep_loss
+            res["episodes"].append(dict(events=lived, source=k, loss=ep_loss, reference=rl / n_pl, updates=updates))
+            if len(res["episodes"]) % 50 == 0:
+                print(res["episodes"][-1], {s: round(v, 3) for s, v in lp.items()}, f"{(time.time() - t0) / 60:.1f} min", flush=True)
+    res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))
+    res["lived_events"], res["updates"], res["minutes"] = lived, updates, (time.time() - t0) / 60
+    res["attention_share"] = {k: float(np.mean([e["source"] == k for e in res["episodes"]])) for k in SOURCES}
+    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
+    torch.save(m.state_dict(), a.out + ".pt")
+    json.dump(res, open(a.out + ".json", "w"), indent=1)
+    print("PROBES", json.dumps(res["probes"][0]), "\n", json.dumps(res["probes"][-1]), "\nATTENTION", res["attention_share"])
+
+
+if __name__ == "__main__":
+    main()
