@@ -1,0 +1,439 @@
+{
+ "series": 47,
+ "mean_point_auc": 0.5192148074577733,
+ "median_point_auc": 0.5319847264319009,
+ "labelled_windows": 110,
+ "windows_detected": 36,
+ "window_recall": 0.32727272727272727,
+ "alarm_runs": 632,
+ "alarm_runs_inside_windows": 100,
+ "alarm_precision": 0.15822784810126583,
+ "per_series": [
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv",
+   "n": 4032,
+   "auc": 0.5404862738648356,
+   "windows": 2,
+   "windows_detected": 2,
+   "alarm_runs": 17,
+   "alarm_runs_in_windows": 3
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv",
+   "n": 4032,
+   "auc": 0.5267032605567206,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv",
+   "n": 4032,
+   "auc": 0.5686745336677494,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv",
+   "n": 4032,
+   "auc": 0.5335466229785291,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv",
+   "n": 4032,
+   "auc": 0.3394284639464739,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 4,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv",
+   "n": 4032,
+   "auc": 0.3500844793834065,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv",
+   "n": 4032,
+   "auc": null,
+   "windows": 0,
+   "windows_detected": 0,
+   "alarm_runs": 25,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv",
+   "n": 4032,
+   "auc": 0.4587248584859099,
+   "windows": 3,
+   "windows_detected": 1,
+   "alarm_runs": 25,
+   "alarm_runs_in_windows": 1
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv",
+   "n": 4730,
+   "auc": 0.45178467401782213,
+   "windows": 1,
+   "windows_detected": 1,
+   "alarm_runs": 70,
+   "alarm_runs_in_windows": 10
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv",
+   "n": 4032,
+   "auc": 0.5679196152314432,
+   "windows": 3,
+   "windows_detected": 1,
+   "alarm_runs": 2,
+   "alarm_runs_in_windows": 1
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_network_in_257a54.csv",
+   "n": 4032,
+   "auc": 0.7808301885760353,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/ec2_network_in_5abac7.csv",
+   "n": 4730,
+   "auc": 0.6264221669680531,
+   "windows": 2,
+   "windows_detected": 2,
+   "alarm_runs": 71,
+   "alarm_runs_in_windows": 16
+  },
+  {
+   "name": "realAWSCloudwatch/elb_request_count_8c0756.csv",
+   "n": 4032,
+   "auc": 0.5028720036182722,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 2,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/grok_asg_anomaly.csv",
+   "n": 4621,
+   "auc": 0.5902159851801256,
+   "windows": 3,
+   "windows_detected": 2,
+   "alarm_runs": 33,
+   "alarm_runs_in_windows": 4
+  },
+  {
+   "name": "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv",
+   "n": 1243,
+   "auc": 0.6301672563982322,
+   "windows": 2,
+   "windows_detected": 1,
+   "alarm_runs": 4,
+   "alarm_runs_in_windows": 1
+  },
+  {
+   "name": "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv",
+   "n": 4032,
+   "auc": 0.21326083083206557,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv",
+   "n": 4032,
+   "auc": 0.6865609966695448,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAdExchange/exchange-2_cpc_results.csv",
+   "n": 1624,
+   "auc": 0.4192564971466724,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAdExchange/exchange-2_cpm_results.csv",
+   "n": 1624,
+   "auc": 0.4946504872405465,
+   "windows": 2,
+   "windows_detected": 2,
+   "alarm_runs": 16,
+   "alarm_runs_in_windows": 4
+  },
+  {
+   "name": "realAdExchange/exchange-3_cpc_results.csv",
+   "n": 1538,
+   "auc": 0.5622849861966447,
+   "windows": 3,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAdExchange/exchange-3_cpm_results.csv",
+   "n": 1538,
+   "auc": 0.3831481088223496,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAdExchange/exchange-4_cpc_results.csv",
+   "n": 1643,
+   "auc": 0.5596957395333579,
+   "windows": 3,
+   "windows_detected": 0,
+   "alarm_runs": 2,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realAdExchange/exchange-4_cpm_results.csv",
+   "n": 1643,
+   "auc": 0.6374940219990435,
+   "windows": 4,
+   "windows_detected": 3,
+   "alarm_runs": 10,
+   "alarm_runs_in_windows": 3
+  },
+  {
+   "name": "realKnownCause/ambient_temperature_system_failure.csv",
+   "n": 7267,
+   "auc": 0.5755573132051569,
+   "windows": 2,
+   "windows_detected": 1,
+   "alarm_runs": 17,
+   "alarm_runs_in_windows": 4
+  },
+  {
+   "name": "realKnownCause/cpu_utilization_asg_misconfiguration.csv",
+   "n": 18050,
+   "auc": 0.6493526044733103,
+   "windows": 1,
+   "windows_detected": 1,
+   "alarm_runs": 5,
+   "alarm_runs_in_windows": 2
+  },
+  {
+   "name": "realKnownCause/ec2_request_latency_system_failure.csv",
+   "n": 4032,
+   "auc": 0.4737884951339077,
+   "windows": 3,
+   "windows_detected": 0,
+   "alarm_runs": 3,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realKnownCause/machine_temperature_system_failure.csv",
+   "n": 22695,
+   "auc": 0.5774727426585262,
+   "windows": 4,
+   "windows_detected": 3,
+   "alarm_runs": 42,
+   "alarm_runs_in_windows": 17
+  },
+  {
+   "name": "realKnownCause/nyc_taxi.csv",
+   "n": 10320,
+   "auc": 0.4611083795743485,
+   "windows": 5,
+   "windows_detected": 1,
+   "alarm_runs": 8,
+   "alarm_runs_in_windows": 1
+  },
+  {
+   "name": "realKnownCause/rogue_agent_key_hold.csv",
+   "n": 1882,
+   "auc": 0.35689000870971754,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realKnownCause/rogue_agent_key_updown.csv",
+   "n": 5315,
+   "auc": 0.5499430216281225,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/TravelTime_387.csv",
+   "n": 2500,
+   "auc": 0.6469717162742484,
+   "windows": 3,
+   "windows_detected": 3,
+   "alarm_runs": 17,
+   "alarm_runs_in_windows": 6
+  },
+  {
+   "name": "realTraffic/TravelTime_451.csv",
+   "n": 2162,
+   "auc": 0.5498679113406703,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/occupancy_6005.csv",
+   "n": 2380,
+   "auc": 0.3874660689194233,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/occupancy_t4013.csv",
+   "n": 2500,
+   "auc": 0.5256213333333334,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/speed_6005.csv",
+   "n": 2500,
+   "auc": 0.43560167956193707,
+   "windows": 1,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/speed_7578.csv",
+   "n": 1127,
+   "auc": 0.40164227975033256,
+   "windows": 4,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTraffic/speed_t4013.csv",
+   "n": 2495,
+   "auc": 0.45209621380846327,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 2,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTweets/Twitter_volume_AAPL.csv",
+   "n": 15902,
+   "auc": 0.6136156267014485,
+   "windows": 4,
+   "windows_detected": 2,
+   "alarm_runs": 42,
+   "alarm_runs_in_windows": 4
+  },
+  {
+   "name": "realTweets/Twitter_volume_AMZN.csv",
+   "n": 15831,
+   "auc": 0.5460295480041818,
+   "windows": 4,
+   "windows_detected": 1,
+   "alarm_runs": 25,
+   "alarm_runs_in_windows": 3
+  },
+  {
+   "name": "realTweets/Twitter_volume_CRM.csv",
+   "n": 15902,
+   "auc": 0.5789433530940299,
+   "windows": 3,
+   "windows_detected": 0,
+   "alarm_runs": 0,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTweets/Twitter_volume_CVS.csv",
+   "n": 15853,
+   "auc": 0.5033631246065842,
+   "windows": 3,
+   "windows_detected": 2,
+   "alarm_runs": 45,
+   "alarm_runs_in_windows": 4
+  },
+  {
+   "name": "realTweets/Twitter_volume_FB.csv",
+   "n": 15833,
+   "auc": 0.46729872173452286,
+   "windows": 2,
+   "windows_detected": 2,
+   "alarm_runs": 26,
+   "alarm_runs_in_windows": 2
+  },
+  {
+   "name": "realTweets/Twitter_volume_GOOG.csv",
+   "n": 15842,
+   "auc": 0.5127833034166993,
+   "windows": 3,
+   "windows_detected": 3,
+   "alarm_runs": 64,
+   "alarm_runs_in_windows": 11
+  },
+  {
+   "name": "realTweets/Twitter_volume_IBM.csv",
+   "n": 15893,
+   "auc": 0.5304228298852728,
+   "windows": 2,
+   "windows_detected": 0,
+   "alarm_runs": 2,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTweets/Twitter_volume_KO.csv",
+   "n": 15851,
+   "auc": 0.5177779992444218,
+   "windows": 3,
+   "windows_detected": 1,
+   "alarm_runs": 27,
+   "alarm_runs_in_windows": 1
+  },
+  {
+   "name": "realTweets/Twitter_volume_PFE.csv",
+   "n": 15858,
+   "auc": 0.5977928366038915,
+   "windows": 4,
+   "windows_detected": 0,
+   "alarm_runs": 1,
+   "alarm_runs_in_windows": 0
+  },
+  {
+   "name": "realTweets/Twitter_volume_UPS.csv",
+   "n": 15866,
+   "auc": 0.5482619800811871,
+   "windows": 5,
+   "windows_detected": 1,
+   "alarm_runs": 20,
+   "alarm_runs_in_windows": 2
+  }
+ ],
+ "seconds": 609.4967136383057,
+ "normal": "calm",
+ "rule": "alarm = 3-point smoothed surprise > mean + 4 std of the first 15% of the series; no label tuning"
+}

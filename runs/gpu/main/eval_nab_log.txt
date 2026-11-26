@@ -1,14 +1,15 @@
 returncode 0
 {
  "series": 47,
- "mean_point_auc": 0.47269227737352365,
- "median_point_auc": 0.4798457512696589,
+ "mean_point_auc": 0.5192148074577733,
+ "median_point_auc": 0.5319847264319009,
  "labelled_windows": 110,
- "windows_detected": 13,
- "window_recall": 0.11818181818181818,
- "alarm_runs": 235,
- "alarm_runs_inside_windows": 24,
- "alarm_precision": 0.10212765957446808,
- "seconds": 632.1428196430206,
+ "windows_detected": 36,
+ "window_recall": 0.32727272727272727,
+ "alarm_runs": 632,
+ "alarm_runs_inside_windows": 100,
+ "alarm_precision": 0.15822784810126583,
+ "seconds": 609.4967136383057,
+ "normal": "calm",
  "rule": "alarm = 3-point smoothed surprise > mean + 4 std of the first 15% of the series; no label tuning"
 }
