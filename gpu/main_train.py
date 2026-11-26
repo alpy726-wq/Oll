@@ -9,6 +9,7 @@ from pfm.one import OneMachine
 from pfm.bigworld import STREAMS_BIG, BigData, make_batch_big, DOMAINS_BIG
 from pfm.realworld import SID, ETT_VARS, fixed_eval_set, DOMAINS
 from pfm.ett_eval import evaluate as ett_evaluate
+from pfm.train_utils import far_targets
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--R", type=int, default=512)
@@ -29,6 +30,10 @@ ap.add_argument("--big", default="/vol/big")
 ap.add_argument("--v4", default="/oll/data/v4")
 ap.add_argument("--ett_L", type=int, default=512)
 ap.add_argument("--ett_stride_mult", type=int, default=1)
+ap.add_argument("--mem_orders", default="1", help="context-keyed memory orders, e.g. 1,4,8")
+ap.add_argument("--clock", action="store_true")
+ap.add_argument("--query", action="store_true", help="query head + far targets; ETT answered directly")
+ap.add_argument("--anticipate", action="store_true")
 a = ap.parse_args()
 dev = a.device
 torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -37,7 +42,9 @@ os.makedirs(os.path.dirname(a.out), exist_ok=True)
 mix = {k: float(v) for k, v in (x.split(":") for x in a.mix.split(","))}
 doms, probs = list(mix), np.array(list(mix.values())) / sum(mix.values())
 
-m = OneMachine(STREAMS_BIG, R=a.R, L=a.L, M=a.M, RM=a.RM, seed=a.seed).to(dev)
+m = OneMachine(STREAMS_BIG, R=a.R, L=a.L, M=a.M, RM=a.RM, seed=a.seed, mem_orders=tuple(int(v) for v in a.mem_orders.split(",")),
+               clock=a.clock, query_head=a.query, anticipate=a.anticipate).to(dev)
+KW = lambda b: dict(t_in=b["t_in"], t_out=b["t_out"])
 opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
 step, log, spent = 0, [], 0.0
 os.makedirs(os.path.dirname(a.ckpt), exist_ok=True)
@@ -56,7 +63,14 @@ while (time.time() - t0) / 60 < a.minutes:
         g["lr"] = a.lr * min(1, (step + 1) / 500) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * frac)))
     d = doms[int(rng.choice(len(doms), p=probs))]
     b = make_batch_big(data, rng, a.B, a.T, d, dev)
-    l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+    if a.query:
+        b = far_targets(b, rng)
+    if a.anticipate:
+        h_, ha_ = m.forward_all(b["x"], b["s"], b["dt"], b["q"], **KW(b))
+        w_, c_ = m.anticipation_nll(ha_, b.get("s_next", b["s_out"]), b.get("q_next", b["q"]))
+        l = m.nll(h_, b["s_out"], b["y"]) + w_ + c_
+    else:
+        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], **KW(b)), b["s_out"], b["y"])
     loss = (l * b["mask"]).sum() / b["mask"].sum()
     if not torch.isfinite(loss):  # never update on a non-finite loss; counted and reported
         bad = res_bad = globals().get("n_bad", 0) + 1; globals()["n_bad"] = bad
@@ -72,7 +86,7 @@ while (time.time() - t0) / 60 < a.minutes:
         log.append(dict(step=step, minutes=(time.time() - t0) / 60, **{k: round(v, 4) for k, v in ema.items()}))
         print(log[-1], flush=True)
         json.dump(dict(params=params, last=log[-1], curve=log, skipped=globals().get("n_bad", 0)),
-                  open(os.path.join(os.path.dirname(a.out), "progress.json"), "w"))
+                  open(a.out.replace(".json", "_progress.json"), "w"))
     if step % 2000 == 0:
         torch.save(dict(model=m.state_dict(), opt=opt.state_dict(), step=step, log=log, spent=(time.time() - t0) / 60), a.ckpt + ".pt")
 torch.save(dict(model=m.state_dict(), opt=opt.state_dict(), step=step, log=log, spent=(time.time() - t0) / 60), a.ckpt + ".pt")
@@ -86,7 +100,7 @@ with torch.no_grad():
         r = {}
         for dname, b in ev.items():
             b = {k: (v.to(dev) if torch.is_tensor(v) else v) for k, v in b.items()}
-            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], **KW(b)), b["s_out"], b["y"])
             v = float((l * b["mask"]).sum() / b["mask"].sum())
             r[dname] = v / math.log(2) if dname == "text" else v
         res["v4_" + split] = r
@@ -95,21 +109,22 @@ with torch.no_grad():
     tot = []
     for _ in range(16):
         b = make_batch_big(vd, vr, 32, a.T, "web", dev)
-        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], **KW(b)), b["s_out"], b["y"])
         tot.append(float((l * b["mask"]).sum() / b["mask"].sum()))
     res["fineweb_val_bits_per_byte"] = float(np.mean(tot) / math.log(2))
     # held-out tail of every big series collection
     tot = []
     for _ in range(16):
         b = make_batch_big(vd, vr, 32, a.T, "series", dev)
-        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], **KW(b)), b["s_out"], b["y"])
         tot.append(float((l * b["mask"]).sum() / b["mask"].sum()))
     res["series_val_nll"] = float(np.mean(tot))
 json.dump(res, open(a.out, "w"), indent=1)
 # standard ETT long-horizon protocol (ETTh1 was trained on through its train split; ETTh2 and ETTm1 never seen)
 sids = [SID["ett:" + v] for v in ETT_VARS]
 for name, stride in (("ETTh1", 24), ("ETTh2", 24), ("ETTm1", 96)):
-    res["ett_" + name] = ett_evaluate(m, sids, name, a.v4, dev, L=a.ett_L, stride=stride * a.ett_stride_mult)
+    with torch.no_grad():
+        res["ett_" + name] = ett_evaluate(m, sids, name, a.v4, dev, L=a.ett_L, stride=stride * a.ett_stride_mult, adapt=True, direct=a.query)
     json.dump(res, open(a.out, "w"), indent=1)
     print(name, json.dumps({h: res["ett_" + name][h] for h in (96, 720)}), flush=True)
 print("DONE", json.dumps({k: v for k, v in res.items() if k not in ("curve", "args")})[:3000])
