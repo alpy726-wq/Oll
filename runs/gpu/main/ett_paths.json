@@ -1,0 +1,88 @@
+{
+ "ETTh1_adapt_paths16": {
+  "protocol": {
+   "dataset": "ETTh1",
+   "lookback": 512,
+   "window_stride": 24,
+   "windows": 91,
+   "channels": 7,
+   "adaptation": true,
+   "sampled_paths": 16
+  },
+  "96": {
+   "model_mse": 0.5545244246343316,
+   "model_mae": 0.4601693382321461,
+   "repeat_last_mse": 0.9718463288068051,
+   "repeat_last_mae": 0.6125904385905488,
+   "seasonal_naive_mse": 0.5126707729013038,
+   "seasonal_naive_mae": 0.4365430998543369
+  },
+  "192": {
+   "model_mse": 0.5747790808699701,
+   "model_mae": 0.48392610326131896,
+   "repeat_last_mse": 0.9545703372237633,
+   "repeat_last_mae": 0.6151589126625132,
+   "seasonal_naive_mse": 0.5712397660532375,
+   "seasonal_naive_mae": 0.4624333602175157
+  },
+  "336": {
+   "model_mse": 0.5843343016900183,
+   "model_mae": 0.5029743823962326,
+   "repeat_last_mse": 0.9333990662439906,
+   "repeat_last_mae": 0.6159132906091602,
+   "seasonal_naive_mse": 0.6205082795245107,
+   "seasonal_naive_mae": 0.4864086547690938
+  },
+  "720": {
+   "model_mse": 0.6490777742111916,
+   "model_mae": 0.5511881505554596,
+   "repeat_last_mse": 0.9451031910407149,
+   "repeat_last_mae": 0.6236442267587784,
+   "seasonal_naive_mse": 0.6547826629227488,
+   "seasonal_naive_mae": 0.514349974756773
+  }
+ },
+ "ETTm1_adapt_paths16": {
+  "protocol": {
+   "dataset": "ETTm1",
+   "lookback": 512,
+   "window_stride": 96,
+   "windows": 113,
+   "channels": 7,
+   "adaptation": true,
+   "sampled_paths": 16
+  },
+  "96": {
+   "model_mse": 0.5322495085708596,
+   "model_mae": 0.44430243803007247,
+   "repeat_last_mse": 1.0540106073392579,
+   "repeat_last_mae": 0.6063188731279782,
+   "seasonal_naive_mse": 0.41368755042166394,
+   "seasonal_naive_mae": 0.3892641297137836
+  },
+  "192": {
+   "model_mse": 0.5725694075760199,
+   "model_mae": 0.46511594216279417,
+   "repeat_last_mse": 1.1154426592489166,
+   "repeat_last_mae": 0.6451904951495312,
+   "seasonal_naive_mse": 0.4449878618159584,
+   "seasonal_naive_mae": 0.4051489520655775
+  },
+  "336": {
+   "model_mse": 0.6128507999538482,
+   "model_mae": 0.4870100499511806,
+   "repeat_last_mse": 1.1096329336713509,
+   "repeat_last_mae": 0.6524882903288417,
+   "seasonal_naive_mse": 0.5014208421532569,
+   "seasonal_naive_mae": 0.43313858846471043
+  },
+  "720": {
+   "model_mse": 0.6838043842195739,
+   "model_mae": 0.5197742244520559,
+   "repeat_last_mse": 1.1333199221726502,
+   "repeat_last_mae": 0.6755344531389588,
+   "seasonal_naive_mse": 0.5740088414678698,
+   "seasonal_naive_mae": 0.46562918197885134
+  }
+ }
+}
