@@ -29,6 +29,9 @@ ap.add_argument("--arch", default="machine", choices=["machine", "gpt"])
 ap.add_argument("--d", type=int, default=128)
 ap.add_argument("--mem_orders", default="1", help="comma list, e.g. 1,4,8 (context-keyed memory)")
 ap.add_argument("--RM", type=int, default=512)
+ap.add_argument("--clock", action="store_true", help="calendar clock (day/week/year phases of absolute time)")
+ap.add_argument("--anticipate", action="store_true", help="also learn when and which sense comes next")
+ap.add_argument("--ett", action="store_true", help="after training: ETT long-horizon protocol (30 windows, with adaptation)")
 a = ap.parse_args()
 torch.set_num_threads(a.threads)
 torch.manual_seed(a.seed)
@@ -38,7 +41,7 @@ if a.arch == "gpt":
     m = EventGPT(STREAMS_REAL, d=a.d, L=a.L, T=a.T).to(a.device)
 else:
     m = OneMachine(STREAMS_REAL, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, readout_amp="flatreadout" in abl,
-                   mem_orders=tuple(int(v) for v in a.mem_orders.split(","))).to(a.device)
+                   mem_orders=tuple(int(v) for v in a.mem_orders.split(",")), clock=a.clock, anticipate=a.anticipate).to(a.device)
 with torch.no_grad():
     if "memory" in abl:
         m.mem_beta.zero_(); m.mem_beta.requires_grad = False
@@ -65,7 +68,14 @@ for step in range(a.steps):
         g["lr"] = (a.lr if a.arch == "machine" else 1e-3) * min(1, (step + 1) / 100) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * step / a.steps)))
     doms = domains_at(step)
     b = make_batch(train, rng, a.B, a.T, [doms[int(rng.integers(len(doms)))]], a.device)
-    l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+    if a.arch == "machine" and a.anticipate:
+        h_, ha_ = m.forward_all(b["x"], b["s"], b["dt"], b["q"], t_in=b["t_in"], t_out=b["t_out"])
+        w_, c_ = m.anticipation_nll(ha_, b["s_out"], b["q"])
+        l = m.nll(h_, b["s_out"], b["y"]) + w_ + c_
+    elif a.arch == "machine":
+        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], t_in=b["t_in"], t_out=b["t_out"]), b["s_out"], b["y"])
+    else:
+        l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
     loss = (l * b["mask"]).sum() / b["mask"].sum()
     opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step()
     if step % 100 == 0:
@@ -79,7 +89,8 @@ def evaluate(split):
     with torch.no_grad():
         for d, b in ev.items():
             b = {k: (v.to(a.device) if torch.is_tensor(v) else v) for k, v in b.items()}
-            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"]), b["s_out"], b["y"])
+            kw = dict(t_in=b["t_in"], t_out=b["t_out"]) if a.arch == "machine" else {}
+            l = m.nll(m(b["x"], b["s"], b["dt"], b["q"], **kw), b["s_out"], b["y"])
             v = float((l * b["mask"]).sum() / b["mask"].sum())
             out[d] = v / math.log(2) if d == "text" else v
     m.train()
@@ -88,6 +99,15 @@ def evaluate(split):
 
 res = dict(args=vars(a), params=sum(p.numel() for p in m.parameters()), curve=log, train_seconds=time.time() - t0,
            val=evaluate("val"), test=evaluate("test"))
+if a.ett:
+    from pfm.ett_eval import evaluate as ett_evaluate
+    from pfm.realworld import SID, ETT_VARS
+    m.eval()
+    with torch.no_grad():
+        for name, stride in (("ETTh1", 24), ("ETTh2", 24), ("ETTm1", 96)):
+            r = ett_evaluate(m, [SID["ett:" + v] for v in ETT_VARS], name, "data/v4", a.device, L=512, stride=stride, max_windows=30, adapt=True)
+            res["ett_" + name] = {h: r[h] for h in (96, 336)}
+            print(name, json.dumps(res["ett_" + name]), flush=True)
 os.makedirs(os.path.dirname(a.out), exist_ok=True)
 torch.save(m.state_dict(), a.out + ".pt")
 json.dump(res, open(a.out + ".json", "w"), indent=1)

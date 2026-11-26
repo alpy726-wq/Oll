@@ -39,7 +39,7 @@ class BigData:
                 s = int(rng.integers(lo, hi - T - 1))
                 xs, ts = x[s:s + T + 1].astype(np.float64), t[s:s + T + 1]
                 dt = np.diff(ts, prepend=ts[0] - (ts[1] - ts[0]))
-                return xs, np.full(T + 1, SID_BIG["ts:" + name]), np.clip(dt, 0, 1e3)
+                return xs, np.full(T + 1, SID_BIG["ts:" + name]), np.clip(dt, 0, 1e3), ts.astype(np.float64)
         return None
 
     def window(self, rng, domain, T):
@@ -47,14 +47,14 @@ class BigData:
             w = None
             while w is None:
                 w = self._series(rng, T)
-            x, s, dt = w
+            x, s, dt, ta = w
             m = np.ones(T, bool); m[:8] = False
-            return x, s, dt, m
+            return x, s, dt, m, ta
         if domain == "web":
             i = int(rng.integers(self.web_lo, self.web_hi - T - 1))
             x = np.asarray(self.web[i:i + T + 1], dtype=np.float64)
             m = np.ones(T, bool); m[:8] = False
-            return x, np.full(T + 1, SID["text"]), np.ones(T + 1), m
+            return x, np.full(T + 1, SID["text"]), np.ones(T + 1), m, np.full(T + 1, np.nan)
         return self.small.window(rng, domain, T)
 
 
@@ -64,4 +64,6 @@ def make_batch_big(data, rng, B, T, domain, device):
     s = torch.tensor(np.stack([w[1] for w in W]), dtype=torch.long, device=device)
     dt = torch.tensor(np.stack([w[2] for w in W]), dtype=torch.float32, device=device)
     mask = torch.tensor(np.stack([w[3] for w in W]), device=device)
-    return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask, domain=domain)
+    ta = torch.tensor(np.stack([w[4] for w in W]), dtype=torch.float64, device=device)
+    return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask, domain=domain,
+                t_in=ta[:, :-1], t_out=ta[:, 1:])

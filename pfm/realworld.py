@@ -79,6 +79,7 @@ class RealData:
         return np.array(xs[:T + 1]), np.array(ss[:T + 1]), np.array(ts[:T + 1])
 
     def window(self, rng, domain, T):
+        hours = 1.0  # factor from this window's time unit to absolute hours (calendar clock); None = no calendar
         if domain == "weather":
             x, s, t = self._multivar(rng, T, self.jena_t, self.jena, SID["jena:" + JENA_VARS[0]])
         elif domain == "grid":
@@ -86,20 +87,21 @@ class RealData:
         elif domain == "market":
             if rng.random() < 0.7:
                 i0 = int(rng.integers(0, len(self.vix) - T - 1)); x = self.vix[i0:i0 + T + 1]; t = self.vix_t[i0:i0 + T + 1]
-                s = np.full(T + 1, SID["vix"])
+                s = np.full(T + 1, SID["vix"]); hours = 24.0
             else:
                 i0 = int(rng.integers(0, len(self.sp) - T - 1)); x = self.sp[i0:i0 + T + 1]; t = self.sp_t[i0:i0 + T + 1]
-                s = np.full(T + 1, SID["sp500_ret"])
+                s = np.full(T + 1, SID["sp500_ret"]); hours = 24.0 * 30.0
         elif domain == "audio":
             k = int(rng.integers(0, len(self.alen)))
             a = self.audio[self.aoff[k]: self.aoff[k] + self.alen[k]]
             i0 = int(rng.integers(0, max(1, len(a) - T - 1)))
             x = np.clip(a[i0:i0 + T + 1] * 4.0, -1.2, 1.2)  # speech peaks ~0.3; x4 uses the window
             t = np.arange(len(x)) / 8000.0 * 1000.0  # milliseconds
-            s = np.full(len(x), SID["audio"])
+            s = np.full(len(x), SID["audio"]); hours = None
         else:
             i0 = int(rng.integers(0, len(self.text) - T - 1))
             x = self.text[i0:i0 + T + 1].astype(np.float64); t = np.arange(T + 1, dtype=np.float64); s = np.full(T + 1, SID["text"])
+            hours = None
         if len(x) < T + 1:  # rare: pad by repeating the last event far in the future, masked out
             pad = T + 1 - len(x)
             x = np.concatenate([x, np.repeat(x[-1:], pad)]); s = np.concatenate([s, np.repeat(s[-1:], pad)])
@@ -107,7 +109,8 @@ class RealData:
         dt = np.diff(t, prepend=t[0] - (t[1] - t[0] if len(t) > 1 else 1.0))
         mask = np.ones(T, bool)
         mask[:8] = False  # the first targets have almost no context
-        return x, s, np.clip(dt, 0.0, 1e3), mask
+        tabs = t * hours if hours is not None else np.full(len(t), np.nan)
+        return x, s, np.clip(dt, 0.0, 1e3), mask, tabs
 
 
 def make_batch(data, rng, B, T, domains, device="cpu"):
@@ -117,7 +120,9 @@ def make_batch(data, rng, B, T, domains, device="cpu"):
     s = torch.tensor(np.stack([w[1] for w in W]), dtype=torch.long, device=device)
     dt = torch.tensor(np.stack([w[2] for w in W]), dtype=torch.float32, device=device)
     mask = torch.tensor(np.stack([w[3] for w in W]), device=device)
-    return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask, domains=doms)
+    ta = torch.tensor(np.stack([w[4] for w in W]), dtype=torch.float64, device=device)
+    return dict(x=x[:, :-1], s=s[:, :-1], dt=dt[:, :-1], q=dt[:, 1:], y=x[:, 1:], s_out=s[:, 1:], mask=mask, domains=doms,
+                t_in=ta[:, :-1], t_out=ta[:, 1:])
 
 
 def fixed_eval_set(split, n_per_domain=64, T=128, seed=12345):

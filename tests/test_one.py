@@ -141,3 +141,21 @@ def test_salience_gated_memory_streaming_equals_full():
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, wg[:, t]); hs.append(o)
         assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+
+
+def test_clock_streaming_equals_full():
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(2)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=64, clock=True).eval()
+    B, T = 2, 20
+    s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 2
+    t_in = (4e5 + torch.cumsum(dt.double(), 1)); t_out = t_in + q.double()
+    t_in[1, :5] = float("nan"); t_out[1, :5] = float("nan")  # streams without a calendar
+    with torch.no_grad():
+        h = m(x, s, dt, q, t_in=t_in, t_out=t_out)
+        assert not torch.allclose(h, m(x, s, dt, q))
+        st = m.init_state(B); hs = []
+        for t in range(T):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)

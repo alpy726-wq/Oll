@@ -99,8 +99,11 @@ class OneBranch(nn.Module):
 
 class OneMachine(nn.Module):
     def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,),
-                 anticipate=False):
+                 anticipate=False, clock=False):
         super().__init__()
+        # calendar clock: the phase of every event (and of the moment asked about) on the day / week / year circles,
+        # the same phase encoding as the values (Sec. 2) applied to absolute time; NaN time (text, audio) = no clock
+        self.clock = clock
         # anticipation (Sec. 5.2 continuous time, used for the output too): besides "what value at the asked time", the
         # machine predicts WHEN the next event comes and WHICH sense it comes from, as two more phase-amplitude read-outs
         # (a continuous density over log-gap, a discrete one over stream identities). They read a separate continuous-time
@@ -138,6 +141,12 @@ class OneMachine(nn.Module):
         self.G = nn.ModuleList([OneBranch(R, 2 * (seed * 100 + i) + 1, M) for i in range(L)])
         self.P = nn.ModuleList([PhaseLinear(R) for _ in range(L)])
         self.gain = nn.Parameter(torch.ones(2 * R))
+        if clock:
+            per = [24.0 / n for n in range(1, 7)] + [168.0 / n for n in range(1, 4)] + [8766.0 / n for n in range(1, 3)]
+            self.register_buffer("clock_per", torch.tensor(per, dtype=torch.float64), persistent=False)
+            g = torch.Generator().manual_seed(777)
+            self.clock_in = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
+            self.clock_out = nn.Parameter(torch.randn(2 * R, 2 * len(per), generator=g) * 0.02)
         if anticipate:
             self.AF, self.AG = OneBranch(R, 2 * (seed * 100 + 90), M), OneBranch(R, 2 * (seed * 100 + 90) + 1, M)
             self.again = nn.Parameter(torch.ones(2 * R))
@@ -242,10 +251,19 @@ class OneMachine(nn.Module):
         return torch.cat([r.real, r.imag], -1)
 
     # ------------------------------------------------------------------ trunk
-    def embed(self, x, s, dt, wg=None):
+    def clock_code(self, t):
+        """t: absolute time in hours (NaN = none) -> (..., 2K) cos/sin of the calendar phases"""
+        ok = torch.isfinite(t)
+        ph = 2 * math.pi * torch.frac(torch.where(ok, t, torch.zeros_like(t)).to(torch.float64)[..., None] / self.clock_per)
+        return (torch.cat([torch.cos(ph), torch.sin(ph)], -1) * ok[..., None]).float()
+
+    def embed(self, x, s, dt, wg=None, t_in=None, t_out=None):
         c, ph = self.code(x, s)
         r = self.memory_read(x, s, ph, dt, wg)
-        return c + self.mem_beta[s][..., None] * r * float(self.A.mean())
+        e = c + self.mem_beta[s][..., None] * r * float(self.A.mean())
+        if self.clock and t_in is not None:
+            e = e + self.clock_code(t_in) @ self.clock_in.T + self.clock_code(t_out) @ self.clock_out.T
+        return e
 
     def trunk_from(self, e, dt, q):
         x1, x2 = e[..., : self.R], e[..., self.R:]
@@ -274,9 +292,9 @@ class OneMachine(nn.Module):
         x2 = x2 + self.AG(x1, dt, z)
         return rms(torch.cat([x1, x2], -1)) * self.again
 
-    def forward_all(self, x, s, dt, q, wg=None):
+    def forward_all(self, x, s, dt, q, wg=None, t_in=None, t_out=None):
         """value features (asked at time q) and anticipation features (never see q)"""
-        e = self.embed(x, s, dt, wg)
+        e = self.embed(x, s, dt, wg, t_in, t_out)
         return self.features(self.trunk_from(e, dt, q)), self.anticipation(e, dt)
 
     @staticmethod
@@ -290,10 +308,11 @@ class OneMachine(nn.Module):
         c = self.nll(ha, torch.full(sh, self.WHICH, dtype=torch.long, device=ha.device), s_next.to(torch.float64))
         return w, c
 
-    def forward(self, x, s, dt, q, wg=None):
+    def forward(self, x, s, dt, q, wg=None, t_in=None, t_out=None):
         """x,s,dt: events 0..T-1; q: time from event t to the event being predicted. Returns features (B,T,2R).
-        wg (optional, B,T): strength with which each event is written into the associative memory."""
-        return self.features(self.trunk_from(self.embed(x, s, dt, wg), dt, q))
+        wg (optional, B,T): strength with which each event is written into the associative memory.
+        t_in / t_out (optional, B,T): absolute time in hours of each event / of the event being predicted (clock)."""
+        return self.features(self.trunk_from(self.embed(x, s, dt, wg, t_in, t_out), dt, q))
 
     # ------------------------------------------------------------------ output
     def coeffs(self, h, s_out):
@@ -350,7 +369,7 @@ class OneMachine(nn.Module):
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
                     hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev))
 
-    def step(self, x, s, dt, q, st, wg=None):
+    def step(self, x, s, dt, q, st, wg=None, t_in=None, t_out=None):
         c, ph = self.code(x, s)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
         hist = torch.cat([self.mem_phases(x, s)[:, None], st["hist"][:, :-1]], 1)  # most recent first
@@ -362,6 +381,8 @@ class OneMachine(nn.Module):
             r = r + w * torch.einsum("bm,bmr->br", k, M[o]) / self.RM
             keys.append(k)
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
+        if self.clock and t_in is not None:
+            e = e + self.clock_code(t_in) @ self.clock_in.T + self.clock_code(t_out) @ self.clock_out.T
         vw = v if wg is None else v * wg[:, None].to(v.dtype)
         M = M + st["prev"].conj()[:, :, :, None] * vw[None, :, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]

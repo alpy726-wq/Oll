@@ -56,15 +56,21 @@ def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=
             st = model.init_state(nb)
             x = torch.tensor(sq((X_all[r0:r1] - mu_w[r0:r1]) / sd_w[r0:r1]), dtype=torch.float64, device=device)
             one = torch.full((nb,), dtc, device=device)
+            clk = getattr(model, "clock", False)
+            T_all = np.stack([t[s0 - L:s0 + H] for s0 in starts])  # absolute hours of lookback and horizon
+            T_all = np.repeat(T_all, paths, 0)[r0:r1] if paths > 1 else T_all[r0:r1]
+            tt = torch.tensor(T_all, dtype=torch.float64, device=device)
+            ck = (lambda k: dict(t_in=tt[:, k], t_out=tt[:, k + 1])) if clk else (lambda k: {})
             for k in range(L):
-                h, st = model.step(x[:, k], sid, one, one, st)
+                h, st = model.step(x[:, k], sid, one, one, st, **ck(k))
             for k in range(H):
                 dens = model.density(h, int(sids[c]), grid).double()
                 cdf = (dens / dens.sum(-1, keepdim=True)).cumsum(-1)
                 u = torch.rand(nb, 1, generator=gen, dtype=cdf.dtype).to(device) if paths > 1 else torch.full((nb, 1), 0.5, dtype=cdf.dtype, device=device)
                 med = grid[torch.searchsorted(cdf.contiguous(), u).clamp(max=len(grid) - 1).squeeze(1)]
                 P[r0:r1, k] = med.cpu().numpy() * 3.0 * sd_w[r0:r1, 0] + mu_w[r0:r1, 0]
-                h, st = model.step(med, sid, one, one, st)
+                if k + 1 < H:
+                    h, st = model.step(med, sid, one, one, st, **ck(L + k))
         if paths > 1:
             P = np.median(P.reshape(n0, paths, H), 1)
         xs.append(X); ys.append(Y); preds.append(P)
