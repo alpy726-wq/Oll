@@ -38,8 +38,8 @@ jobs:
             main:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py start $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             fetch) python gpu/main_app.py fetch; exit 0;;
             deploy) modal deploy gpu/web_app.py; exit 0;;
-            stop) modal app stop oll-main; exit 0;;
-            logs) modal app list | head -20; (timeout 45 modal app logs oll-main 2>&1 | tail -60) || true; exit 0;;
+            stop) ID=$(modal app list | grep -o 'ap-[A-Za-z0-9]*' | head -1); echo "stopping $ID"; modal app stop "$ID"; exit 0;;
+            logs) ID=$(modal app list | grep -o 'ap-[A-Za-z0-9]*' | head -1); echo "app $ID"; (timeout 50 modal app logs "$ID" 2>&1 | grep -v "^\s*$" | tail -80) || true; exit 0;;
             run:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py run $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             caps:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py caps $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             *.py) modal run "gpu/${{ github.event.inputs.job }}"; exit 0;;
