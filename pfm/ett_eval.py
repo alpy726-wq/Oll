@@ -26,7 +26,7 @@ def load_ett(name, data_dir):
 
 
 @torch.no_grad()
-def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=None, adapt=False):
+def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=None, adapt=False, paths=1, seed=0):
     """adapt=True: sensory adaptation (gain control) -- every window is seen relative to its own lookback level and
     spread (mean/std of the L past values only; RevIN-style), and the forecast is mapped back. No retraining."""
     t, Z, te_start, te_end, per_month = load_ett(name, data_dir)
@@ -41,12 +41,17 @@ def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=
     xs, ys, preds = [], [], []
     for c in range(C):  # channel-independent: one batch per channel, so every row shares one stream
         X = np.stack([Z[s - L:s, c] for s in starts]); Y = np.stack([Z[s:s + H, c] for s in starts])
-        n = len(starts)
-        mu_w = X.mean(1, keepdims=True) if adapt else np.zeros((n, 1))
-        sd_w = X.std(1, keepdims=True) + 1e-3 if adapt else np.ones((n, 1))
+        n0 = len(starts)
+        if paths > 1:  # several imagined futures per window (sampled from the density), pointwise median at the end
+            X_all, n = np.repeat(X, paths, 0), n0 * paths
+        else:
+            X_all, n = X, n0
+        mu_w = X_all.mean(1, keepdims=True) if adapt else np.zeros((n, 1))
+        sd_w = X_all.std(1, keepdims=True) + 1e-3 if adapt else np.ones((n, 1))
+        gen = torch.Generator(device="cpu").manual_seed(seed + c)
         sid = torch.full((n,), int(sids[c]), device=device)
         st = model.init_state(n)
-        x = torch.tensor(sq((X - mu_w) / sd_w), dtype=torch.float64, device=device)
+        x = torch.tensor(sq((X_all - mu_w) / sd_w), dtype=torch.float64, device=device)
         one = torch.full((n,), dtc, device=device)
         for k in range(L):
             h, st = model.step(x[:, k], sid, one, one, st)
@@ -54,13 +59,16 @@ def evaluate(model, sids, name, data_dir, device, L=512, stride=24, max_windows=
         for k in range(H):
             dens = model.density(h, int(sids[c]), grid).double()
             cdf = (dens / dens.sum(-1, keepdim=True)).cumsum(-1)
-            med = grid[torch.searchsorted(cdf.contiguous(), torch.full((n, 1), 0.5, dtype=cdf.dtype, device=device)).clamp(max=len(grid) - 1).squeeze(1)]
+            u = torch.rand(n, 1, generator=gen, dtype=cdf.dtype).to(device) if paths > 1 else torch.full((n, 1), 0.5, dtype=cdf.dtype, device=device)
+            med = grid[torch.searchsorted(cdf.contiguous(), u).clamp(max=len(grid) - 1).squeeze(1)]
             P[:, k] = med.cpu().numpy() * 3.0 * sd_w[:, 0] + mu_w[:, 0]
             h, st = model.step(med, sid, one, one, st)
+        if paths > 1:
+            P = np.median(P.reshape(n0, paths, H), 1)
         xs.append(X); ys.append(Y); preds.append(P)
     xs, ys, preds = np.concatenate(xs), np.concatenate(ys), np.concatenate(preds)
     idx = [(s, c) for c in range(C) for s in starts]
-    res = {"protocol": dict(dataset=name, lookback=L, window_stride=stride, windows=len(starts), channels=C, adaptation=adapt)}
+    res = {"protocol": dict(dataset=name, lookback=L, window_stride=stride, windows=len(starts), channels=C, adaptation=adapt, sampled_paths=paths)}
     last = xs[:, -1:]
     season = 24 * (per_month // 720)  # one day: 24 hourly or 96 quarter-hourly steps
     seas = np.stack([Z[s - season:s, c] for s, c in idx])
