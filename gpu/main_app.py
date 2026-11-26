@@ -23,7 +23,8 @@ def main(args: list):
     tail, n = [], 0
     for line in p.stdout:
         print(line, end="", flush=True); tail = (tail + [line])[-200:]; n += 1
-        if n % 5 == 0:  # progress.json is rewritten every 200 steps; make it visible to `fetch`
+        if n % 5 == 0 or n < 5:  # progress is rewritten every 200 steps; make it (and the log tail) visible to `fetch`
+            open("/vol/results/train_log.txt", "w").write("".join(tail[-80:]))
             vol.commit()
     p.wait(); vol.commit()
     return dict(returncode=p.returncode, tail="".join(tail[-60:]))
