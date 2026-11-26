@@ -20,8 +20,16 @@ from pfm.one import OneMachine
 from pfm.realworld import STREAMS_REAL, SID, RealData, JENA_VARS, ETT_VARS, fixed_eval_set
 from robot_world import STREAMS_ROBOT, RobotData, batch as robot_batch
 
+from pfm.bigworld import STREAMS_BIG
 STREAMS_LIFE = STREAMS_REAL + STREAMS_ROBOT
 ROBOT0 = len(STREAMS_REAL)
+
+
+def use_big_streams():
+    """born from the trained Oll-1: its 28 streams first (same role phases), the robot body after them"""
+    global STREAMS_LIFE, ROBOT0
+    STREAMS_LIFE = STREAMS_BIG + STREAMS_ROBOT
+    ROBOT0 = len(STREAMS_BIG)
 TEXT = SID["text"]
 SOURCES = ["weather", "grid", "market", "audio", "text", "body"]
 
@@ -126,6 +134,7 @@ def main():
     ap.add_argument("--anticipate", action="store_true", help="also predict WHEN the next event comes and WHICH sense")
     ap.add_argument("--brain", action="store_true", help="all brain functions: anticipation, surprise-gated memory writing, "
                     "surprise-modulated learning rate, speech+word grounding, confidence (metacognition) tracking")
+    ap.add_argument("--init", default="", help="be born from a trained machine (e.g. models/oll-1.pt) instead of untrained")
     ap.add_argument("--probe_every", type=int, default=100_000)
     ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
     ap.add_argument("--seed", type=int, default=0)
@@ -134,13 +143,28 @@ def main():
     a = ap.parse_args()
     if a.brain:
         a.anticipate = True
+    if a.init:
+        use_big_streams()  # before the sources are built: the body streams move behind the trained ones
     sources = SOURCES + (["speech"] if a.brain else [])
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     src = build_sources(); cursor = {k: 0 for k in sources}
     sets = probe_sets()
-    m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, anticipate=a.anticipate)
+    if a.init:
+        ck = torch.load(a.init, map_location="cpu")
+        cfg = ck["config"]; a.R, a.L, a.RM = cfg["R"], cfg["L"], cfg["RM"]
+    m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=(cfg["M"] if a.init else 8), RM=a.RM, seed=a.seed, anticipate=a.anticipate)
+    if a.init:  # every trained tensor whose shape matches; per-stream vectors: the trained streams first
+        own = m.state_dict(); n_ok = 0
+        for k, v in ck["model"].items():
+            v = v.float() if v.dtype == torch.float16 else v
+            if k in own and own[k].shape == v.shape:
+                own[k] = v; n_ok += 1
+            elif k in own and own[k].dim() == 1 and v.dim() == 1 and own[k].shape[0] > v.shape[0]:
+                own[k][: v.shape[0]] = v; n_ok += 1
+        m.load_state_dict(own)
+        print("born from", a.init, ":", n_ok, "trained tensors", flush=True)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
     ref, aref = Reference(), AnticipationReference()
     st = m.init_state(1)
