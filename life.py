@@ -137,6 +137,7 @@ def main():
     sources = SOURCES + (["speech"] if a.brain else [])
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
+    os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     src = build_sources(); cursor = {k: 0 for k in sources}
     sets = probe_sets()
     m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, anticipate=a.anticipate)
@@ -201,7 +202,7 @@ def main():
                 if a.anticipate and i > i0:  # when and which, scored on the real gap and the real next sense
                     gap = torch.tensor([dt]); w_, c_ = m.anticipation_nll(pending_ant, torch.tensor([s]), gap)
                     u = float(m.when_value(gap)[0]); rw_, rc_ = aref.nll(prev_s, s, u)
-                    aw += float(w_[0]); ac += float(c_[0]); rw += rw_; rc += rc_; n_a += 1
+                    aw += float(w_[0].detach()); ac += float(c_[0].detach()); rw += rw_; rc += rc_; n_a += 1
             q = float(np.clip(T[i + 1] - T[i], 0, 1e3))
             with torch.no_grad():
                 pending, st = m.step(torch.tensor([x], dtype=torch.float64), torch.tensor([s]), torch.tensor([dt]), torch.tensor([q]), st,
