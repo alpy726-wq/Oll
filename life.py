@@ -44,6 +44,15 @@ def build_sources():
     src["text"] = (d.text.astype(np.float64), np.full(len(d.text), TEXT), np.arange(len(d.text), dtype=np.float64))
     r = RobotData("train")
     src["body"] = (r.x, r.s + ROBOT0, r.t)
+    # speech with its word: each real spoken digit (2 kHz, mean of 4 samples), then its real label as a "digit" event
+    xs, ss, ts, t_ = [], [], [], 0.0
+    for k in range(len(d.alen)):
+        u = d.audio[d.aoff[k]: d.aoff[k] + d.alen[k]]; u = u[: len(u) // 4 * 4].reshape(-1, 4).mean(1)
+        xs += [np.clip(u * 4.0, -1.2, 1.2), [float(d.alab[k])]]
+        ss += [np.full(len(u), SID["audio"]), [SID["digit"]]]
+        ts += [t_ + np.arange(len(u)) * 0.5, [t_ + len(u) * 0.5 + 50.0]]
+        t_ += len(u) * 0.5 + 3000.0
+    src["speech"] = (np.concatenate(xs), np.concatenate(ss), np.concatenate(ts))
     return {k: (np.asarray(x, np.float64), np.asarray(s, np.int64), np.asarray(t, np.float64)) for k, (x, s, t) in src.items()}
 
 
@@ -115,15 +124,20 @@ def main():
     ap.add_argument("--no_replay", action="store_true")
     ap.add_argument("--no_learning", action="store_true", help="control: lives the same way but never changes its weights")
     ap.add_argument("--anticipate", action="store_true", help="also predict WHEN the next event comes and WHICH sense")
+    ap.add_argument("--brain", action="store_true", help="all brain functions: anticipation, surprise-gated memory writing, "
+                    "surprise-modulated learning rate, speech+word grounding, confidence (metacognition) tracking")
     ap.add_argument("--probe_every", type=int, default=100_000)
     ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--threads", type=int, default=int(os.environ.get("THREADS", 4)))
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    if a.brain:
+        a.anticipate = True
+    sources = SOURCES + (["speech"] if a.brain else [])
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     rng = np.random.default_rng(a.seed)
-    src = build_sources(); cursor = {k: 0 for k in SOURCES}
+    src = build_sources(); cursor = {k: 0 for k in sources}
     sets = probe_sets()
     m = OneMachine(STREAMS_LIFE, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, anticipate=a.anticipate)
     opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
@@ -131,7 +145,10 @@ def main():
     st = m.init_state(1)
     buf = deque(maxlen=a.W + 1)  # recent lived events (x, s, dt)
     store, n_windows = [], 0  # episodic store of lived windows (reservoir), for replay
-    lp = {k: 0.0 for k in SOURCES}; last_loss = {k: None for k in SOURCES}
+    lp = {k: 0.0 for k in sources}; last_loss = {k: None for k in sources}
+    smu, svar = {}, {}  # running surprise statistics per stream
+    meta, grounding = [], []  # (confidence entropy, actual loss, source); (lived, correct word?)
+    DIGIT = SID["digit"]
     res = dict(args=vars(a), episodes=[], probes=[dict(events=0, loss=probe(m, sets))])
     print(res["probes"][-1], flush=True)
     t0, lived, updates, since_learn, next_probe = time.time(), 0, 0, 0, a.probe_every
@@ -139,14 +156,14 @@ def main():
     prev_t = None
     while lived < a.events and time.time() - t0 < a.minutes * 60:
         # --- act: choose what to experience next
-        unseen = [k for k in SOURCES if last_loss[k] is None]
+        unseen = [k for k in sources if last_loss[k] is None]
         if unseen:
             k = unseen[0]
         elif a.attention == "random" or rng.random() < 0.2:
-            k = SOURCES[int(rng.integers(len(SOURCES)))]
+            k = sources[int(rng.integers(len(sources)))]
         else:
-            w = np.array([lp[s] for s in SOURCES]); w = np.exp((w - w.max()) / (np.std(w) + 1e-6))
-            k = SOURCES[int(rng.choice(len(SOURCES), p=w / w.sum()))]
+            w = np.array([lp[s] for s in sources]); w = np.exp((w - w.max()) / (np.std(w) + 1e-6))
+            k = sources[int(rng.choice(len(sources), p=w / w.sum()))]
         X, S, T = src[k]
         i0 = cursor[k]
         if i0 + a.episode + 1 >= len(X):
@@ -156,9 +173,28 @@ def main():
         for i in range(i0, i0 + a.episode):
             x, s = float(X[i]), int(S[i])
             dt = 1e3 if prev_t is None or i == i0 else float(np.clip(T[i] - T[i - 1], 0, 1e3))  # attention switch = a long gap
+            g = 1.0
             if pending is not None:  # score the prediction made before this event was seen
                 with torch.no_grad():
                     l = float(m.nll(pending, torch.tensor([s]), torch.tensor([x], dtype=torch.float64))[0])
+                    if a.brain and math.isfinite(l):
+                        # surprise relative to what is usual for this sense -> writing strength (novelty / habituation)
+                        mu, v = smu.get(s, l), svar.get(s, 1.0)
+                        g = float(2.0 / (1.0 + math.exp(-(l - mu) / math.sqrt(v + 1e-6))))
+                        smu[s] = 0.99 * mu + 0.01 * l; svar[s] = 0.99 * v + 0.01 * (l - mu) ** 2
+                        if s == DIGIT:  # does it name the word it just heard?
+                            c = m.coeffs(pending, torch.tensor([s]))
+                            grounding.append((lived, int(m.discrete_logits(c, STREAMS_LIFE[s])[0].argmax()) == int(x)))
+                        if lived % 16 == 0:  # how sure was it, and how wrong was it
+                            st_ = STREAMS_LIFE[s]
+                            if st_.kind == "continuous":
+                                grid = torch.linspace(-1.5, 1.5, 301, dtype=torch.float64)
+                                pd = m.density(pending, s, grid)[0].double(); pd = pd / pd.sum()
+                                H = float(-(pd * (pd + 1e-12).log()).sum() + math.log(3.0 / 300))
+                            else:
+                                lg = m.discrete_logits(m.coeffs(pending, torch.tensor([s])), st_)[0] * m.sym_logtemp[s].exp()
+                                pr = torch.softmax(lg.double(), -1); H = float(-(pr * (pr + 1e-12).log()).sum())
+                            meta.append((H, l, k))
                 r = ref.nll(x, s)
                 if r is not None and math.isfinite(l):
                     pl += l; rl += r; n_pl += 1
@@ -168,10 +204,11 @@ def main():
                     aw += float(w_[0]); ac += float(c_[0]); rw += rw_; rc += rc_; n_a += 1
             q = float(np.clip(T[i + 1] - T[i], 0, 1e3))
             with torch.no_grad():
-                pending, st = m.step(torch.tensor([x], dtype=torch.float64), torch.tensor([s]), torch.tensor([dt]), torch.tensor([q]), st)
+                pending, st = m.step(torch.tensor([x], dtype=torch.float64), torch.tensor([s]), torch.tensor([dt]), torch.tensor([q]), st,
+                                     torch.tensor([g]) if a.brain else None)
                 pending_ant = st.get("h_ant")
             prev_s = s
-            buf.append((x, s, dt)); prev_t = T[i]; lived += 1; since_learn += 1
+            buf.append((x, s, dt, g)); prev_t = T[i]; lived += 1; since_learn += 1
             # --- learn from what was just lived (+ replay one old moment)
             if since_learn >= a.U and len(buf) == buf.maxlen and not a.no_learning:
                 since_learn = 0
@@ -185,8 +222,12 @@ def main():
                 xb = torch.tensor(np.stack([w[:, 0] for w in wins]), dtype=torch.float64)
                 sb = torch.tensor(np.stack([w[:, 1] for w in wins]), dtype=torch.long)
                 db = torch.tensor(np.stack([w[:, 2] for w in wins]), dtype=torch.float32)
+                gb = torch.tensor(np.stack([w[:, 3] for w in wins]), dtype=torch.float32)[:, :-1] if a.brain else None
+                if a.brain:  # neuromodulation: learn faster from surprising moments, slower from the usual
+                    for pg in opt.param_groups:
+                        pg["lr"] = a.lr * float(np.clip(win[-a.U:, 3].mean(), 0.5, 2.0))
                 if a.anticipate:
-                    h_, ha_ = m.forward_all(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:])
+                    h_, ha_ = m.forward_all(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:], gb)
                     w_, c_ = m.anticipation_nll(ha_, sb[:, 1:], db[:, 1:])
                     loss = (m.nll(h_, sb[:, 1:], xb[:, 1:]) + w_ + c_)[:, 32:].mean()
                 else:
@@ -196,6 +237,9 @@ def main():
             if lived >= next_probe:
                 next_probe += a.probe_every
                 res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))
+                if grounding:
+                    res["probes"][-1]["words_heard"] = len(grounding)
+                    res["probes"][-1]["word_accuracy_recent"] = float(np.mean([c for _, c in grounding[-100:]]))
                 print(res["probes"][-1], flush=True)
                 torch.save(m.state_dict(), a.out + ".pt")
                 json.dump(res, open(a.out + ".json", "w"), indent=1)
@@ -212,7 +256,19 @@ def main():
                 print(res["episodes"][-1], {s: round(v, 3) for s, v in lp.items()}, f"{(time.time() - t0) / 60:.1f} min", flush=True)
     res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))
     res["lived_events"], res["updates"], res["minutes"] = lived, updates, (time.time() - t0) / 60
-    res["attention_share"] = {k: float(np.mean([e["source"] == k for e in res["episodes"]])) for k in SOURCES}
+    res["attention_share"] = {k: float(np.mean([e["source"] == k for e in res["episodes"]])) for k in sources}
+    if a.brain:
+        def spearman(u, v):
+            ru, rv = np.argsort(np.argsort(u)), np.argsort(np.argsort(v))
+            return float(np.corrcoef(ru, rv)[0, 1]) if len(u) > 2 else None
+        res["metacognition"] = {k: dict(n=sum(1 for e in meta if e[2] == k),
+                                        spearman_confidence_entropy_vs_loss=spearman([e[0] for e in meta if e[2] == k], [e[1] for e in meta if e[2] == k]))
+                                for k in sources}
+        gr = np.array(grounding, dtype=float).reshape(-1, 2)
+        half = len(gr) // 2
+        res["word_grounding"] = dict(n_words_heard=len(gr), chance=0.1, accuracy_all=float(gr[:, 1].mean()) if len(gr) else None,
+                                     accuracy_first_half=float(gr[:half, 1].mean()) if half else None,
+                                     accuracy_second_half=float(gr[half:, 1].mean()) if half else None)
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     torch.save(m.state_dict(), a.out + ".pt")
     json.dump(res, open(a.out + ".json", "w"), indent=1)

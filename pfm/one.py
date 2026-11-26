@@ -217,7 +217,7 @@ class OneMachine(nn.Module):
             out = out + sh[..., self.ctx_perm[i]]
         return out
 
-    def memory_read(self, x, s, ph, dt):
+    def memory_read(self, x, s, ph, dt, wg=None):
         """Associative phase memory. With context key K_t (order n: the last n events bound together), the pair
         (K_{j-1} -> event j) is stored as conj(K_{j-1}) (x) v_j, where v is the unit phase code of the event on the
         trunk bank. Reading at event t (before writing): r_t = sum_n w_n sum_j e^{-mu (tau_t - tau_j)} <K_t, K_{j-1}>/RM v_j,
@@ -236,13 +236,15 @@ class OneMachine(nn.Module):
             S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
             S[:, :, 1:] = sim[:, :, :-1]  # pair stored at write time j uses key K_{j-1}
             W = W + w * S
+        if wg is not None:  # salience-gated writing: event j is stored with strength wg_j (surprise; habituation)
+            v = v * wg[..., None].to(v.dtype)
         r = (W * (decay * mask).to(torch.complex64)) @ v
         return torch.cat([r.real, r.imag], -1)
 
     # ------------------------------------------------------------------ trunk
-    def embed(self, x, s, dt):
+    def embed(self, x, s, dt, wg=None):
         c, ph = self.code(x, s)
-        r = self.memory_read(x, s, ph, dt)
+        r = self.memory_read(x, s, ph, dt, wg)
         return c + self.mem_beta[s][..., None] * r * float(self.A.mean())
 
     def trunk_from(self, e, dt, q):
@@ -272,9 +274,9 @@ class OneMachine(nn.Module):
         x2 = x2 + self.AG(x1, dt, z)
         return rms(torch.cat([x1, x2], -1)) * self.again
 
-    def forward_all(self, x, s, dt, q):
+    def forward_all(self, x, s, dt, q, wg=None):
         """value features (asked at time q) and anticipation features (never see q)"""
-        e = self.embed(x, s, dt)
+        e = self.embed(x, s, dt, wg)
         return self.features(self.trunk_from(e, dt, q)), self.anticipation(e, dt)
 
     @staticmethod
@@ -288,9 +290,10 @@ class OneMachine(nn.Module):
         c = self.nll(ha, torch.full(sh, self.WHICH, dtype=torch.long, device=ha.device), s_next.to(torch.float64))
         return w, c
 
-    def forward(self, x, s, dt, q):
-        """x,s,dt: events 0..T-1; q: time from event t to the event being predicted. Returns features (B,T,2R)."""
-        return self.features(self.trunk_from(self.embed(x, s, dt), dt, q))
+    def forward(self, x, s, dt, q, wg=None):
+        """x,s,dt: events 0..T-1; q: time from event t to the event being predicted. Returns features (B,T,2R).
+        wg (optional, B,T): strength with which each event is written into the associative memory."""
+        return self.features(self.trunk_from(self.embed(x, s, dt, wg), dt, q))
 
     # ------------------------------------------------------------------ output
     def coeffs(self, h, s_out):
@@ -347,7 +350,7 @@ class OneMachine(nn.Module):
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
                     hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev))
 
-    def step(self, x, s, dt, q, st):
+    def step(self, x, s, dt, q, st, wg=None):
         c, ph = self.code(x, s)
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
         hist = torch.cat([self.mem_phases(x, s)[:, None], st["hist"][:, :-1]], 1)  # most recent first
@@ -359,7 +362,8 @@ class OneMachine(nn.Module):
             r = r + w * torch.einsum("bm,bmr->br", k, M[o]) / self.RM
             keys.append(k)
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
-        M = M + st["prev"].conj()[:, :, :, None] * v[None, :, None, :]
+        vw = v if wg is None else v * wg[:, None].to(v.dtype)
+        M = M + st["prev"].conj()[:, :, :, None] * vw[None, :, None, :]
         x1, x2 = e[..., : self.R], e[..., self.R:]
         conv = []
         for i, (F, G, P) in enumerate(zip(self.F, self.G, self.P)):

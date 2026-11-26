@@ -125,3 +125,19 @@ def test_anticipation_streaming_equals_full_and_no_leak():
         assert torch.allclose(torch.stack(has_, 1), ha, atol=1e-4)
         w, c = m.anticipation_nll(ha, s, q)
         assert torch.isfinite(w).all() and torch.isfinite(c).all()
+
+
+def test_salience_gated_memory_streaming_equals_full():
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(1)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=64, mem_orders=(1, 3)).eval()
+    B, T = 2, 20
+    s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 2; wg = torch.rand(B, T) * 2
+    with torch.no_grad():
+        h = m(x, s, dt, q, wg)
+        assert not torch.allclose(h, m(x, s, dt, q))  # the gates matter
+        st = m.init_state(B); hs = []
+        for t in range(T):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, wg[:, t]); hs.append(o)
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
