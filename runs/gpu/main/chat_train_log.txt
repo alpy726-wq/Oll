@@ -1,0 +1,77 @@
+returncode 0
+: 1.807, 'dialog': 1.603}}
+{'step': 16400, 'minutes': 66.79, 'bits_per_byte': {'general': 1.803, 'dialog': 1.603}}
+{'step': 16500, 'minutes': 67.19, 'bits_per_byte': {'general': 1.803, 'dialog': 1.605}}
+{'step': 16600, 'minutes': 67.6, 'bits_per_byte': {'general': 1.814, 'dialog': 1.603}}
+{'step': 16700, 'minutes': 68.01, 'bits_per_byte': {'general': 1.81, 'dialog': 1.597}}
+{'step': 16800, 'minutes': 68.41, 'bits_per_byte': {'general': 1.809, 'dialog': 1.601}}
+{'step': 16900, 'minutes': 68.82, 'bits_per_byte': {'general': 1.806, 'dialog': 1.598}}
+{'step': 17000, 'minutes': 69.23, 'bits_per_byte': {'general': 1.806, 'dialog': 1.599}}
+{'step': 17100, 'minutes': 69.63, 'bits_per_byte': {'general': 1.803, 'dialog': 1.595}}
+{'step': 17200, 'minutes': 70.04, 'bits_per_byte': {'general': 1.805, 'dialog': 1.593}}
+{'step': 17300, 'minutes': 70.45, 'bits_per_byte': {'general': 1.805, 'dialog': 1.593}}
+{'step': 17400, 'minutes': 70.85, 'bits_per_byte': {'general': 1.807, 'dialog': 1.595}}
+{'step': 17500, 'minutes': 71.26, 'bits_per_byte': {'general': 1.808, 'dialog': 1.599}}
+{'step': 17600, 'minutes': 71.67, 'bits_per_byte': {'general': 1.799, 'dialog': 1.602}}
+{'step': 17700, 'minutes': 72.07, 'bits_per_byte': {'general': 1.808, 'dialog': 1.596}}
+{'step': 17800, 'minutes': 72.48, 'bits_per_byte': {'general': 1.802, 'dialog': 1.587}}
+{'step': 17900, 'minutes': 72.88, 'bits_per_byte': {'general': 1.8, 'dialog': 1.59}}
+{'step': 18000, 'minutes': 73.29, 'bits_per_byte': {'general': 1.803, 'dialog': 1.598}}
+{'step': 18100, 'minutes': 73.7, 'bits_per_byte': {'general': 1.809, 'dialog': 1.595}}
+{'step': 18200, 'minutes': 74.11, 'bits_per_byte': {'general': 1.804, 'dialog': 1.596}}
+{'step': 18300, 'minutes': 74.51, 'bits_per_byte': {'general': 1.804, 'dialog': 1.593}}
+{'step': 18400, 'minutes': 74.92, 'bits_per_byte': {'general': 1.797, 'dialog': 1.589}}
+{'step': 18500, 'minutes': 75.33, 'bits_per_byte': {'general': 1.797, 'dialog': 1.597}}
+{'step': 18600, 'minutes': 75.73, 'bits_per_byte': {'general': 1.811, 'dialog': 1.594}}
+{'step': 18700, 'minutes': 76.14, 'bits_per_byte': {'general': 1.808, 'dialog': 1.593}}
+{'step': 18800, 'minutes': 76.55, 'bits_per_byte': {'general': 1.808, 'dialog': 1.589}}
+{'step': 18900, 'minutes': 76.95, 'bits_per_byte': {'general': 1.808, 'dialog': 1.59}}
+{'step': 19000, 'minutes': 77.36, 'bits_per_byte': {'general': 1.802, 'dialog': 1.59}}
+{'step': 19100, 'minutes': 77.77, 'bits_per_byte': {'general': 1.813, 'dialog': 1.588}}
+{'step': 19200, 'minutes': 78.18, 'bits_per_byte': {'general': 1.81, 'dialog': 1.592}}
+{'step': 19300, 'minutes': 78.58, 'bits_per_byte': {'general': 1.798, 'dialog': 1.594}}
+{'step': 19400, 'minutes': 78.99, 'bits_per_byte': {'general': 1.785, 'dialog': 1.59}}
+{'step': 19500, 'minutes': 79.39, 'bits_per_byte': {'general': 1.793, 'dialog': 1.586}}
+{'step': 19600, 'minutes': 79.8, 'bits_per_byte': {'general': 1.801, 'dialog': 1.584}}
+{'step': 19700, 'minutes': 80.21, 'bits_per_byte': {'general': 1.796, 'dialog': 1.585}}
+{'step': 19800, 'minutes': 80.61, 'bits_per_byte': {'general': 1.799, 'dialog': 1.588}}
+{'step': 19900, 'minutes': 81.02, 'bits_per_byte': {'general': 1.803, 'dialog': 1.587}}
+{'step': 20000, 'minutes': 81.43, 'bits_per_byte': {'general': 1.808, 'dialog': 1.594}}
+{'step': 20100, 'minutes': 81.84, 'bits_per_byte': {'general': 1.799, 'dialog': 1.593}}
+{'step': 20200, 'minutes': 82.24, 'bits_per_byte': {'general': 1.81, 'dialog': 1.588}}
+{'step': 20300, 'minutes': 82.65, 'bits_per_byte': {'general': 1.807, 'dialog': 1.59}}
+{'step': 20400, 'minutes': 83.06, 'bits_per_byte': {'general': 1.807, 'dialog': 1.599}}
+{'step': 20500, 'minutes': 83.46, 'bits_per_byte': {'general': 1.81, 'dialog': 1.591}}
+{'step': 20600, 'minutes': 83.87, 'bits_per_byte': {'general': 1.798, 'dialog': 1.59}}
+{'step': 20700, 'minutes': 84.27, 'bits_per_byte': {'general': 1.805, 'dialog': 1.589}}
+{'step': 20800, 'minutes': 84.68, 'bits_per_byte': {'general': 1.8, 'dialog': 1.589}}
+{'step': 20900, 'minutes': 85.09, 'bits_per_byte': {'general': 1.799, 'dialog': 1.59}}
+{'step': 21000, 'minutes': 85.5, 'bits_per_byte': {'general': 1.797, 'dialog': 1.585}}
+{'step': 21100, 'minutes': 85.91, 'bits_per_byte': {'general': 1.793, 'dialog': 1.58}}
+{'step': 21200, 'minutes': 86.31, 'bits_per_byte': {'general': 1.8, 'dialog': 1.585}}
+{'step': 21300, 'minutes': 86.72, 'bits_per_byte': {'general': 1.801, 'dialog': 1.582}}
+{'step': 21400, 'minutes': 87.13, 'bits_per_byte': {'general': 1.804, 'dialog': 1.587}}
+{'step': 21500, 'minutes': 87.53, 'bits_per_byte': {'general': 1.802, 'dialog': 1.587}}
+{'step': 21600, 'minutes': 87.94, 'bits_per_byte': {'general': 1.798, 'dialog': 1.585}}
+{'step': 21700, 'minutes': 88.35, 'bits_per_byte': {'general': 1.795, 'dialog': 1.583}}
+{'step': 21800, 'minutes': 88.75, 'bits_per_byte': {'general': 1.803, 'dialog': 1.585}}
+{'step': 21900, 'minutes': 89.16, 'bits_per_byte': {'general': 1.798, 'dialog': 1.589}}
+{'step': 22000, 'minutes': 89.57, 'bits_per_byte': {'general': 1.802, 'dialog': 1.585}}
+{'step': 22100, 'minutes': 89.98, 'bits_per_byte': {'general': 1.8, 'dialog': 1.585}}
+{'step': 22200, 'minutes': 90.38, 'bits_per_byte': {'general': 1.798, 'dialog': 1.585}}
+{'step': 22300, 'minutes': 90.79, 'bits_per_byte': {'general': 1.794, 'dialog': 1.586}}
+{'step': 22400, 'minutes': 91.19, 'bits_per_byte': {'general': 1.803, 'dialog': 1.58}}
+{'step': 22500, 'minutes': 91.6, 'bits_per_byte': {'general': 1.793, 'dialog': 1.587}}
+heldout {'general': 1.7990258092202913, 'dialog': 1.5866001911328742}
+after {"n": 500, "exact_match": 0.002, "f1": 0.011335735901525375, "seconds": 44.11364507675171, "confidence_auroc_for_f1_ge_0_5": 0.35642570281124497, "f1_most_confident_half": 0.009832323232323232, "f1_least_confident_half": 0.012839148570727517}
+{"prompt": "User: What is the capital of France?\nOll: ", "answer": "The state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the", "confidence": -0.435}
+{"prompt": "User: Who wrote Romeo and Juliet?\nOll: ", "answer": "The state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the state of the", "confidence": -0.449}
+{"prompt": "User: How many legs does a spider have?\nOll: ", "answer": "The series of the series of the series of the series of the series of the series of the series of the series of the series of the series of the series of the se", "confidence": -0.463}
+{"prompt": "User: What is photosynthesis?\nOll: ", "answer": "The seventh containers of the series of the series of the season and the series of the season and the season is the season of the season. The season is the seas", "confidence": -0.599}
+{"prompt": "User: Can you give me a tip for learning a new language?\nOll: ", "answer": "The state of the state of the state is the state of the state of the state. The state is the state of the state state is the state of the state state state stat", "confidence": -0.496}
+{"prompt": "User: What is 12 plus 7?\nOll: ", "answer": "The second of the second of the second season is the second of the second season of the second season. The second second second second second second second seco", "confidence": -0.476}
+{"prompt": "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ", "answer": "Alpine states are a list of living in the languages of the language and languages in the languages of the languages of the languages of languages languages lang", "confidence": -0.442}
+DONE
+/oll/gpu/chat_train.py:146: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  ema[kind] = float(loss) / math.log(2) if kind not in ema else 0.98 * ema[kind] + 0.02 * float(loss) / math.log(2)
