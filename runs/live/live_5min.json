@@ -1,0 +1,69 @@
+{
+ "minutes": 5.0,
+ "per_minute": [
+  {
+   "minute": 1,
+   "events": 1228,
+   "updates": 6,
+   "text_bits_living": 5.204824319878677,
+   "text_bits_frozen": 5.128906587560632,
+   "price_nll_living": null,
+   "price_nll_frozen": null
+  },
+  {
+   "minute": 2,
+   "events": 1065,
+   "updates": 11,
+   "text_bits_living": 5.20247509941424,
+   "text_bits_frozen": 5.526802413827404,
+   "price_nll_living": null,
+   "price_nll_frozen": null
+  },
+  {
+   "minute": 3,
+   "events": 1091,
+   "updates": 17,
+   "text_bits_living": 5.020967532277762,
+   "text_bits_frozen": 5.3617447888703085,
+   "price_nll_living": null,
+   "price_nll_frozen": null
+  },
+  {
+   "minute": 4,
+   "events": 1224,
+   "updates": 23,
+   "text_bits_living": 5.366082469784547,
+   "text_bits_frozen": 6.617711548420536,
+   "price_nll_living": null,
+   "price_nll_frozen": null
+  },
+  {
+   "minute": 5,
+   "events": 944,
+   "updates": 28,
+   "text_bits_living": 4.170580011730466,
+   "text_bits_frozen": 5.497314394299894,
+   "price_nll_living": null,
+   "price_nll_frozen": null
+  }
+ ],
+ "updates": 28,
+ "examples_seen": [
+  "File:Steen Skovgaard (DEN) 1979.jpg: /* wbeditentity-statements-multiple-properties-add:0||3 */ automatically adding [[Commons:Structured data|structured data]]",
+  "ريان سوليفان (دراج): [[ويكيبيديا:بوت/التصانيف المعادلة|التصانیف المعادلة]]: إضافة [[:تصنيف:رياضيون رجال أستراليون في القرن 21]] (V5)",
+  "наживившийся: добавление обязательных параметров",
+  "Elhamma: Fjernet [[Kategori:Austalias insekter]]; La til [[Kategori:Australias insekter]] via [[WP:HOTCAT|HotCat]]",
+  "File:II. Livre d'Airs de cour, et de differents autheurs - btv1b55009496q (062 of 128).jpg: /* wbeditentity-statements-multiple-properties-add:0||6 */ automatic",
+  "потресели: Dikanteny: bg",
+  "C. W. Deane: Copyedit (September 17, 1837 → September 17, 1837,), semi-automated using [[User:LionmerterTHE/Maintenance Review Workbench|Maintenance Review Work",
+  "Q499203: /* wbsetlabel-set:1|glk */ یاکيما, [[:toollabs:quickstatements/#/batch/297285|batch #297285]]",
+  "Page:文淵閣四庫全書 0994冊.djvu/194: 來源：文淵閣四庫全書電子版閱讀器(wiki模式) https://sikuquanshu.daizhige.org/#djvu=994/194&mode=wiki",
+  "Sokajy:biolgara: Nampiana tamin'ny sokajy [[:потресели]]",
+  "Sokajy:Ova matoanteny amin'ny teny biolgara: Nampiana tamin'ny sokajy [[:потресели]]",
+  "Sokajy:Bulgarian 4-syllable words: Nampiana tamin'ny sokajy [[:потресели]]"
+ ],
+ "continuation_after_Category": {
+  "living": "Category:: speciallest where the or hath morrol:",
+  "frozen": "Category: Ispecially I will be a compari to release the war approach "
+ }
+}
