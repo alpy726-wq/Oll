@@ -1,0 +1,10 @@
+cached 24 windows in 89 s
+/home/user/Oll/gpu/fit_copy_gate.py:75: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  l = float(nllf()) / math.log(2)
+tau -1.0: fitted bits/byte 1.8816 (trunk alone 1.8872) a=[ 0.14 -0.59  1.87] b=-6.54
+tau -0.5: fitted bits/byte 1.8801 (trunk alone 1.8872) a=[0.2  0.27 1.6 ] b=-6.20
+tau 0.0: fitted bits/byte 1.8731 (trunk alone 1.8872) a=[0.44 1.65 4.89] b=-6.16
+tau 0.5: fitted bits/byte 1.8704 (trunk alone 1.8872) a=[0.52 1.97 4.53] b=-5.82
+{"fit": {"bits_mixture": 1.8703977882137075, "bits_trunk": 1.887227119100191, "copy_logtemp": 0.5, "gate_km": [0.0, 0.5182957649230957, 1.9686106443405151, 4.534018516540527], "gate_b": -5.822734659815358}, "heldout_general": {"copy": 2.1314878463745117, "trunk_only": 2.137629508972168}, "heldout_dialog": {"copy": 1.6631898880004883, "trunk_only": 1.6752185821533203}, "copy_gap0": {"true": {"first": 2.7468085289001465, "repeat": 0.568466067314148}, "false": {"first": 2.7734010219573975, "repeat": 1.7775447368621826}}, "copy_gap400": {"true": {"first": 2.8286399841308594, "repeat": 1.6209819316864014}, "false": {"first": 2.8601908683776855, "repeat": 1.9746618270874023}}}
+answered 16
