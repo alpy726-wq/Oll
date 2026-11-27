@@ -1,0 +1,2 @@
+warm start 190 tensors
+training only ['copy_gain', 'copy_logtemp', 'gate_km', 'gate_b', 'gate_h.weight', 'gate_h.bias']

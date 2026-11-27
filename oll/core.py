@@ -22,7 +22,7 @@ def load(path, device="cpu"):
     ck = torch.load(path, map_location=device)
     cfg = ck["config"]
     m = OneMachine(STREAMS_BIG, R=cfg["R"], L=cfg["L"], M=cfg["M"], RM=cfg["RM"],
-                   mem_orders=tuple(cfg.get("mem_orders", (1,)))).to(device)
+                   mem_orders=tuple(cfg.get("mem_orders", (1,))), copy_out=cfg.get("copy_out", False)).to(device)
     m.load_state_dict({k: v.float() if v.dtype == torch.float16 else v for k, v in ck["model"].items()})
     m.eval()
     return m

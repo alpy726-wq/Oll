@@ -123,14 +123,17 @@ def test_copy_readout_streaming_equals_full_and_copies():
     assert ((torch.stack(out, 1) - full).norm() / full.norm()) < 1e-5
     m = OneMachine(STREAMS_REAL, R=256, L=1, RM=2048, mem_orders=(6,), copy_out=True).eval()
     with torch.no_grad():
-        m.copy_gain.fill_(30.0); m.mem_logwidth.fill_(-20.0)  # copy path only, exact (fine band) keys
-        m.gain.zero_()  # trunk features off: only the memory copy path predicts
+        m.copy_gain.fill_(30.0); m.mem_logwidth.fill_(-20.0)  # exact (fine band) keys
+        m.gain.zero_(); m.gate_b.fill_(10.0)  # trunk off and gate open: only the memory copy path predicts
         span = list(b"the quick brown fox jumps over the lazy dog while 7 cats sleep")
         x = torch.tensor([span + span], dtype=torch.float64); s = torch.full(x.shape, SID["text"]); d = torch.ones(x.shape)
         h = m(x[:, :-1], s[:, :-1], d[:, :-1], d[:, 1:])
         bits = m.nll(h, s[:, 1:], x[:, 1:])[0] / math.log(2)
     n = len(span)
     assert bits[n + 6:].mean() < 0.5 * bits[6:n - 1].mean()
+    # the gate's familiarity feature: about 1 on the repeat (context seen before), small the first time
+    m(x[:, :-1], s[:, :-1], d[:, :-1], d[:, 1:]); km = m._copy[1][0, :, 0]
+    assert km[n + 6:].mean() > 0.7 and km[6:n - 1].mean() < 0.3
 
 
 def test_anticipation_streaming_equals_full_and_no_leak():
