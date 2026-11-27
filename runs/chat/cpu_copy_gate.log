@@ -1,2 +1,5 @@
 warm start 190 tensors
 training only ['copy_gain', 'copy_logtemp', 'gate_km', 'gate_b', 'gate_h.weight', 'gate_h.bias']
+/home/user/Oll/gpu/chat_train.py:205: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  ema[kind] = float(loss) / math.log(2) if kind not in ema else 0.98 * ema[kind] + 0.02 * float(loss) / math.log(2)
