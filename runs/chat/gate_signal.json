@@ -1,0 +1,85 @@
+{
+ "what": "gate signal: context-key familiarity |<K_t, sum_j K_{j-1}>|/RM vs whether the n-byte context truly occurred before (dialog text, 4 x 1024 bytes)",
+ "res": {
+  "RM4096_trained_width": {
+   "order4": {
+    "seen_frac": 0.223,
+    "auroc": 0.939,
+    "km_seen": 0.997,
+    "km_unseen": 0.189
+   },
+   "order8": {
+    "seen_frac": 0.056,
+    "auroc": 0.946,
+    "km_seen": 0.638,
+    "km_unseen": 0.171
+   },
+   "order12": {
+    "seen_frac": 0.021,
+    "auroc": 0.944,
+    "km_seen": 0.538,
+    "km_unseen": 0.172
+   }
+  },
+  "RM4096_fine_only": {
+   "order4": {
+    "seen_frac": 0.223,
+    "auroc": 0.946,
+    "km_seen": 1.002,
+    "km_unseen": 0.188
+   },
+   "order8": {
+    "seen_frac": 0.056,
+    "auroc": 0.934,
+    "km_seen": 0.614,
+    "km_unseen": 0.172
+   },
+   "order12": {
+    "seen_frac": 0.021,
+    "auroc": 0.935,
+    "km_seen": 0.561,
+    "km_unseen": 0.171
+   }
+  },
+  "RM8192_trained_width": {
+   "order4": {
+    "seen_frac": 0.223,
+    "auroc": 0.966,
+    "km_seen": 0.972,
+    "km_unseen": 0.134
+   },
+   "order8": {
+    "seen_frac": 0.056,
+    "auroc": 0.974,
+    "km_seen": 0.616,
+    "km_unseen": 0.122
+   },
+   "order12": {
+    "seen_frac": 0.021,
+    "auroc": 0.963,
+    "km_seen": 0.541,
+    "km_unseen": 0.119
+   }
+  },
+  "RM8192_fine_only": {
+   "order4": {
+    "seen_frac": 0.223,
+    "auroc": 0.971,
+    "km_seen": 0.981,
+    "km_unseen": 0.133
+   },
+   "order8": {
+    "seen_frac": 0.056,
+    "auroc": 0.964,
+    "km_seen": 0.582,
+    "km_unseen": 0.119
+   },
+   "order12": {
+    "seen_frac": 0.021,
+    "auroc": 0.961,
+    "km_seen": 0.527,
+    "km_unseen": 0.12
+   }
+  }
+ }
+}
