@@ -136,6 +136,8 @@ def main():
                     "surprise-modulated learning rate, speech+word grounding, confidence (metacognition) tracking")
     ap.add_argument("--init", default="", help="be born from a trained machine (e.g. models/oll-1.pt) instead of untrained")
     ap.add_argument("--rehearse", type=int, default=0, help="per update, this many windows from the original training corpus (keeps old skills)")
+    ap.add_argument("--adapt_only", action="store_true", help="keep the born weights frozen; live-learning goes only into the phase "
+                    "adapters (theta, sigma, alpha, kq, kp, pl), new parts and the per-stream vectors of streams the machine was not trained on")
     ap.add_argument("--probe_every", type=int, default=100_000)
     ap.add_argument("--R", type=int, default=96); ap.add_argument("--L", type=int, default=3); ap.add_argument("--RM", type=int, default=512)
     ap.add_argument("--seed", type=int, default=0)
@@ -167,7 +169,24 @@ def main():
                 own[k][: v.shape[0]] = v; n_ok += 1
         m.load_state_dict(own)
         print("born from", a.init, ":", n_ok, "trained tensors", flush=True)
-    opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
+    if a.adapt_only:
+        from pfm.one import PHASE_PARAMS
+        n_old = len(STREAMS_BIG) if a.init else 0
+        new_ok = torch.ones(len(m.streams), dtype=torch.bool); new_ok[:n_old] = False; new_ok[SID["digit"]] = True  # digit never trained
+        trainable = []
+        for n, p_ in m.named_parameters():
+            leaf = n.split(".")[-1]
+            if leaf in PHASE_PARAMS or n.startswith(("AF.", "AG.", "again")):
+                trainable.append(p_)
+            elif leaf in ("mem_beta", "sym_logtemp", "mem_logwidth"):
+                p_.register_hook(lambda g, mk=new_ok.to(g.dtype if False else torch.float32): g * mk.to(g.dtype))
+                trainable.append(p_)
+            else:
+                p_.requires_grad_(False)
+        print("adapt_only:", sum(t.numel() for t in trainable), "of", sum(t.numel() for t in m.parameters()), "parameters learn while living", flush=True)
+        opt = torch.optim.AdamW(trainable, lr=a.lr, weight_decay=0.0)
+    else:
+        opt = torch.optim.AdamW(m.parameters(), lr=a.lr)
     ref, aref = Reference(), AnticipationReference()
     st = m.init_state(1)
     buf = deque(maxlen=a.W + 1)  # recent lived events (x, s, dt)
@@ -264,7 +283,7 @@ def main():
                 else:
                     loss = m.nll(m(xb[:, :-1], sb[:, :-1], db[:, :-1], db[:, 1:]), sb[:, 1:], xb[:, 1:])[:, 32:].mean()
                 if torch.isfinite(loss):
-                    opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); updates += 1
+                    opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_([q for q in m.parameters() if q.requires_grad], 1.0); opt.step(); updates += 1
             if lived >= next_probe:
                 next_probe += a.probe_every
                 res["probes"].append(dict(events=lived, minutes=(time.time() - t0) / 60, loss=probe(m, sets)))
