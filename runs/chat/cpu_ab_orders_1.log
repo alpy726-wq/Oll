@@ -1,1 +1,32 @@
 before probes {"copy_gap0": {"first": 8.431436538696289, "repeat": 4.123816013336182}, "copy_gap400": {"first": 8.661638259887695, "repeat": 5.784766674041748}, "answer_bits_own_document": 6.728705883026123, "answer_bits_other_document": 7.458561897277832, "own_better_fraction": 0.7833333333333333}
+before {"n": 100, "exact_match": 0.0, "f1": 0.0, "seconds": 220.82355546951294, "confidence_auroc_for_f1_ge_0_5": null, "f1_most_confident_half": 0.0, "f1_least_confident_half": 0.0}
+/home/user/Oll/gpu/chat_train.py:189: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  ema[kind] = float(loss) / math.log(2) if kind not in ema else 0.98 * ema[kind] + 0.02 * float(loss) / math.log(2)
+{'step': 100, 'minutes': 2.65, 'bits_per_byte': {'general': 5.898, 'dialog': 6.106}}
+{'step': 200, 'minutes': 5.37, 'bits_per_byte': {'general': 4.934, 'dialog': 5.403}}
+{'step': 300, 'minutes': 7.96, 'bits_per_byte': {'general': 4.437, 'dialog': 4.725}}
+{'step': 400, 'minutes': 10.53, 'bits_per_byte': {'general': 4.145, 'dialog': 4.272}}
+{'step': 500, 'minutes': 13.11, 'bits_per_byte': {'general': 3.945, 'dialog': 4.044}}
+{'step': 600, 'minutes': 15.69, 'bits_per_byte': {'general': 3.78, 'dialog': 3.928}}
+{'step': 700, 'minutes': 18.35, 'bits_per_byte': {'general': 3.683, 'dialog': 3.829}}
+{'step': 800, 'minutes': 20.98, 'bits_per_byte': {'general': 3.616, 'dialog': 3.746}}
+{'step': 900, 'minutes': 23.62, 'bits_per_byte': {'general': 3.544, 'dialog': 3.696}}
+{'step': 1000, 'minutes': 26.33, 'bits_per_byte': {'general': 3.511, 'dialog': 3.659}}
+{'step': 1100, 'minutes': 29.03, 'bits_per_byte': {'general': 3.466, 'dialog': 3.633}}
+{'step': 1200, 'minutes': 31.66, 'bits_per_byte': {'general': 3.439, 'dialog': 3.593}}
+{'step': 1300, 'minutes': 34.36, 'bits_per_byte': {'general': 3.422, 'dialog': 3.562}}
+{'step': 1400, 'minutes': 37.13, 'bits_per_byte': {'general': 3.389, 'dialog': 3.551}}
+{'step': 1500, 'minutes': 39.92, 'bits_per_byte': {'general': 3.371, 'dialog': 3.542}}
+{'step': 1600, 'minutes': 42.59, 'bits_per_byte': {'general': 3.363, 'dialog': 3.525}}
+heldout {'general': 3.3437910485481366, 'dialog': 3.5003979774715206}
+after probes {"copy_gap0": {"first": 3.686077833175659, "repeat": 3.1373507976531982}, "copy_gap400": {"first": 3.8176376819610596, "repeat": 3.321591854095459}, "answer_bits_own_document": 4.637000560760498, "answer_bits_other_document": 4.752392292022705, "own_better_fraction": 0.7166666666666667}
+after {"n": 100, "exact_match": 0.0, "f1": 0.0, "seconds": 222.73644304275513, "confidence_auroc_for_f1_ge_0_5": null, "f1_most_confident_half": 0.0, "f1_least_confident_half": 0.0}
+{"prompt": "User: What is the capital of France?\nOll: ", "answer": "", "confidence": -0.35}
+{"prompt": "User: Who wrote Romeo and Juliet?\nOll: ", "answer": "a  a", "confidence": -0.394}
+{"prompt": "User: How many legs does a spider have?\nOll: ", "answer": "ea ea ea ea e  e", "confidence": -0.414}
+{"prompt": "User: What is photosynthesis?\nOll: ", "answer": "aaa", "confidence": -0.432}
+{"prompt": "User: Can you give me a tip for learning a new language?\nOll: ", "answer": "e  e  e", "confidence": -0.437}
+{"prompt": "User: What is 12 plus 7?\nOll: ", "answer": "aaaaaa", "confidence": -0.485}
+{"prompt": "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ", "answer": "the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the the", "confidence": -0.702}
+DONE

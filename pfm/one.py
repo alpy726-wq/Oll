@@ -99,8 +99,13 @@ class OneBranch(nn.Module):
 
 class OneMachine(nn.Module):
     def __init__(self, streams, R=128, L=3, M=4, family="sqrt_p", seed=0, RM=1024, readout_amp=False, mem_orders=(1,),
-                 anticipate=False, clock=False, query_head=False, seasonal=False):
+                 anticipate=False, clock=False, query_head=False, seasonal=False, copy_out=False):
         super().__init__()
+        # copy read-out: the memory read r_t (per context order) is already a phase code on the trunk bank, i.e. on the
+        # same basis as the output coefficients, so adding g_n r_t^(n) to the output features makes the predicted
+        # density peak at whatever followed the same context before (closed-form copying / induction; g_n learned,
+        # born 0 so a warm start is unchanged). When no stored context matches, r_t is only crosstalk and adds little.
+        self.copy_out = copy_out
         # seasonal memory ("time cells"): every event's phase code is bound to the phase of its moment on the day and
         # week circles (Prop. 1 binding, Fejer-weighted harmonics so the kernel is non-negative); reading with the phase
         # of the asked moment returns what was there at the same time of day / week before (normalised, decayed).
@@ -176,6 +181,8 @@ class OneMachine(nn.Module):
         # are divided by a learnable per-stream width, so similar (not only identical) events retrieve each other
         self.mem_logwidth = nn.Parameter(torch.full((len(self.streams),), math.log(1.0)))
         self.out_logscale = nn.Parameter(torch.tensor(0.0))
+        if copy_out:
+            self.copy_gain = nn.Parameter(torch.zeros(len(self.mem_orders)))
         # closed-form normaliser matrices for continuous streams (Sec. 4.1)
         for i, st in enumerate(self.streams):
             if st.kind == "continuous":
@@ -257,16 +264,22 @@ class OneMachine(nn.Module):
         tau = dt.cumsum(1)
         decay = torch.exp(-self.mem_logmu.exp() * (tau[:, :, None] - tau[:, None, :]).clamp(min=0))
         mask = torch.tril(torch.ones(T, T, dtype=torch.bool, device=x.device), -1) & (torch.arange(T, device=x.device)[None, :] >= 1)
-        W = 0
-        for n, w in zip(self.mem_orders, self.order_weights()):
+        W, Wc = 0, 0
+        for o, (n, w) in enumerate(zip(self.mem_orders, self.order_weights())):
             k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.context_phases(P, n)).to(torch.complex64)
             sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <K_t, K_i>
             S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
             S[:, :, 1:] = sim[:, :, :-1]  # pair stored at write time j uses key K_{j-1}
             W = W + w * S
+            if self.copy_out:
+                Wc = Wc + self.copy_gain[o] * S
         if wg is not None:  # salience-gated writing: event j is stored with strength wg_j (surprise; habituation)
             v = v * wg[..., None].to(v.dtype)
-        r = (W * (decay * mask).to(torch.complex64)) @ v
+        dm = (decay * mask).to(torch.complex64)
+        r = (W * dm) @ v
+        if self.copy_out:  # read at event t predicts event t+1: the value stored after the same context before
+            rc = (Wc * dm) @ v
+            self._copy_h = torch.cat([rc.real, rc.imag], -1)
         return torch.cat([r.real, r.imag], -1)
 
     # ------------------------------------------------------------------ trunk
@@ -366,6 +379,8 @@ class OneMachine(nn.Module):
             h = self.features(self.trunk_from(e, dt, q))
         if self.seasonal and t_in is not None:
             h = h + self.sea_gain * self.seasonal_read(self.phases(x, s), t_in, t_out)
+        if self.copy_out:
+            h = h + self._copy_h
         return h, self.anticipation(e, dt)
 
     @staticmethod
@@ -390,6 +405,8 @@ class OneMachine(nn.Module):
             h = self.features(self.trunk_from(e, dt, q))
         if self.seasonal and t_in is not None:
             h = h + self.sea_gain * self.seasonal_read(self.phases(x, s), t_in, t_out)
+        if self.copy_out:
+            h = h + self._copy_h
         return h
 
     # ------------------------------------------------------------------ output
@@ -458,11 +475,14 @@ class OneMachine(nn.Module):
         v = torch.polar(torch.ones_like(ph), ph).to(torch.complex64)
         hist = torch.cat([self.mem_phases(x, s)[:, None], st["hist"][:, :-1]], 1)  # most recent first
         M = torch.exp(-self.mem_logmu.exp() * dt)[None, :, None, None] * st["M"]
-        r, keys = 0, []
+        r, keys, rc = 0, [], 0
         for o, (n, w) in enumerate(zip(self.mem_orders, self.order_weights())):
             ph_n = sum(hist[:, i][:, self.ctx_perm[i]] for i in range(n))
             k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), ph_n).to(torch.complex64)
-            r = r + w * torch.einsum("bm,bmr->br", k, M[o]) / self.RM
+            ro = torch.einsum("bm,bmr->br", k, M[o]) / self.RM
+            r = r + w * ro
+            if self.copy_out:
+                rc = rc + self.copy_gain[o] * ro
             keys.append(k)
         e = c + self.mem_beta[s][..., None] * torch.cat([r.real, r.imag], -1) * float(self.A.mean())
         if self.clock and t_in is not None:
@@ -501,6 +521,8 @@ class OneMachine(nn.Module):
         if self.seasonal and t_in is not None:
             self._seasonal_write(ph, t_in, st, out)
             h = h + self.sea_gain * self._seasonal_query(out, t_out[:, None])[:, 0]
+        if self.copy_out:
+            h = h + torch.cat([rc.real, rc.imag], -1)
         return h, out
 
     def _seasonal_write(self, ph, t_in, st, out):

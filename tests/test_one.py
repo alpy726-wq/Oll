@@ -106,6 +106,33 @@ def test_context_keyed_memory_streaming_equals_full():
     assert ((torch.stack(out, 1) - full).norm() / full.norm()) < 1e-5
 
 
+def test_copy_readout_streaming_equals_full_and_copies():
+    """copy read-out: streaming == full; and with only the copy path (trunk output zeroed) a repeated byte string is
+    predicted from memory: the second copy costs far fewer bits than the first"""
+    from pfm.realworld import STREAMS_REAL, SID
+    m = OneMachine(STREAMS, R=32, L=1, RM=128, mem_orders=(1, 3, 6), copy_out=True)
+    for p in m.parameters():
+        p.data += 0.05 * torch.randn_like(p)
+    m.eval()
+    b = batch(np.random.default_rng(6), 2, 40)
+    with torch.no_grad():
+        full = m(b["x"], b["s"], b["dt"], b["q"])
+        st = m.init_state(2); out = []
+        for t in range(40):
+            f, st = m.step(b["x"][:, t], b["s"][:, t], b["dt"][:, t], b["q"][:, t], st); out.append(f)
+    assert ((torch.stack(out, 1) - full).norm() / full.norm()) < 1e-5
+    m = OneMachine(STREAMS_REAL, R=256, L=1, RM=2048, mem_orders=(6,), copy_out=True).eval()
+    with torch.no_grad():
+        m.copy_gain.fill_(30.0); m.mem_logwidth.fill_(-20.0)  # copy path only, exact (fine band) keys
+        m.gain.zero_()  # trunk features off: only the memory copy path predicts
+        span = list(b"the quick brown fox jumps over the lazy dog while 7 cats sleep")
+        x = torch.tensor([span + span], dtype=torch.float64); s = torch.full(x.shape, SID["text"]); d = torch.ones(x.shape)
+        h = m(x[:, :-1], s[:, :-1], d[:, :-1], d[:, 1:])
+        bits = m.nll(h, s[:, 1:], x[:, 1:])[0] / math.log(2)
+    n = len(span)
+    assert bits[n + 6:].mean() < 0.5 * bits[6:n - 1].mean()
+
+
 def test_anticipation_streaming_equals_full_and_no_leak():
     """when/which read-outs: streaming == full, and they do not depend on the query time q (no leak of the future)"""
     import numpy as np

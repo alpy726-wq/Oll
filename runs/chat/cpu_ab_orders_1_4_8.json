@@ -1,0 +1,293 @@
+{
+ "args": {
+  "init": "",
+  "data": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/chat",
+  "R": 128,
+  "L": 3,
+  "M": 4,
+  "RM": 2048,
+  "B": 8,
+  "T": 512,
+  "lr": 0.001,
+  "minutes": 45.0,
+  "est_steps": 100000,
+  "dialog_frac": 0.45,
+  "n_squad": 100,
+  "device": "cpu",
+  "mem_orders": "1,4,8",
+  "threads": 2,
+  "max_new": 30,
+  "out": "runs/chat/cpu_ab_orders_1_4_8.json",
+  "ckpt": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/ab_1_4_8"
+ },
+ "probes_before": {
+  "copy_gap0": {
+   "first": 8.683292388916016,
+   "repeat": 3.304152727127075
+  },
+  "copy_gap400": {
+   "first": 8.80877685546875,
+   "repeat": 5.320552349090576
+  },
+  "answer_bits_own_document": 6.93353271484375,
+  "answer_bits_other_document": 7.826807975769043,
+  "own_better_fraction": 0.8
+ },
+ "squad_before": {
+  "n": 100,
+  "exact_match": 0.0,
+  "f1": 0.0,
+  "seconds": 617.6165289878845,
+  "confidence_auroc_for_f1_ge_0_5": null,
+  "f1_most_confident_half": 0.0,
+  "f1_least_confident_half": 0.0,
+  "examples": [
+   {
+    "q": "Which NFL team represented the AFC at Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -1.232
+   },
+   {
+    "q": "Which NFL team represented the NFC at Super Bowl 50?",
+    "gold": "Carolina Panthers",
+    "answer": "the the the the the the the th",
+    "conf": -1.228
+   },
+   {
+    "q": "Where did Super Bowl 50 take place?",
+    "gold": "Santa Clara, California",
+    "answer": "the the the the the the the th",
+    "conf": -1.215
+   },
+   {
+    "q": "Which NFL team won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -1.246
+   },
+   {
+    "q": "What color was used to emphasize the 50th anniversary of the Super Bowl?",
+    "gold": "gold",
+    "answer": "the the the the the the the th",
+    "conf": -1.195
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "the the the the the the the th",
+    "conf": -1.179
+   },
+   {
+    "q": "What day was the game played on?",
+    "gold": "February 7, 2016",
+    "answer": "the the the the the the the th",
+    "conf": -1.208
+   },
+   {
+    "q": "What is the AFC short for?",
+    "gold": "American Football Conference",
+    "answer": "the the the the the the the th",
+    "conf": -1.214
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "the the the the the the the th",
+    "conf": -1.179
+   },
+   {
+    "q": "What does AFC stand for?",
+    "gold": "American Football Conference",
+    "answer": "the the the the the the the th",
+    "conf": -1.235
+   },
+   {
+    "q": "What day was the Super Bowl played on?",
+    "gold": "February 7, 2016",
+    "answer": "the the the the the the the th",
+    "conf": -1.22
+   },
+   {
+    "q": "Who won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -1.241
+   }
+  ]
+ },
+ "steps": 439,
+ "train_minutes": 45.09006332159042,
+ "bytes_read": 1798144,
+ "curve": [
+  {
+   "step": 100,
+   "minutes": 9.96,
+   "bits_per_byte": {
+    "general": 6.121,
+    "dialog": 6.34
+   }
+  },
+  {
+   "step": 200,
+   "minutes": 20.2,
+   "bits_per_byte": {
+    "general": 4.986,
+    "dialog": 5.508
+   }
+  },
+  {
+   "step": 300,
+   "minutes": 30.55,
+   "bits_per_byte": {
+    "general": 4.448,
+    "dialog": 4.747
+   }
+  },
+  {
+   "step": 400,
+   "minutes": 41.13,
+   "bits_per_byte": {
+    "general": 4.201,
+    "dialog": 4.337
+   }
+  }
+ ],
+ "heldout_bits_per_byte": {
+  "general": 3.9944581280412637,
+  "dialog": 4.0880211186638915
+ },
+ "probes_after": {
+  "copy_gap0": {
+   "first": 4.545568943023682,
+   "repeat": 3.3010306358337402
+  },
+  "copy_gap400": {
+   "first": 4.73159122467041,
+   "repeat": 3.765009641647339
+  },
+  "answer_bits_own_document": 4.957688808441162,
+  "answer_bits_other_document": 5.189382553100586,
+  "own_better_fraction": 0.8666666666666667
+ },
+ "squad_after": {
+  "n": 100,
+  "exact_match": 0.0,
+  "f1": 0.0,
+  "seconds": 619.3463344573975,
+  "confidence_auroc_for_f1_ge_0_5": null,
+  "f1_most_confident_half": 0.0,
+  "f1_least_confident_half": 0.0,
+  "examples": [
+   {
+    "q": "Which NFL team represented the AFC at Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -1.014
+   },
+   {
+    "q": "Which NFL team represented the NFC at Super Bowl 50?",
+    "gold": "Carolina Panthers",
+    "answer": "the the the the the the the th",
+    "conf": -1.016
+   },
+   {
+    "q": "Where did Super Bowl 50 take place?",
+    "gold": "Santa Clara, California",
+    "answer": "the the the the the the the th",
+    "conf": -0.982
+   },
+   {
+    "q": "Which NFL team won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -1.014
+   },
+   {
+    "q": "What color was used to emphasize the 50th anniversary of the Super Bowl?",
+    "gold": "gold",
+    "answer": "the the the the the the the th",
+    "conf": -0.969
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "the the the the the the the th",
+    "conf": -0.943
+   },
+   {
+    "q": "What day was the game played on?",
+    "gold": "February 7, 2016",
+    "answer": "the the the the the the the th",
+    "conf": -0.968
+   },
+   {
+    "q": "What is the AFC short for?",
+    "gold": "American Football Conference",
+    "answer": "the the the the the the the th",
+    "conf": -0.972
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "the the the the the the the th",
+    "conf": -0.943
+   },
+   {
+    "q": "What does AFC stand for?",
+    "gold": "American Football Conference",
+    "answer": "the the the the the the the th",
+    "conf": -0.987
+   },
+   {
+    "q": "What day was the Super Bowl played on?",
+    "gold": "February 7, 2016",
+    "answer": "the the the the the the the th",
+    "conf": -0.991
+   },
+   {
+    "q": "Who won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "the the the the the the the th",
+    "conf": -0.999
+   }
+  ]
+ },
+ "samples": [
+  {
+   "prompt": "User: What is the capital of France?\nOll: ",
+   "answer": "",
+   "confidence": -0.487
+  },
+  {
+   "prompt": "User: Who wrote Romeo and Juliet?\nOll: ",
+   "answer": "",
+   "confidence": -0.491
+  },
+  {
+   "prompt": "User: How many legs does a spider have?\nOll: ",
+   "answer": "",
+   "confidence": -0.476
+  },
+  {
+   "prompt": "User: What is photosynthesis?\nOll: ",
+   "answer": "",
+   "confidence": -0.49
+  },
+  {
+   "prompt": "User: Can you give me a tip for learning a new language?\nOll: ",
+   "answer": "",
+   "confidence": -0.486
+  },
+  {
+   "prompt": "User: What is 12 plus 7?\nOll: ",
+   "answer": "",
+   "confidence": -0.493
+  },
+  {
+   "prompt": "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ",
+   "answer": "t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t t",
+   "confidence": -0.581
+  }
+ ]
+}
