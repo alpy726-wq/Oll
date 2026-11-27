@@ -1,0 +1,24 @@
+{
+ "n": 150,
+ "what": "bits/byte on the gold SQuAD answer (teacher forced), with the right document, no document, a document from another article",
+ "res": {
+  "models/oll-1.pt": {
+   "doc": 3.067275285720825,
+   "nodoc": 3.170945167541504,
+   "wrongdoc": 3.104854106903076,
+   "doc_first": 4.1053972244262695,
+   "doc_rest": 2.867942497939677,
+   "nodoc_rest": 2.9573875395832836,
+   "frac_doc_better_than_wrongdoc": 0.7
+  },
+  "models/oll-chat.pt": {
+   "doc": 2.0943706035614014,
+   "nodoc": 2.3391623497009277,
+   "wrongdoc": 2.4062299728393555,
+   "doc_first": 3.3104891777038574,
+   "doc_rest": 1.653606460001823,
+   "nodoc_rest": 1.841231073831787,
+   "frac_doc_better_than_wrongdoc": 0.8666666666666667
+  }
+ }
+}

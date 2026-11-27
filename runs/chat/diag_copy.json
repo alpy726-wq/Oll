@@ -1,0 +1,41 @@
+{
+ "what": "bits/byte on a 40-byte real text span the first time vs when it repeats after a gap (teacher forced); exact copying would give ~0",
+ "res": {
+  "models/oll-1.pt": {
+   "0": {
+    "first_time": 2.573531359434128,
+    "repeat": 1.903661236166954
+   },
+   "100": {
+    "first_time": 2.4922839949528375,
+    "repeat": 2.006211926539739
+   },
+   "400": {
+    "first_time": 2.630342865983645,
+    "repeat": 2.269516001145045
+   },
+   "1000": {
+    "first_time": 2.70355715850989,
+    "repeat": 2.2345360865195594
+   }
+  },
+  "models/oll-chat.pt": {
+   "0": {
+    "first_time": 3.4067175686359406,
+    "repeat": 2.2825498009721437
+   },
+   "100": {
+    "first_time": 3.1522162755330405,
+    "repeat": 2.0935221960147223
+   },
+   "400": {
+    "first_time": 2.9484695941209793,
+    "repeat": 2.1147233893473945
+   },
+   "1000": {
+    "first_time": 3.1410206059614816,
+    "repeat": 2.5417817483345666
+   }
+  }
+ }
+}

@@ -21,7 +21,8 @@ GENERIC_STREAM = 18  # "ts:electricity_15min": a generic series role learnt on m
 def load(path, device="cpu"):
     ck = torch.load(path, map_location=device)
     cfg = ck["config"]
-    m = OneMachine(STREAMS_BIG, R=cfg["R"], L=cfg["L"], M=cfg["M"], RM=cfg["RM"]).to(device)
+    m = OneMachine(STREAMS_BIG, R=cfg["R"], L=cfg["L"], M=cfg["M"], RM=cfg["RM"],
+                   mem_orders=tuple(cfg.get("mem_orders", (1,)))).to(device)
     m.load_state_dict({k: v.float() if v.dtype == torch.float16 else v for k, v in ck["model"].items()})
     m.eval()
     return m

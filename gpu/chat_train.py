@@ -27,16 +27,22 @@ ap.add_argument("--est_steps", type=int, default=6000)
 ap.add_argument("--dialog_frac", type=float, default=0.45)
 ap.add_argument("--n_squad", type=int, default=500)
 ap.add_argument("--device", default="cuda")
+ap.add_argument("--mem_orders", default="1", help="context-keyed memory orders, e.g. 1,4,8 (order 1 cannot copy)")
+ap.add_argument("--threads", type=int, default=0)
+ap.add_argument("--max_new", type=int, default=40)
 ap.add_argument("--out", default="/vol/results/chat.json")
 ap.add_argument("--ckpt", default="/vol/ckpt/chat")
 a = ap.parse_args()
 dev = a.device
 torch.manual_seed(0); rng = np.random.default_rng(0)
+if a.threads:
+    torch.set_num_threads(a.threads)
 if dev == "cuda":
     torch.backends.cuda.matmul.allow_tf32 = True
 os.makedirs(os.path.dirname(a.out), exist_ok=True); os.makedirs(os.path.dirname(a.ckpt), exist_ok=True)
 
-m = OneMachine(STREAMS_BIG, R=a.R, L=a.L, M=a.M, RM=a.RM).to(dev)
+orders = tuple(int(v) for v in a.mem_orders.split(","))
+m = OneMachine(STREAMS_BIG, R=a.R, L=a.L, M=a.M, RM=a.RM, mem_orders=orders).to(dev)
 if a.init and os.path.exists(a.init):
     src = torch.load(a.init, map_location=dev); src = src.get("model", src)
     own = m.state_dict()
@@ -114,9 +120,45 @@ def auroc(score, label):
     return float((r[label].sum() - label.sum() * (label.sum() + 1) / 2) / (label.sum() * (~label).sum()))
 
 
+@torch.no_grad()
+def tf_bits(seqs):
+    """teacher-forced bits per byte at every position of each byte sequence (one forward per sequence)"""
+    out = []
+    for q in seqs:
+        X = torch.tensor([q], dtype=torch.float64, device=dev); s_ = torch.full(X.shape, TEXT, device=dev); d_ = torch.ones(X.shape, device=dev)
+        out.append((m.nll(m(X[:, :-1], s_[:, :-1], d_[:, :-1], d_[:, 1:]), s_[:, 1:], X[:, 1:])[0] / math.log(2)).float().cpu().numpy())
+    return out
+
+
+def probes(tag, n=60, L=40):
+    """mechanism probes (teacher forced, no generation):
+    copy: a 40-byte held-out span, then a gap of other text, then the same span again; exact copying gives ~0 bits on
+    the repeat (after its first 5 bytes). reads_document: bits on the gold SQuAD answer with its own document vs a
+    document from another article (same question, same answer)."""
+    m.eval(); r = {}; pr = np.random.default_rng(7)
+    for gap in (0, 400):
+        seqs = []
+        for _ in range(n // 2):
+            i, j = pr.integers(gcut, len(gen) - 2000, 2)
+            sp = list(gen[i:i + L]); seqs.append(sp + list(gen[j:j + gap]) + sp)
+        b = tf_bits(seqs)
+        r[f"copy_gap{gap}"] = dict(first=float(np.mean([x[:L - 1].mean() for x in b])), repeat=float(np.mean([x[-L + 5:].mean() for x in b])))
+    own, other = [], []
+    for k in range(n):
+        q, w = squad[k], squad[(k + 37) % len(squad)]
+        a_ = list((q["answers"][0] + "\n").encode())
+        for ctx, acc in ((q["context"], own), (w["context"], other)):
+            p_ = list(f"Document: {ctx.strip()}\nUser: {q['question'].strip()}\nOll: ".encode()[-1800:])
+            acc.append(tf_bits([p_ + a_])[0][len(p_) - 1:].mean())
+    r["answer_bits_own_document"], r["answer_bits_other_document"] = float(np.mean(own)), float(np.mean(other))
+    r["own_better_fraction"] = float(np.mean(np.array(own) < np.array(other)))
+    m.train(); print(tag, "probes", json.dumps(r), flush=True)
+    return r
+
+
 def squad_eval(tag):
     prompts = [f"Document: {q['context'].strip()}\nUser: {q['question'].strip()}\nOll: " for q in squad]
-    t0 = time.time(); ans, conf = answer(prompts)
+    t0 = time.time(); ans, conf = answer(prompts, max_new=a.max_new)
     em = [max(float(norm(p) == norm(g)) for g in q["answers"]) for p, q in zip(ans, squad)]
     fs = [max(f1(p, g) for g in q["answers"]) for p, q in zip(ans, squad)]
     good = np.array(fs) >= 0.5
@@ -130,6 +172,7 @@ def squad_eval(tag):
 
 
 res = dict(args=vars(a))
+res["probes_before"] = probes("before")
 res["squad_before"] = squad_eval("before")
 opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
 t0, step, log, ema = time.time(), 0, [], {}
@@ -158,6 +201,7 @@ with torch.no_grad():
     res["heldout_bits_per_byte"] = {k: float(np.mean([float(lm_loss(*window_batch(arr, lo, hi, 16, a.T, vr))) / math.log(2) for _ in range(8)]))
                                     for k, arr, lo, hi in (("general", gen, gcut, len(gen)), ("dialog", dia, dcut, len(dia)))}
 print("heldout", res["heldout_bits_per_byte"], flush=True)
+res["probes_after"] = probes("after")
 res["squad_after"] = squad_eval("after")
 prompts = ["User: What is the capital of France?\nOll: ", "User: Who wrote Romeo and Juliet?\nOll: ",
            "User: How many legs does a spider have?\nOll: ", "User: What is photosynthesis?\nOll: ",
@@ -168,7 +212,7 @@ res["samples"] = [dict(prompt=p, answer=o, confidence=round(c, 3)) for p, o, c i
 for smp in res["samples"]:
     print(json.dumps(smp, ensure_ascii=False), flush=True)
 json.dump(res, open(a.out, "w"), indent=1, ensure_ascii=False)
-cfg = dict(R=a.R, L=a.L, M=a.M, RM=a.RM, streams="STREAMS_BIG", trained_steps=step)
+cfg = dict(R=a.R, L=a.L, M=a.M, RM=a.RM, mem_orders=list(orders), streams="STREAMS_BIG", trained_steps=step)
 torch.save(dict(config=cfg, model={k: (v.half() if v.is_floating_point() else v) for k, v in m.state_dict().items()}),
            os.path.join(os.path.dirname(a.out), "oll-chat.pt"))
 print("DONE", flush=True)
