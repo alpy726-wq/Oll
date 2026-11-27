@@ -1,0 +1,1 @@
+before probes {"copy_gap0": {"first": 8.431436538696289, "repeat": 4.123816013336182}, "copy_gap400": {"first": 8.661638259887695, "repeat": 5.784766674041748}, "answer_bits_own_document": 6.728705883026123, "answer_bits_other_document": 7.458561897277832, "own_better_fraction": 0.7833333333333333}
