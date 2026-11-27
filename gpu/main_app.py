@@ -43,10 +43,21 @@ def caps(args: list):
 
 @app.function(image=image, volumes={"/vol": vol}, gpu=GPU, timeout=4 * 3600, cpu=8, memory=32768)
 def script(args: list):
-    """any script under /oll with the main volume (checkpoint and results), e.g. gpu/diag_ett.py"""
+    """any script under /oll with the main volume (checkpoint and results), e.g. gpu/diag_ett.py; output is streamed
+    to the Modal log (visible with gpu.yml logs) and the volume is committed every 20 lines (progress visible to fetch)"""
     os.chdir("/oll")
     vol.reload()
-    p = subprocess.run([sys.executable, *args], capture_output=True, text=True)
+    pr = subprocess.Popen([sys.executable, *args], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    lines = []
+    for i, line in enumerate(pr.stdout):
+        print(line, end="", flush=True); lines.append(line)
+        if i % 20 == 19:
+            vol.commit()
+    pr.wait()
+
+    class P:  # same fields as subprocess.run's result
+        returncode = pr.returncode; stdout = "".join(lines[-400:]); stderr = ""
+    p = P()
     os.makedirs("/vol/results", exist_ok=True)
     name = os.path.splitext(os.path.basename(args[0]))[0]
     open(f"/vol/results/{name}_log.txt", "w").write(f"returncode {p.returncode}\n" + (p.stdout + p.stderr)[-8000:])
