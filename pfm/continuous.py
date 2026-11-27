@@ -5,6 +5,7 @@
 Baseline heads (Gaussian, mixture of Gaussians) for comparison.
 """
 import math
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as Fn
@@ -136,9 +137,50 @@ class CTConv(nn.Module):
                 out[sel] = self._scan_rows(u[sel], dt[sel], q[sel]).to(out.dtype)
         return out
 
+    FAST_SCAN = True  # float32 real-arithmetic scan with time-adaptive chunks (exact up to float32 rounding)
+
     def _scan_rows(self, u, dt, q):
         a, cc = self.a_cc()
-        return self.scan(u, dt, a, cc * torch.exp(q[..., None, None].float() * a))
+        ccq = cc * torch.exp(q[..., None, None].float() * a)
+        if self.FAST_SCAN:
+            return self.scan_fast(u, dt, a, ccq)
+        return self.scan(u, dt, a, ccq)
+
+    def scan_fast(self, u, dt, a, cc, bound=60.0):
+        """same recurrence as scan(), in float32 real arithmetic. Chunks end where the elapsed time inside the chunk
+        times the fastest decay would exceed `bound` (so every exponential stays below e^60, far from float32 overflow);
+        within a chunk: s_t = e^{a c_t} (s_prev + sum_{j<=t} e^{-a c_j} u_j)."""
+        B, T, C = u.shape
+        lam = (-a.real).float()  # (C,M) decay rates > 0
+        om = a.imag.float()
+        lmax = float(lam.detach().max())
+        cum = dt.double().cumsum(1)  # (B,T)
+        # chunk boundaries from the actual elapsed time (one host sync, on a (T,) vector)
+        bounds, start = [0], 0
+        cmax = cum.max(0).values.cpu().numpy(); cmin_prev = np.concatenate([[0.0], cum.min(0).values.cpu().numpy()[:-1]])
+        for t in range(1, T):
+            if (cmax[t] - cmin_prev[start]) * lmax > bound or t - start >= 256:
+                bounds.append(t); start = t
+        bounds.append(T)
+        sr = torch.zeros(B, C, a.shape[1], device=u.device); si = torch.zeros_like(sr)
+        ccr, cci = cc.real.float(), cc.imag.float()
+        ys = []
+        for b0, b1 in zip(bounds[:-1], bounds[1:]):
+            c = (cum[:, b0:b1] - (cum[:, b0 - 1:b0] if b0 > 0 else 0.0)).float()[..., None, None]  # (B,n,1,1) time from chunk start - dt0
+            g = torch.exp(lam * c)                     # e^{+lam c}
+            ph = om * c
+            cs, sn = torch.cos(ph), torch.sin(ph)
+            uc = u[:, b0:b1, :, None].float()
+            # e^{-a c} u = e^{lam c} (cos(om c) - i sin(om c)) u
+            ar = torch.cumsum(g * cs * uc, 1); ai = torch.cumsum(-g * sn * uc, 1)
+            ar = ar + sr[:, None]; ai = ai + si[:, None]
+            # s = e^{a c} (acc) = e^{-lam c} (cos + i sin)(ar + i ai)
+            e = 1.0 / g
+            rr = e * (cs * ar - sn * ai); ri = e * (sn * ar + cs * ai)
+            cr, ci = (ccr[:, b0:b1], cci[:, b0:b1]) if ccr.dim() == 4 else (ccr, cci)
+            ys.append((rr * cr - ri * ci).sum(-1))
+            sr, si = rr[:, -1], ri[:, -1]
+        return torch.cat(ys, 1)
 
     def scan(self, u, dt, a, cc, chunk=None):
         """Chunked exact scan (log-space within a chunk):
