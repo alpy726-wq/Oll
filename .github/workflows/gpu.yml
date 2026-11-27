@@ -38,6 +38,20 @@ jobs:
             main:*) J="${{ github.event.inputs.job }}"; export OLL_GPU=$(echo "$J" | cut -d: -f2); python gpu/main_app.py start $(echo "$J" | cut -d: -f3- | tr ':' ' '); exit 0;;
             fetch) python gpu/main_app.py fetch; exit 0;;
             deploy) modal deploy gpu/web_app.py; exit 0;;
+            vols) modal volume ls oll-main / || true; modal volume ls oll-main /ckpt || true; modal volume ls oll-main /results || true
+                  mkdir -p runs/gpu/main; for f in chat.json chat_progress.json chat_train_log.txt; do modal volume get oll-main /results/$f runs/gpu/main/$f --force || true; done
+                  pip install -q torch==2.9.0 --index-url https://download.pytorch.org/whl/cpu || true
+                  mkdir -p models; modal volume get oll-main /ckpt/chat.pt runs/gpu/chat_ckpt.pt --force || true; ls -la runs/gpu/main runs/gpu | head -40
+                  python - <<'PY' || true
+          import os, torch
+          p = "runs/gpu/chat_ckpt.pt"
+          if os.path.exists(p):
+              ck = torch.load(p, map_location="cpu"); print("checkpoint step", ck.get("step"))
+              torch.save(dict(config=dict(R=1024, L=8, M=8, RM=512, streams="STREAMS_BIG", trained_steps=ck.get("step")),
+                              model={k: (v.half() if v.is_floating_point() else v) for k, v in ck["model"].items()}), "models/oll-chat.pt")
+              os.remove(p); print("saved models/oll-chat.pt", os.path.getsize("models/oll-chat.pt"))
+          PY
+                  git add models/oll-chat.pt 2>/dev/null || true; exit 0;;
             stop) ID=$(modal app list | grep -o 'ap-[A-Za-z0-9]*' | head -1); echo "stopping $ID"; modal app stop "$ID"; exit 0;;
             logs) modal app list | head -14; ID=$(modal app list | grep -o 'ap-[A-Za-z0-9]*' | head -1); echo "app $ID"; (timeout 50 modal app logs "$ID" 2>&1 | grep -v "^\s*$" | tail -80) || true; exit 0;;
             cpu:*) J="${{ github.event.inputs.job }}"; python gpu/main_app.py cpu $(echo "$J" | cut -d: -f2- | tr ':' ' '); exit 0;;
