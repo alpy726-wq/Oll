@@ -54,6 +54,19 @@ def script(args: list):
     return dict(returncode=p.returncode, tail=(p.stdout + p.stderr)[-6000:])
 
 
+@app.function(image=image, volumes={"/vol": vol}, cpu=4, memory=16384, timeout=3 * 3600)
+def cpu_script(args: list):
+    """same as script() but on CPU only (downloads, data building): no GPU cost"""
+    os.chdir("/oll")
+    vol.reload()
+    p = subprocess.run([sys.executable, *args], capture_output=True, text=True)
+    os.makedirs("/vol/results", exist_ok=True)
+    name = os.path.splitext(os.path.basename(args[0]))[0]
+    open(f"/vol/results/{name}_log.txt", "w").write(f"returncode {p.returncode}\n" + (p.stdout + p.stderr)[-8000:])
+    vol.commit()
+    return dict(returncode=p.returncode)
+
+
 @app.function(image=image, volumes={"/vol": vol}, timeout=600)
 def read_results():
     vol.reload()
@@ -71,6 +84,10 @@ if __name__ == "__main__":
     if cmd == "caps":
         with modal.enable_output(), app.run(detach=True):
             c = caps.spawn(sys.argv[2:])
+            print("SPAWNED", c.object_id)
+    elif cmd == "cpu":
+        with modal.enable_output(), app.run(detach=True):
+            c = cpu_script.spawn(sys.argv[2:])
             print("SPAWNED", c.object_id)
     elif cmd == "run":
         with modal.enable_output(), app.run(detach=True):
