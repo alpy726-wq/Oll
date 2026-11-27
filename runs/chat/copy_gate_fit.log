@@ -9,3 +9,11 @@ tau 0.5: fitted bits/byte 1.8704 (trunk alone 1.8872) a=[0.52 1.97 4.53] b=-5.82
 {"fit": {"bits_mixture": 1.8703977882137075, "bits_trunk": 1.887227119100191, "copy_logtemp": 0.5, "gate_km": [0.0, 0.5182957649230957, 1.9686106443405151, 4.534018516540527], "gate_b": -5.822734659815358}, "heldout_general": {"copy": 2.1314878463745117, "trunk_only": 2.137629508972168}, "heldout_dialog": {"copy": 1.6631898880004883, "trunk_only": 1.6752185821533203}, "copy_gap0": {"true": {"first": 2.7468085289001465, "repeat": 0.568466067314148}, "false": {"first": 2.7734010219573975, "repeat": 1.7775447368621826}}, "copy_gap400": {"true": {"first": 2.8286399841308594, "repeat": 1.6209819316864014}, "false": {"first": 2.8601908683776855, "repeat": 1.9746618270874023}}}
 answered 16
 answered 32
+answered 48
+answered 64
+squad 0.0 0.005208333333333333
+answered 3
+{"prompt": "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ", "answer": "Alpine states are a large professional state of Alps and Alp"}
+{"prompt": "Document: The meeting was moved to Thursday at 3 pm in room 204.\nUser: When is the meeting?\nOll: ", "answer": "The most important is the most common in the most common in"}
+{"prompt": "User: What is the capital of France?\nOll: ", "answer": "The"}
+DONE

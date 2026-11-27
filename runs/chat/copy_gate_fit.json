@@ -1,0 +1,463 @@
+{
+ "args": {
+  "init": "models/oll-chat.pt",
+  "data": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/chat",
+  "RM": 4096,
+  "orders": "1,4,8,12",
+  "n_fit": 24,
+  "T": 1024,
+  "n_squad": 64,
+  "max_new": 30,
+  "chunk": 16,
+  "threads": 4,
+  "device": "cpu",
+  "out": "runs/chat/copy_gate_fit.json",
+  "save": "models/oll-chat-copy.pt"
+ },
+ "fit": {
+  "bits_mixture": 1.8703977882137075,
+  "bits_trunk": 1.887227119100191,
+  "copy_logtemp": 0.5,
+  "gate_km": [
+   0.0,
+   0.5182957649230957,
+   1.9686106443405151,
+   4.534018516540527
+  ],
+  "gate_b": -5.822734659815358
+ },
+ "heldout_general": {
+  "copy": 2.1314878463745117,
+  "trunk_only": 2.137629508972168
+ },
+ "heldout_dialog": {
+  "copy": 1.6631898880004883,
+  "trunk_only": 1.6752185821533203
+ },
+ "copy_gap0": {
+  "true": {
+   "first": 2.7468085289001465,
+   "repeat": 0.568466067314148
+  },
+  "false": {
+   "first": 2.7734010219573975,
+   "repeat": 1.7775447368621826
+  }
+ },
+ "copy_gap400": {
+  "true": {
+   "first": 2.8286399841308594,
+   "repeat": 1.6209819316864014
+  },
+  "false": {
+   "first": 2.8601908683776855,
+   "repeat": 1.9746618270874023
+  }
+ },
+ "squad": {
+  "n": 64,
+  "exact_match": 0.0,
+  "f1": 0.005208333333333333,
+  "seconds": 5327.08413028717,
+  "examples": [
+   {
+    "q": "Which NFL team represented the AFC at Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "Boston Bowl Bowl and Bowl Bowl",
+    "conf": -0.553
+   },
+   {
+    "q": "Which NFL team represented the NFC at Super Bowl 50?",
+    "gold": "Carolina Panthers",
+    "answer": "Boston Bowl Bowl and Bowl Bowl",
+    "conf": -0.568
+   },
+   {
+    "q": "Where did Super Bowl 50 take place?",
+    "gold": "Santa Clara, California",
+    "answer": "Bowl of the last star is the l",
+    "conf": -0.796
+   },
+   {
+    "q": "Which NFL team won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "Bonaparte Bowl Bowl with the B",
+    "conf": -0.735
+   },
+   {
+    "q": "What color was used to emphasize the 50th anniversary of the Super Bowl?",
+    "gold": "gold",
+    "answer": "Boston Bowl",
+    "conf": -0.582
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "Bonaparte Bowl Bowl with the B",
+    "conf": -0.707
+   },
+   {
+    "q": "What day was the game played on?",
+    "gold": "February 7, 2016",
+    "answer": "Arabic numbers are a single pl",
+    "conf": -0.769
+   },
+   {
+    "q": "What is the AFC short for?",
+    "gold": "American Football Conference",
+    "answer": "The Bowl Super Bowl games is a",
+    "conf": -0.598
+   },
+   {
+    "q": "What was the theme of Super Bowl 50?",
+    "gold": "\"golden anniversary\"",
+    "answer": "Bonaparte Bowl Bowl with the B",
+    "conf": -0.707
+   },
+   {
+    "q": "What does AFC stand for?",
+    "gold": "American Football Conference",
+    "answer": "Arabic numbers are the last tw",
+    "conf": -0.687
+   },
+   {
+    "q": "What day was the Super Bowl played on?",
+    "gold": "February 7, 2016",
+    "answer": "Bonaparte Bowl is a single pro",
+    "conf": -0.789
+   },
+   {
+    "q": "Who won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "Bonaparte Bowl with the Bowl B",
+    "conf": -0.669
+   },
+   {
+    "q": "What venue did Super Bowl 50 take place in?",
+    "gold": "Levi's Stadium",
+    "answer": "Bonumental Bowl is a standard",
+    "conf": -0.762
+   },
+   {
+    "q": "What city did Super Bowl 50 take place in?",
+    "gold": "Santa Clara",
+    "answer": "Bowl specifically accepted a s",
+    "conf": -0.741
+   },
+   {
+    "q": "If Roman numerals were used, what would Super Bowl 50 have been called?",
+    "gold": "Super Bowl L",
+    "answer": "10 AD",
+    "conf": -1.613
+   },
+   {
+    "q": "Super Bowl 50 decided the NFL champion for what season?",
+    "gold": "2015",
+    "answer": "Bonaparte Bonaparte Bonaparte",
+    "conf": -0.573
+   },
+   {
+    "q": "What year did the Denver Broncos secure a Super Bowl title for the third time?",
+    "gold": "2015",
+    "answer": "Boston Bowl Bowl was a second",
+    "conf": -0.655
+   },
+   {
+    "q": "What city did Super Bowl 50 take place in?",
+    "gold": "Santa Clara",
+    "answer": "Bowl specifically at the Bowl",
+    "conf": -0.658
+   },
+   {
+    "q": "What stadium did Super Bowl 50 take place in?",
+    "gold": "Levi's Stadium",
+    "answer": "Bowl stand in the last standar",
+    "conf": -0.787
+   },
+   {
+    "q": "What was the final score of Super Bowl 50? ",
+    "gold": "24–10",
+    "answer": "Bonaparte Bowl (and Bowl Bowl)",
+    "conf": -0.791
+   },
+   {
+    "q": "What month, day and year did Super Bowl 50 take place? ",
+    "gold": "February 7, 2016",
+    "answer": "Bonaparte with the Bowl Bowl B",
+    "conf": -0.719
+   },
+   {
+    "q": "What year was Super Bowl 50?",
+    "gold": "2015",
+    "answer": "Bonaparte Bowl was a single pr",
+    "conf": -0.806
+   },
+   {
+    "q": "What team was the AFC champion?",
+    "gold": "Denver Broncos",
+    "answer": "Arabic species are the Arabic",
+    "conf": -0.62
+   },
+   {
+    "q": "What team was the NFC champion?",
+    "gold": "Carolina Panthers",
+    "answer": "The Bowl Super Bowl games are",
+    "conf": -0.528
+   },
+   {
+    "q": "Who won Super Bowl 50?",
+    "gold": "Denver Broncos",
+    "answer": "Bonaparte Bowl with the Bowl B",
+    "conf": -0.672
+   },
+   {
+    "q": "Super Bowl 50 determined the NFL champion for what season?",
+    "gold": "2015",
+    "answer": "Super Bowl 50 determined the N",
+    "conf": -0.219
+   },
+   {
+    "q": "Which team won Super Bowl 50.",
+    "gold": "Denver Broncos",
+    "answer": "The Bowl Super Bowl 50.",
+    "conf": -0.433
+   },
+   {
+    "q": "Where was Super Bowl 50 held?",
+    "gold": "Santa Clara, California.",
+    "answer": "Bonaparte Bowl (1993) and Bowl",
+    "conf": -0.829
+   },
+   {
+    "q": "The name of the NFL championship game is?",
+    "gold": "Super Bowl",
+    "answer": "The Bowl of the NFL championsh",
+    "conf": -0.404
+   },
+   {
+    "q": "What 2015 NFL team one the AFC playoff?",
+    "gold": "Denver Broncos",
+    "answer": "The Board of the Arabic number",
+    "conf": -0.541
+   },
+   {
+    "q": "Which Carolina Panthers player was named Most Valuable Player?",
+    "gold": "Cam Newton",
+    "answer": "The Part of the Part is the Pa",
+    "conf": -0.755
+   },
+   {
+    "q": "How many appearances have the Denver Broncos made in the Super Bowl?",
+    "gold": "8",
+    "answer": "The Bowl of the Super Bowl?",
+    "conf": -0.447
+   },
+   {
+    "q": "What year was the Carolina Panthers franchise founded?",
+    "gold": "1995",
+    "answer": "The Carolina Panthers from the",
+    "conf": -0.409
+   },
+   {
+    "q": "What team did the Panthers defeat?",
+    "gold": "Arizona Cardinals",
+    "answer": "The Pan Diego is a second team",
+    "conf": -0.843
+   },
+   {
+    "q": "Who did the Broncos prevent from going to the Super Bowl?",
+    "gold": "New England Patriots",
+    "answer": "The Bowl of the Bowl of the Bo",
+    "conf": -0.512
+   },
+   {
+    "q": "Who did the Panthers beat in the NFC Championship Game?",
+    "gold": "Arizona Cardinals",
+    "answer": "The Party of the Party is a se",
+    "conf": -0.832
+   },
+   {
+    "q": "Who lost to the Broncos in the AFC Championship?",
+    "gold": "New England Patriots",
+    "answer": "The Boston Park is a second to",
+    "conf": -0.752
+   },
+   {
+    "q": "Who were the defending Super Bowl champions?",
+    "gold": "New England Patriots",
+    "answer": "The Bowl of the Bowl of the Bo",
+    "conf": -0.496
+   },
+   {
+    "q": "How many teams have been in the Super Bowl eight times?",
+    "gold": "four",
+    "answer": "The Bowl of the Super Bowl eig",
+    "conf": -0.399
+   },
+   {
+    "q": "Who was this season's NFL MVP?",
+    "gold": "Cam Newton",
+    "answer": "The Super Bowl.",
+    "conf": -0.481
+   },
+   {
+    "q": "What was the win/loss ratio in 2015 for the Carolina Panthers during their regular season?",
+    "gold": "15–1",
+    "answer": "the Carolina Panthers during t",
+    "conf": -0.38
+   },
+   {
+    "q": "Which Carolina Panthers team member was picked as the team's MVP in 2015? ",
+    "gold": "Cam Newton",
+    "answer": "The Paris Council of the Paris",
+    "conf": -0.656
+   },
+   {
+    "q": "What were the win/loss game stats for the Denver Bronco's regular season in 2015?",
+    "gold": "12–4",
+    "answer": "The Bowl of Bowl of the Bowl o",
+    "conf": -0.699
+   },
+   {
+    "q": "How many teams have played in the Super Bowl eight times?",
+    "gold": "4",
+    "answer": "The Bowl of the Super Bowl eig",
+    "conf": -0.409
+   },
+   {
+    "q": "Which team did not get a chance to defend their Super Bowl XLIX win in Super Bowl 50?",
+    "gold": "New England Patriots",
+    "answer": "the Bowl Super Bowl XLIX win i",
+    "conf": -0.317
+   },
+   {
+    "q": "Who is the quarterback for the Panthers?",
+    "gold": "Cam Newton",
+    "answer": "The Party Party is a second to",
+    "conf": -0.773
+   },
+   {
+    "q": "Who did Carolina beat in the NFC championship game?",
+    "gold": "Arizona Cardinals",
+    "answer": "The Camp is a second to the Ne",
+    "conf": -0.878
+   },
+   {
+    "q": "How many times have the Panthers been in the Super Bowl?",
+    "gold": "2",
+    "answer": "The Bowl of the Bowl of the Bo",
+    "conf": -0.456
+   },
+   {
+    "q": "Who did Denver beat in the AFC championship?",
+    "gold": "New England Patriots",
+    "answer": "The Bowl of the Bowl of the Bo",
+    "conf": -0.555
+   },
+   {
+    "q": "Who was the Most Valuable Player for the 2015 NFL season?",
+    "gold": "Cam Newton",
+    "answer": "The PlayStation 2 PlayStation",
+    "conf": -0.449
+   },
+   {
+    "q": "Who did Denver beat in the 2015 AFC Championship game?",
+    "gold": "New England Patriots",
+    "answer": "The Bowl of the 2015 AFC Champ",
+    "conf": -0.536
+   },
+   {
+    "q": "Who did the Carolina Panthers beat in the 2015 NFC Championship game?",
+    "gold": "Arizona Cardinals",
+    "answer": "2015",
+    "conf": -1.061
+   },
+   {
+    "q": "Who was the 2015 NFL MVP?",
+    "gold": "Cam Newton",
+    "answer": "The Bowl of the 2015 NFL MVP?",
+    "conf": -0.597
+   },
+   {
+    "q": "Who did the Panthers beat to become the NFC champs?",
+    "gold": "Arizona Cardinals",
+    "answer": "The Party Party is a second to",
+    "conf": -0.812
+   },
+   {
+    "q": "What year did the Carolina Panthers form?",
+    "gold": "1995.",
+    "answer": "The Party of Paris is a comple",
+    "conf": -0.763
+   },
+   {
+    "q": "Who was the Super Bowl 50 MVP?",
+    "gold": "Von Miller",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "How many fumbles did Von Miller force in Super Bowl 50?",
+    "gold": "2",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "Which team held the scoring lead throughout the entire game?",
+    "gold": "Broncos",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "Which Denver linebacker was named Super Bowl MVP?",
+    "gold": "linebacker Von Miller",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "How many solo tackles did Von Miller make at Super Bowl 50?",
+    "gold": "five solo tackles",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "Who was limited by Denver's defense?",
+    "gold": "Newton was limited by Denver's defense",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "How many times was Cam Newton sacked?",
+    "gold": "seven",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "Who won the Super Bowl MVP?",
+    "gold": "Von Miller",
+    "answer": "",
+    "conf": 0.0
+   },
+   {
+    "q": "How many turnovers did Cam Newton have?",
+    "gold": "three",
+    "answer": "",
+    "conf": 0.0
+   }
+  ]
+ },
+ "samples": [
+  {
+   "prompt": "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ",
+   "answer": "Alpine states are a large professional state of Alps and Alp"
+  },
+  {
+   "prompt": "Document: The meeting was moved to Thursday at 3 pm in room 204.\nUser: When is the meeting?\nOll: ",
+   "answer": "The most important is the most common in the most common in"
+  },
+  {
+   "prompt": "User: What is the capital of France?\nOll: ",
+   "answer": "The"
+  }
+ ]
+}
