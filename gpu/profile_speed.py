@@ -21,7 +21,7 @@ def step(b):
 
 
 out = {}
-for fast in (False, True):
+for fast in (False,):
     continuous.CTConv.FAST_SCAN = fast
     times = {}
     for d, b in batches.items():

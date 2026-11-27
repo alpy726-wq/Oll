@@ -137,7 +137,7 @@ class CTConv(nn.Module):
                 out[sel] = self._scan_rows(u[sel], dt[sel], q[sel]).to(out.dtype)
         return out
 
-    FAST_SCAN = True  # float32 real-arithmetic scan with time-adaptive chunks (exact up to float32 rounding)
+    FAST_SCAN = False  # (off: forward exact to 1e-6 but gradients lose ~7% in float32) float32 real-arithmetic scan with time-adaptive chunks (exact up to float32 rounding)
 
     def _scan_rows(self, u, dt, q):
         a, cc = self.a_cc()
