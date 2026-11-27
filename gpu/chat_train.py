@@ -57,6 +57,12 @@ if a.init and os.path.exists(a.init):
     keep = {k: v.float() if v.dtype == torch.float16 else v for k, v in src.items() if k in own and own[k].shape == v.shape}
     m.load_state_dict(keep, strict=False)
     print("warm start", len(keep), "tensors", flush=True)
+if a.copy_out and not any(k.startswith("gate_") for k in (src.keys() if a.init and os.path.exists(a.init) else [])):
+    # copy path born as fitted on the frozen Oll-Chat (runs/chat/copy_gate_fit.json): orders >= 4 copy, gate on familiarity
+    fitted = {1: 0.0, 4: 0.52, 8: 1.97, 12: 4.53}
+    with torch.no_grad():
+        m.copy_gain.copy_(torch.tensor([0.0 if n == 1 else 3.0 for n in orders])); m.copy_logtemp.fill_(0.5)
+        m.gate_km.copy_(torch.tensor([fitted.get(n, 2.0) for n in orders])); m.gate_b.fill_(-5.8)
 if a.keep_embed_order1 and len(orders) > 1:
     with torch.no_grad():
         m.mem_order_logw.copy_(torch.tensor([math.log(len(orders))] + [-30.0] * (len(orders) - 1)))
