@@ -9,3 +9,15 @@ Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pyto
 {'step': 500, 'domain': 'text', 'loss': 1.1016044616699219, 'sec': 1721.065955400467}
 {'step': 600, 'domain': 'text', 'loss': 0.9237180352210999, 'sec': 2267.5169699192047}
 {'step': 700, 'domain': 'weather', 'loss': -0.7165209650993347, 'sec': 2831.883446455002}
+{'step': 800, 'domain': 'market', 'loss': -2.8394110202789307, 'sec': 3194.935520172119}
+{'step': 900, 'domain': 'grid', 'loss': -0.19726252555847168, 'sec': 3529.697402238846}
+{'step': 1000, 'domain': 'text', 'loss': 0.9782835841178894, 'sec': 3869.9105656147003}
+{'step': 1100, 'domain': 'market', 'loss': -3.074113368988037, 'sec': 4198.003078222275}
+{'step': 1200, 'domain': 'audio', 'loss': -3.3823063373565674, 'sec': 4549.549175739288}
+{'step': 1300, 'domain': 'text', 'loss': 0.7584589123725891, 'sec': 4900.042972803116}
+{'step': 1400, 'domain': 'grid', 'loss': -0.24359820783138275, 'sec': 5240.505522012711}
+{'step': 1500, 'domain': 'audio', 'loss': -3.521090507507324, 'sec': 5593.136707782745}
+{'step': 1600, 'domain': 'text', 'loss': 0.7661929726600647, 'sec': 5929.539587020874}
+{'step': 1700, 'domain': 'weather', 'loss': -1.7976824045181274, 'sec': 6270.984770298004}
+{'step': 1800, 'domain': 'audio', 'loss': -3.0609657764434814, 'sec': 6609.484314918518}
+{'step': 1900, 'domain': 'weather', 'loss': -0.9948697686195374, 'sec': 6983.483749628067}
