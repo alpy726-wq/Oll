@@ -1,4 +1,0 @@
-/home/user/Oll/real_train.py:91: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
-Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
-  log.append(dict(step=step, domain=b["domains"][0], loss=float(loss), sec=time.time() - t0)); print(log[-1], flush=True)
-{'step': 0, 'domain': 'text', 'loss': 10.797450065612793, 'sec': 3.3707327842712402}
