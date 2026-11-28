@@ -150,7 +150,7 @@ fs = [max(f1(p, g) for g in q["answers"]) for p, q in zip(ans, squad)]
 res["squad"] = dict(n=len(squad), exact_match=float(np.mean(em)), f1=float(np.mean(fs)), seconds=time.time() - t0,
                     examples=[dict(q=q["question"], gold=q["answers"][0], answer=p, conf=round(c, 3)) for p, q, c in zip(ans, squad, conf)])
 print("squad", res["squad"]["exact_match"], res["squad"]["f1"], flush=True)
-prompts = ["Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: ",
+prompts = ["Document: Maria lives in Istanbul and studies prime numbers.\nUser: Where does Maria live?\nOll: ",
            "Document: The meeting was moved to Thursday at 3 pm in room 204.\nUser: When is the meeting?\nOll: ",
            "User: What is the capital of France?\nOll: "]
 outs, confs = answer(prompts, 60)

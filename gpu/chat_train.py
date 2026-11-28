@@ -231,7 +231,7 @@ res["squad_after"] = squad_eval("after")
 prompts = ["User: What is the capital of France?\nOll: ", "User: Who wrote Romeo and Juliet?\nOll: ",
            "User: How many legs does a spider have?\nOll: ", "User: What is photosynthesis?\nOll: ",
            "User: Can you give me a tip for learning a new language?\nOll: ", "User: What is 12 plus 7?\nOll: ",
-           "Document: Alptekin lives in Istanbul and studies prime numbers.\nUser: Where does Alptekin live?\nOll: "]
+           "Document: Maria lives in Istanbul and studies prime numbers.\nUser: Where does Maria live?\nOll: "]
 outs, confs = answer(prompts, max_new=160)
 res["samples"] = [dict(prompt=p, answer=o, confidence=round(c, 3)) for p, o, c in zip(prompts, outs, confs)]
 for smp in res["samples"]:

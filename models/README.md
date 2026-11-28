@@ -63,3 +63,15 @@ CSV: `timestamp,value` or one value per line. CPU is enough (about 45 s for a 48
 
 Small scale (17.5 M parameters, 200 GPU-minutes); daily rhythm is flattened in long fed-back roll-outs; markets are not
 predicted better than persistence; one-step surprise is not an anomaly detector.
+
+# Oll-Reader (`oll-reader.pt`, 6.6 MB, CPU)
+
+Answers questions from your documents. The documents are written once into a phase memory addressed by meaning
+(frozen prime basis, no training); a small linear reader trained on SQuAD v1.1 (45 min, CPU) picks the answer.
+SQuAD v1.1 validation (10,570 questions): exact match 33.2 %, F1 42.9 %; confidence >= 0.6: 71 % correct, >= 0.8: 84 %.
+Below confidence 0.3 it says it is not sure. English only; the answer must be written in the documents.
+
+```bash
+python -m oll ask notes.txt                    # interactive
+python -m oll ask notes.txt --q "When does the new office open?"
+```

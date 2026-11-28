@@ -253,3 +253,15 @@ def test_seasonal_memory_streaming_equals_full_and_recalls_same_hour():
         i = 24 * 4 + 14  # day 5, 14:00, asking about 15:00
         dens = (c[0, i][None] * torch.exp(-1j * 2 * math.pi * grid[:, None] * m.f / 2.0)).sum(-1).abs() ** 2
         assert abs(float(grid[dens.argmax()]) - 0.7) < 0.05
+
+
+def test_reader_answers_from_document_and_knows_when_not():
+    import os
+    if not os.path.exists("models/oll-reader.pt"):
+        return
+    from oll.reader import Reader
+    r = Reader()
+    doc = "Maria lives in Istanbul. Ahmet is responsible for the database backups. The new office opens on 5 January 2027."
+    assert r.ask(doc, "Where does Maria live?")["answer"] == "Istanbul"
+    assert r.ask(doc, "Who is responsible for the database backups?")["answer"] == "Ahmet"
+    assert r.ask(doc, "Who won the World Cup in 2018?")["confidence"] < 0.3

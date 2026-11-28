@@ -1,4 +1,5 @@
-"""Oll-1 command line.
+"""Oll command line.
+  python -m oll ask notes.txt [more.txt ...] [--q "question"] -> answers from your documents (Oll-Reader, CPU)
   python -m oll forecast data.csv [--horizon 96]      -> forecast_<name>.csv (median, q10, q90)
   python -m oll alarms data.csv                       -> alarms_<name>.csv (surprise and alarm per reading)
 CSV: "timestamp,value" or just "value" (one per line). Weights: models/oll-1.pt"""
@@ -26,7 +27,44 @@ def read(path):
     return v, t
 
 
+def ask(argv):
+    """answer questions from documents; says when it is not sure (confidence below --sure)"""
+    from oll.reader import Reader
+    p = argparse.ArgumentParser(prog="python -m oll ask")
+    p.add_argument("docs", nargs="+")
+    p.add_argument("--q", action="append", default=[])
+    p.add_argument("--sure", type=float, default=0.3)
+    p.add_argument("--weights", default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models", "oll-reader.pt"))
+    a = p.parse_args(argv)
+    text = "\n".join(open(d, encoding="utf-8", errors="replace").read() for d in a.docs)
+    r = Reader(a.weights)
+
+    def one(q):
+        o = r.ask(text, q)
+        if o["confidence"] >= a.sure:
+            print(f"Oll: {o['answer']}   (confidence {o['confidence']:.2f}; from: \"{o.get('sentence', '')[:160]}\")")
+        else:
+            print(f"Oll: I am not sure. Best guess: {o['answer']} (confidence {o['confidence']:.2f})")
+
+    if a.q:
+        for q in a.q:
+            print("You:", q); one(q)
+        return
+    print("Ask about your documents (empty line to quit).")
+    while True:
+        try:
+            q = input("You: ").strip()
+        except EOFError:
+            break
+        if not q:
+            break
+        one(q)
+
+
 def main():
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "ask":
+        return ask(sys.argv[2:])
     ap = argparse.ArgumentParser(prog="python -m oll")
     ap.add_argument("cmd", choices=["forecast", "alarms"])
     ap.add_argument("csv")
