@@ -34,6 +34,7 @@ ap.add_argument("--seasonal", action="store_true", help="seasonal (time-bound) m
 ap.add_argument("--clock", action="store_true", help="calendar clock (day/week/year phases of absolute time)")
 ap.add_argument("--anticipate", action="store_true", help="also learn when and which sense comes next")
 ap.add_argument("--query", action="store_true", help="query head: trunk state independent of the asked time; trained to answer far moments directly")
+ap.add_argument("--copy_out", action="store_true", help="gated copy read-out from the phase memory")
 ap.add_argument("--ett", action="store_true", help="after training: ETT long-horizon protocol (30 windows, with adaptation)")
 a = ap.parse_args()
 if a.seasonal:
@@ -46,7 +47,8 @@ if a.arch == "gpt":
     m = EventGPT(STREAMS_REAL, d=a.d, L=a.L, T=a.T).to(a.device)
 else:
     m = OneMachine(STREAMS_REAL, R=a.R, L=a.L, M=8, RM=a.RM, seed=a.seed, readout_amp="flatreadout" in abl,
-                   mem_orders=tuple(int(v) for v in a.mem_orders.split(",")), clock=a.clock, anticipate=a.anticipate, query_head=a.query, seasonal=a.seasonal).to(a.device)
+                   mem_orders=tuple(int(v) for v in a.mem_orders.split(",")), clock=a.clock, anticipate=a.anticipate, query_head=a.query, seasonal=a.seasonal,
+                   copy_out=a.copy_out).to(a.device)
 with torch.no_grad():
     if "memory" in abl:
         m.mem_beta.zero_(); m.mem_beta.requires_grad = False
