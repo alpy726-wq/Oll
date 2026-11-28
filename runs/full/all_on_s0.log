@@ -8,3 +8,4 @@ Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pyto
 {'step': 400, 'domain': 'grid', 'loss': 1.074853777885437, 'sec': 1375.6910858154297}
 {'step': 500, 'domain': 'text', 'loss': 1.1016044616699219, 'sec': 1721.065955400467}
 {'step': 600, 'domain': 'text', 'loss': 0.9237180352210999, 'sec': 2267.5169699192047}
+{'step': 700, 'domain': 'weather', 'loss': -0.7165209650993347, 'sec': 2831.883446455002}
