@@ -1,0 +1,35 @@
+/home/runner/work/Oll/Oll/real_train.py:91: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  log.append(dict(step=step, domain=b["domains"][0], loss=float(loss), sec=time.time() - t0)); print(log[-1], flush=True)
+{'step': 0, 'domain': 'text', 'loss': 10.797450065612793, 'sec': 1.2698214054107666}
+{'step': 100, 'domain': 'weather', 'loss': 2.150125741958618, 'sec': 139.54971170425415}
+{'step': 200, 'domain': 'weather', 'loss': 1.2424229383468628, 'sec': 286.89981055259705}
+{'step': 300, 'domain': 'text', 'loss': 1.2319920063018799, 'sec': 440.73666167259216}
+{'step': 400, 'domain': 'text', 'loss': 1.0785554647445679, 'sec': 590.8907318115234}
+{'step': 500, 'domain': 'weather', 'loss': -0.4689667820930481, 'sec': 734.3531994819641}
+{'step': 600, 'domain': 'text', 'loss': 0.9685795903205872, 'sec': 879.7528433799744}
+{'step': 700, 'domain': 'audio', 'loss': -3.422430992126465, 'sec': 1013.1510293483734}
+{'step': 800, 'domain': 'market', 'loss': -3.321188449859619, 'sec': 1151.3774099349976}
+{'step': 900, 'domain': 'text', 'loss': 0.8313499689102173, 'sec': 1297.3421943187714}
+{'step': 1000, 'domain': 'audio', 'loss': -3.351775646209717, 'sec': 1455.5622713565826}
+{'step': 1100, 'domain': 'text', 'loss': 0.788492739200592, 'sec': 1604.714129447937}
+{'step': 1200, 'domain': 'weather', 'loss': -1.998184084892273, 'sec': 1753.223786354065}
+{'step': 1300, 'domain': 'text', 'loss': 0.8299130201339722, 'sec': 1903.6477591991425}
+{'step': 1400, 'domain': 'grid', 'loss': -0.6202681660652161, 'sec': 2049.261011123657}
+{'step': 1500, 'domain': 'grid', 'loss': -1.0218561887741089, 'sec': 2196.7573912143707}
+{'step': 1600, 'domain': 'grid', 'loss': -1.0092111825942993, 'sec': 2344.3412454128265}
+{'step': 1700, 'domain': 'text', 'loss': 0.8019646406173706, 'sec': 2491.8323862552643}
+{'step': 1800, 'domain': 'audio', 'loss': -3.3929073810577393, 'sec': 2626.622035264969}
+{'step': 1900, 'domain': 'grid', 'loss': -0.9255145192146301, 'sec': 2769.1545326709747}
+{'step': 2000, 'domain': 'grid', 'loss': -1.0067932605743408, 'sec': 2909.1617369651794}
+{'step': 2100, 'domain': 'text', 'loss': 0.7940675616264343, 'sec': 3061.4028873443604}
+{'step': 2200, 'domain': 'weather', 'loss': -2.0761263370513916, 'sec': 3209.070736646652}
+{'step': 2300, 'domain': 'weather', 'loss': -2.0508742332458496, 'sec': 3359.5247056484222}
+{'step': 2400, 'domain': 'weather', 'loss': -1.7715312242507935, 'sec': 3504.265256166458}
+{'step': 2500, 'domain': 'weather', 'loss': -2.2320504188537598, 'sec': 3649.1504163742065}
+{'step': 2600, 'domain': 'audio', 'loss': -3.9321541786193848, 'sec': 3802.098887681961}
+{'step': 2700, 'domain': 'market', 'loss': -3.536151170730591, 'sec': 3954.465100288391}
+{'step': 2800, 'domain': 'audio', 'loss': -4.122097969055176, 'sec': 4100.430447101593}
+{'step': 2900, 'domain': 'weather', 'loss': -2.2048187255859375, 'sec': 4251.389014959335}
+VAL {"weather": -1.3234366178512573, "grid": -0.1068684533238411, "market": -0.7018179297447205, "audio": -1.7556530237197876, "text": 4.437856489233095} 
+TEST {"weather": -1.4551222324371338, "grid": -0.2717643678188324, "market": -0.7636963725090027, "audio": -1.33968985080719, "text": 4.507821095395896}
