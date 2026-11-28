@@ -1,0 +1,204 @@
+{
+ "args": {
+  "data": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/chat",
+  "RM": 4096,
+  "L": 6,
+  "top": 2,
+  "D": 2097152,
+  "epochs": 1,
+  "n_train": 2000,
+  "threads": 4,
+  "out": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/reader_smoke.json",
+  "save": "/tmp/claude-0/-home-user-Oll/12fd9b7b-bbc7-5625-be85-a278aed3bf03/scratchpad/reader_smoke.pt"
+ },
+ "curve": [
+  {
+   "epoch": 0,
+   "loss": 2.8406023792922497,
+   "trainable_questions": 1576,
+   "seconds": 37.43246006965637
+  }
+ ],
+ "squad_validation": {
+  "n": 10570,
+  "exact_match": 0.2348155156102176,
+  "f1": 0.32636804914142026,
+  "em_most_confident_quarter": 0.5018925056775171,
+  "em_least_confident_quarter": 0.0817562452687358,
+  "em_by_confidence": {
+   ">=0.0": {
+    "fraction_answered": 1.0,
+    "em": 0.2348155156102176
+   },
+   ">=0.2": {
+    "fraction_answered": 0.5005676442762536,
+    "em": 0.357021357021357
+   },
+   ">=0.4": {
+    "fraction_answered": 0.19375591296121097,
+    "em": 0.5556640625
+   },
+   ">=0.6": {
+    "fraction_answered": 0.08637653736991485,
+    "em": 0.7217962760131434
+   },
+   ">=0.8": {
+    "fraction_answered": 0.0348155156102176,
+    "em": 0.845108695652174
+   }
+  },
+  "examples": [
+   {
+    "gold": "Denver Broncos",
+    "answer": "Roman numerals",
+    "confidence": 0.18
+   },
+   {
+    "gold": "Carolina Panthers",
+    "answer": "Roman numerals",
+    "confidence": 0.18
+   },
+   {
+    "gold": "Santa Clara, California",
+    "answer": "the 2015 season",
+    "confidence": 0.085
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "the National Football League",
+    "confidence": 0.161
+   },
+   {
+    "gold": "gold",
+    "answer": "Super Bowl L",
+    "confidence": 0.107
+   },
+   {
+    "gold": "\"golden anniversary\"",
+    "answer": "Super Bowl L",
+    "confidence": 0.124
+   },
+   {
+    "gold": "February 7, 2016",
+    "answer": "February 7",
+    "confidence": 0.341
+   },
+   {
+    "gold": "American Football Conference",
+    "answer": "Broncos defeated the National Football Conference",
+    "confidence": 0.318
+   },
+   {
+    "gold": "\"golden anniversary\"",
+    "answer": "Super Bowl L",
+    "confidence": 0.124
+   },
+   {
+    "gold": "American Football Conference",
+    "answer": "Super Bowl L",
+    "confidence": 0.355
+   },
+   {
+    "gold": "February 7, 2016",
+    "answer": "Super Bowl L",
+    "confidence": 0.142
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "Roman",
+    "confidence": 0.199
+   },
+   {
+    "gold": "Levi's Stadium",
+    "answer": "Super Bowl L",
+    "confidence": 0.215
+   },
+   {
+    "gold": "Santa Clara",
+    "answer": "Super Bowl L",
+    "confidence": 0.266
+   },
+   {
+    "gold": "Super Bowl L",
+    "answer": "Super Bowl L",
+    "confidence": 0.41
+   },
+   {
+    "gold": "2015",
+    "answer": "the National Football League",
+    "confidence": 0.367
+   },
+   {
+    "gold": "2015",
+    "answer": "AFC",
+    "confidence": 0.08
+   },
+   {
+    "gold": "Santa Clara",
+    "answer": "Super Bowl L",
+    "confidence": 0.266
+   },
+   {
+    "gold": "Levi's Stadium",
+    "answer": "Super Bowl L",
+    "confidence": 0.141
+   },
+   {
+    "gold": "24–10",
+    "answer": "of the National Football League",
+    "confidence": 0.134
+   },
+   {
+    "gold": "February 7, 2016",
+    "answer": "Super Bowl L",
+    "confidence": 0.243
+   },
+   {
+    "gold": "2015",
+    "answer": "gold-themed initiatives",
+    "confidence": 0.05
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "Broncos defeated the National Football Conference",
+    "confidence": 0.417
+   },
+   {
+    "gold": "Carolina Panthers",
+    "answer": "Broncos defeated the National Football Conference",
+    "confidence": 0.412
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "Roman",
+    "confidence": 0.199
+   },
+   {
+    "gold": "2015",
+    "answer": "the National Football League",
+    "confidence": 0.367
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "L",
+    "confidence": 0.098
+   },
+   {
+    "gold": "Santa Clara, California.",
+    "answer": "of the National Football League",
+    "confidence": 0.114
+   },
+   {
+    "gold": "Super Bowl",
+    "answer": "Francisco Bay Area at Santa Clara",
+    "confidence": 0.103
+   },
+   {
+    "gold": "Denver Broncos",
+    "answer": "the National Football League",
+    "confidence": 0.262
+   }
+  ],
+  "seconds": 189.09623265266418
+ }
+}
