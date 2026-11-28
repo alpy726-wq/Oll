@@ -268,12 +268,12 @@ def test_reader_answers_from_document_and_knows_when_not():
 
 
 def test_full_model_every_feature_on():
-    """the one full model: context-keyed memory (1,4,8,12), gated copy read-out, anticipation, clock, query head,
+    """the one full model: meaning-addressed memory (order 0), context-keyed memory (1,4,8,12), gated copy read-out, anticipation, clock, query head,
     seasonal memory and salience gates all on together. Streaming == full; peek == step; every read-out finite;
     gradients reach every parameter group."""
     from pfm.realworld import STREAMS_REAL
     torch.manual_seed(7)
-    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=128, mem_orders=(1, 4, 8, 12), copy_out=True, anticipate=True,
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=128, mem_orders=(0, 1, 4, 8, 12), copy_out=True, anticipate=True,
                    clock=True, query_head=True, seasonal=True)
     for p_ in m.parameters():
         p_.data += 0.02 * torch.randn_like(p_)
@@ -281,6 +281,7 @@ def test_full_model_every_feature_on():
     B, T = 2, 40
     s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
     s[:, ::2] = 16; x[:, ::2] = torch.randint(97, 104, (B, T // 2)).double()  # text bytes interleaved with sensors
+    x[:, 6] = 32.0; x[:, 12] = 46.0; x[:, 14] = 32.0; x[:, 22] = 33.0; x[:, 30] = 32.0  # spaces and sentence ends
     dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 6; wg = torch.rand(B, T) * 2
     t_in = 4e5 + torch.cumsum(dt.double(), 1); t_out = t_in + q.double()
     t_in[1, :5] = float("nan"); t_out[1, :5] = float("nan")
@@ -301,6 +302,30 @@ def test_full_model_every_feature_on():
     loss = m.nll(h, s, y).mean() + w_.mean() + c_.mean()
     assert torch.isfinite(loss)
     loss.backward()
-    for name in ("copy_gain", "gate_b", "gate_km", "sea_gain", "clock_in", "mem_beta", "again"):
+    for name in ("copy_gain", "gate_b", "gate_km", "sea_gain", "clock_in", "mem_beta", "again", "word_logmu", "word_logbreak"):
         g = getattr(m, name).grad
         assert g is not None and torch.isfinite(g).all() and float(g.abs().sum()) > 0, name
+
+
+def test_meaning_memory_streaming_equals_full_and_counts_shared_words():
+    """order 0 = meaning-addressed memory (bag of rarity-weighted word codes). Streaming == full on real-looking text
+    mixed with sensor events; and the key of a question is closest to the key right after the sentence that shares
+    its rare words."""
+    from pfm.realworld import STREAMS_REAL, SID
+    torch.manual_seed(8)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=4096, mem_orders=(0, 1, 4), copy_out=True).eval()
+    txt = b"Maria lives in Istanbul. The bill was 412 dollars. Ahmet runs the backups at night.\nUser: Where does Maria live?\nOll: "
+    x = torch.tensor([list(txt)], dtype=torch.float64); s = torch.full(x.shape, SID["text"])
+    s[0, 30] = 3; x[0, 30] = 0.25  # one sensor reading in the middle of the text
+    dt = torch.rand(x.shape) + 0.5; q = torch.ones(x.shape)
+    with torch.no_grad():
+        h = m(x, s, dt, q)
+        st = m.init_state(1); hs = []
+        for t in range(x.shape[1]):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st); hs.append(o)
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        K = m.word_keys(x, s, dt)[0]
+        ends = [txt.index(b"Istanbul.") + 8, txt.index(b"dollars.") + 7, txt.index(b"night.") + 5]
+        qk = K[-1]
+        sims = [float((qk * K[e].conj()).sum().real) / m.RM for e in ends]
+        assert sims[0] > max(sims[1:]) + 0.3, sims

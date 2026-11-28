@@ -141,6 +141,18 @@ class OneMachine(nn.Module):
         self.streams, self.R, self.L, self.RM = list(streams), R, L, RM
         fm = torch.tensor(frequencies(RM, family), dtype=torch.float64)  # wide prime bank used only for memory addressing
         self.register_buffer("fm", fm, persistent=False)
+        # meaning-addressed memory (order 0 in mem_orders): every word of a byte stream gets a phase code from the frozen
+        # prime bank (its bytes, lower-cased, bound in order under fixed permutations); the key is the decayed
+        # superposition of the recent words, each weighted by its rarity (1 / (1 + how often this word code was seen
+        # before), read from a second phase sum: document frequency in closed form). <key_t, key_j>/RM ~ weighted
+        # count of shared words, so a question reads out what came after the passages that talk about the same things.
+        if 0 in tuple(mem_orders):
+            gw = torch.Generator().manual_seed(4343)
+            self.register_buffer("word_perm", torch.stack([torch.arange(RM)] + [torch.randperm(RM, generator=gw) for _ in range(31)]), persistent=False)
+            self.register_buffer("is_bytes", torch.tensor([st.kind == "discrete" and st.n_symbols == 256 for st in streams]), persistent=False)
+            self.word_logmu = nn.Parameter(torch.tensor(math.log(1 / 400.0)))  # bag of recent words: slow decay in time
+            self.word_logbreak = nn.Parameter(torch.tensor(math.log(6.0)))  # and forgotten (x e^-6) after a sentence end (. !)
+            self.word_logmu_cnt = nn.Parameter(torch.tensor(math.log(1e-5)))   # word frequency: long memory
         self.register_buffer("psim", torch.stack([2 * math.pi * torch.frac(1e5 * (i + 1) * fm) for i in range(len(streams))]), persistent=False)
         f = torch.tensor(frequencies(R, family), dtype=torch.float64)
         self.register_buffer("f", f, persistent=False)
@@ -261,6 +273,58 @@ class OneMachine(nn.Module):
             out = out + sh[..., self.ctx_perm[i]]
         return out
 
+    def _word_byte(self, x, s):
+        b = x.round().long()
+        wb = ((b >= 48) & (b <= 57)) | ((b >= 65) & (b <= 90)) | ((b >= 97) & (b <= 122)) | (b >= 128)
+        lo = torch.where((b >= 65) & (b <= 90), b + 32, b).clamp(0, 255)
+        return wb & self.is_bytes[s], lo
+
+    def _byte_word_phase(self, lo):
+        """(..., RM) phase of a (lower-cased) byte on the memory bank, frozen"""
+        f_ = lo.to(torch.float64)[..., None] * self.fm / 7.0
+        return 2 * math.pi * (f_ - torch.floor(f_))
+
+    def word_keys(self, x, s, dt):
+        """parallel form of the meaning key: (B,T,RM) complex64, includes the words completed at or before t"""
+        B, T = x.shape
+        wb, lo = self._word_byte(x, s)
+        idx = torch.arange(T, device=x.device).expand(B, T)
+        lastnon = torch.cummax(torch.where(~wb, idx, torch.full_like(idx, -1)), 1).values
+        k = (idx - lastnon - 1).clamp(0, 31)
+        Pp = torch.gather(self._byte_word_phase(lo), 2, self.word_perm[k]) * wb[..., None]
+        C = torch.cumsum(Pp, 1)
+        Cl = torch.where((lastnon >= 0)[..., None], torch.gather(C, 1, lastnon.clamp(min=0)[..., None].expand(-1, -1, self.RM)), torch.zeros_like(C))
+        phi = C - Cl  # phase of the word so far (valid where wb)
+        bnd = (~wb[:, 1:]) & wb[:, :-1]  # event t (>= 1) closes the word that ended at t-1
+        code = torch.zeros(B, T, self.RM, dtype=torch.complex64, device=x.device)
+        code[:, 1:] = torch.polar(torch.ones_like(phi[:, :-1]), phi[:, :-1]).to(torch.complex64) * bnd[..., None]
+        tau = dt.cumsum(1).to(torch.float64); gap = (tau[:, :, None] - tau[:, None, :]).clamp(min=0)
+        b = x.round().long(); isb = ((b == 46) | (b == 33)) & self.is_bytes[s]
+        brk = torch.zeros(B, T, dtype=torch.float64, device=x.device); brk[:, 1:] = isb[:, :-1].double()  # previous event ended a sentence
+        nb = brk.cumsum(1); nbg = (nb[:, :, None] - nb[:, None, :]).clamp(min=0)
+        low = torch.tril(torch.ones(T, T, dtype=torch.bool, device=x.device), -1)
+        cnt = ((code @ code.conj().transpose(1, 2)).real / self.RM * (torch.exp(-self.word_logmu_cnt.exp() * gap) * low)).sum(-1)
+        wgt = 1.0 / (1.0 + cnt.clamp(min=0))
+        Dw = (torch.exp(-self.word_logmu.exp() * gap - self.word_logbreak.exp() * nbg) * (low | torch.eye(T, dtype=torch.bool, device=x.device))).to(torch.complex64)
+        return Dw @ (code * wgt[..., None].to(torch.complex64))
+
+    def word_step(self, x, s, dt, st):
+        """streaming form: returns the key at this event and the new word state"""
+        wb, lo = self._word_byte(x, s)
+        pw = st["w_prev"]
+        bnd = (~wb) & pw
+        code = torch.polar(torch.ones_like(st["w_phi"]), st["w_phi"]).to(torch.complex64) * bnd[:, None]
+        wsum = torch.exp(-self.word_logmu_cnt.exp() * dt)[:, None].float() * st["w_sum"]
+        bag = torch.exp(-self.word_logmu.exp() * dt - self.word_logbreak.exp() * st["w_brk"].float())[:, None].float() * st["w_bag"]
+        cnt = (code * wsum.conj()).sum(-1).real / self.RM
+        bag = bag + code * (1.0 / (1.0 + cnt.clamp(min=0)))[:, None].to(torch.complex64)
+        wsum = wsum + code
+        kk = torch.where(pw, st["w_k"] + 1, torch.zeros_like(st["w_k"])).clamp(max=31)
+        add = torch.gather(self._byte_word_phase(lo), 1, self.word_perm[kk])
+        phi = torch.where(wb[:, None], torch.where(pw[:, None], st["w_phi"], torch.zeros_like(st["w_phi"])) + add, torch.zeros_like(st["w_phi"]))
+        b = x.round().long(); isb = ((b == 46) | (b == 33)) & self.is_bytes[s]
+        return bag, dict(w_brk=isb, w_prev=wb, w_phi=phi, w_k=torch.where(wb, kk, torch.zeros_like(kk)), w_sum=wsum, w_bag=bag)
+
     def memory_read(self, x, s, ph, dt, wg=None):
         """Associative phase memory. With context key K_t (order n: the last n events bound together), the pair
         (K_{j-1} -> event j) is stored as conj(K_{j-1}) (x) v_j, where v is the unit phase code of the event on the
@@ -275,7 +339,10 @@ class OneMachine(nn.Module):
         mask = torch.tril(torch.ones(T, T, dtype=torch.bool, device=x.device), -1) & (torch.arange(T, device=x.device)[None, :] >= 1)
         W, Wc, kms = 0, 0, []
         for o, (n, w) in enumerate(zip(self.mem_orders, self.order_weights())):
-            k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.context_phases(P, n)).to(torch.complex64)
+            if n == 0:
+                k = self.word_keys(x, s, dt)
+            else:
+                k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), self.context_phases(P, n)).to(torch.complex64)
             sim = (k @ k.conj().transpose(1, 2)) / self.RM  # sim[t, i] = <K_t, K_i>
             S = torch.zeros(B, T, T, dtype=torch.complex64, device=x.device)
             S[:, :, 1:] = sim[:, :, :-1]  # pair stored at write time j uses key K_{j-1}
@@ -501,7 +568,10 @@ class OneMachine(nn.Module):
                     M=torch.zeros(no, B, self.RM, self.R, dtype=torch.complex64, device=dev),
                     prev=torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev),
                     hist=torch.zeros(B, max(self.mem_orders), self.RM, dtype=torch.float64, device=dev),
-                    **({"Km": torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev)} if self.copy_out else {}))
+                    **({"Km": torch.zeros(no, B, self.RM, dtype=torch.complex64, device=dev)} if self.copy_out else {}),
+                    **(dict(w_brk=torch.zeros(B, dtype=torch.bool, device=dev), w_prev=torch.zeros(B, dtype=torch.bool, device=dev), w_phi=torch.zeros(B, self.RM, dtype=torch.float64, device=dev),
+                            w_k=torch.zeros(B, dtype=torch.long, device=dev), w_sum=torch.zeros(B, self.RM, dtype=torch.complex64, device=dev),
+                            w_bag=torch.zeros(B, self.RM, dtype=torch.complex64, device=dev)) if 0 in self.mem_orders else {}))
 
     def step(self, x, s, dt, q, st, wg=None, t_in=None, t_out=None):
         c, ph = self.code(x, s)
@@ -511,9 +581,13 @@ class OneMachine(nn.Module):
         r, keys, rc, km = 0, [], 0, []
         if self.copy_out:
             Km = torch.exp(-self.mem_logmu.exp() * dt)[None, :, None] * st["Km"]
+        wst = None
         for o, (n, w) in enumerate(zip(self.mem_orders, self.order_weights())):
-            ph_n = sum(hist[:, i][:, self.ctx_perm[i]] for i in range(n))
-            k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), ph_n).to(torch.complex64)
+            if n == 0:
+                k, wst = self.word_step(x, s, dt, st)
+            else:
+                ph_n = sum(hist[:, i][:, self.ctx_perm[i]] for i in range(n))
+                k = torch.polar(torch.ones(1, dtype=torch.float64, device=x.device), ph_n).to(torch.complex64)
             ro = torch.einsum("bm,bmr->br", k, M[o]) / self.RM
             r = r + w * ro
             if self.copy_out:
@@ -561,6 +635,8 @@ class OneMachine(nn.Module):
             out["Km"] = Km + st["prev"].conj()
             out["copy"] = (torch.cat([rc.real, rc.imag], -1), torch.stack(km, -1).float())  # about the next event, any q
             h = self.copy_features(h, *out["copy"])
+        if wst is not None:
+            out.update(wst)
         return h, out
 
     def _seasonal_write(self, ph, t_in, st, out):
