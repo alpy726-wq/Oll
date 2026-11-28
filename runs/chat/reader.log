@@ -21,3 +21,6 @@ epoch 2 batch 600 loss 1.186 kept 27770 2208s
 epoch 2 batch 800 loss 1.187 kept 36966 2341s
 epoch 2 batch 1000 loss 1.192 kept 46217 2478s
 epoch 2 batch 1200 loss 1.192 kept 55484 2607s
+{'epoch': 2, 'loss': 1.1938723385812942, 'trainable_questions': 63367, 'seconds': 2716.7367153167725}
+{"n": 10570, "exact_match": 0.3275307473982971, "f1": 0.4238718708863839, "em_most_confident_quarter": 0.653671461014383, "em_least_confident_quarter": 0.10711582134746404, "em_by_confidence": {">=0.0": {"fraction_answered": 1.0, "em": 0.3275307473982971}, ">=0.2": {"fraction_answered": 0.7639545884578998, "em": 0.39640866873065017}, ">=0.4": {"fraction_answered": 0.3923368022705771, "em": 0.5500361707258259}, ">=0.6": {"fraction_answered": 0.1945127719962157, "em": 0.7042801556420234}, ">=0.8": {"fraction_answered": 0.08836329233680228, "em": 0.8351177730192719}}, "seconds": 2856.8556492328644}
+DONE
