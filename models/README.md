@@ -69,7 +69,8 @@ predicted better than persistence; one-step surprise is not an anomaly detector.
 Answers questions from your documents. The documents are written once into a phase memory addressed by meaning
 (frozen prime basis, no training); a small linear reader trained on SQuAD v1.1 (45 min, CPU) picks the answer.
 SQuAD v1.1 validation (10,570 questions): exact match 33.2 %, F1 42.9 %; confidence >= 0.6: 71 % correct, >= 0.8: 84 %.
-Below confidence 0.3 it says it is not sure. English only; the answer must be written in the documents.
+Below confidence 0.3 it says it is not sure; if the documents do not talk about the question at all (support < 0.2:
+SQuAD questions against another article's document are caught 98.5 % of the time, 95 % of answerable ones pass) it says so. English only; the answer must be written in the documents.
 
 ```bash
 python -m oll ask notes.txt                    # interactive

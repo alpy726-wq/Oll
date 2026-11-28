@@ -1,0 +1,8 @@
+{
+ "n": 2000,
+ "auroc": 0.9923015,
+ "threshold_keep_95pct_answerable": 0.20232749692639487,
+ "unanswerable_flagged": 0.985,
+ "support_own_median": 0.6188289343795481,
+ "support_other_median": 0.0213136047139811
+}

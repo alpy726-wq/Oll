@@ -41,7 +41,9 @@ def ask(argv):
 
     def one(q):
         o = r.ask(text, q)
-        if o["confidence"] >= a.sure:
+        if o.get("support", 1.0) < r.min_support:
+            print("Oll: Your documents do not say this.")
+        elif o["confidence"] >= a.sure:
             print(f"Oll: {o['answer']}   (confidence {o['confidence']:.2f}; from: \"{o.get('sentence', '')[:160]}\")")
         else:
             print(f"Oll: I am not sure. Best guess: {o['answer']} (confidence {o['confidence']:.2f})")

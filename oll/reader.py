@@ -3,7 +3,7 @@
           prime basis; a sentence is the idf-weighted superposition of its words); the question reads it out
   read:   a small linear model (6.6 MB, trained on SQuAD v1.1 train) picks the answer span in the best sentences
   confidence: the probability of the chosen span; low confidence -> it says it does not know
-SQuAD v1.1 validation (10,570 questions, never trained on): exact match 32.8 %, F1 42.4 %; when its confidence is
+SQuAD v1.1 validation (10,570 questions, never trained on): exact match 33.2 %, F1 42.9 %; when its confidence is
 >= 0.6 it is right 70 % of the time (answers 19 % of questions), >= 0.8: 84 %. English only."""
 import math, re, string, zlib
 from collections import Counter
@@ -116,6 +116,8 @@ class Ex:
             kv = sum((idf.get(w, a.unk_idf) * code(w) for w in sw), np.zeros(RM, np.complex64))
             sc.append(float(np.real(np.vdot(kv, qv))) / RM)
         order = np.argsort(sc)[::-1][: a.top]
+        qe = float(np.real(np.vdot(qv, qv))) / RM
+        self.support = (max(sc) / qe) if (sc and qe > 0) else 0.0  # share of the question's meaning found in the best sentence
         wt, nx = qtype(q)
         self.cands, self.feats = [], []
         for rank, si in enumerate(order):
@@ -155,12 +157,13 @@ def make_idf(texts):
 
 
 class Reader:
-    def __init__(self, path="models/oll-reader.pt", unk_rare=True):
+    def __init__(self, path="models/oll-reader.pt", unk_rare=True, min_support=0.2):
         ck = torch.load(path, map_location="cpu")
         ar = ck["args"]
         configure(ar["RM"], ar["L"], ar["top"], ar["D"])
         self.W = ck["W"].float()[:, 0]
         self.idf = ck["idf"]
+        self.min_support = min_support  # below this the documents do not talk about the question: not sure
         a.unk_idf = max(self.idf.values()) if unk_rare else 0.0  # a word never seen before is as rare as the rarest
 
 
@@ -174,7 +177,8 @@ class Reader:
         ans = e.cands[j]
         at = document.find(ans)
         sent = next((document[s0:e0] for s0, e0 in sent_spans(document) if s0 <= at < e0), "") if at >= 0 else ""
-        return dict(answer=ans, confidence=float(p[j]), sentence=sent.strip())
+        return dict(answer=ans, confidence=float(p[j]) if e.support >= self.min_support else 0.0, span_probability=float(p[j]),
+                    support=e.support, sentence=sent.strip())
 
 
 _init()
