@@ -265,3 +265,42 @@ def test_reader_answers_from_document_and_knows_when_not():
     assert r.ask(doc, "Where does Maria live?")["answer"] == "Istanbul"
     assert r.ask(doc, "Who is responsible for the database backups?")["answer"] == "Ahmet"
     assert r.ask(doc, "Who won the World Cup in 2018?")["confidence"] < 0.3
+
+
+def test_full_model_every_feature_on():
+    """the one full model: context-keyed memory (1,4,8,12), gated copy read-out, anticipation, clock, query head,
+    seasonal memory and salience gates all on together. Streaming == full; peek == step; every read-out finite;
+    gradients reach every parameter group."""
+    from pfm.realworld import STREAMS_REAL
+    torch.manual_seed(7)
+    m = OneMachine(STREAMS_REAL, R=16, L=2, M=4, RM=128, mem_orders=(1, 4, 8, 12), copy_out=True, anticipate=True,
+                   clock=True, query_head=True, seasonal=True)
+    for p_ in m.parameters():
+        p_.data += 0.02 * torch.randn_like(p_)
+    m.eval()
+    B, T = 2, 40
+    s = torch.randint(0, 13, (B, T)); x = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    s[:, ::2] = 16; x[:, ::2] = torch.randint(97, 104, (B, T // 2)).double()  # text bytes interleaved with sensors
+    dt = torch.rand(B, T) * 2; q = torch.rand(B, T) * 6; wg = torch.rand(B, T) * 2
+    t_in = 4e5 + torch.cumsum(dt.double(), 1); t_out = t_in + q.double()
+    t_in[1, :5] = float("nan"); t_out[1, :5] = float("nan")
+    with torch.no_grad():
+        h, ha = m.forward_all(x, s, dt, q, wg, t_in=t_in, t_out=t_out)
+        st = m.init_state(B); hs, has_ = [], []
+        for t in range(T):
+            o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, wg[:, t], t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o); has_.append(st["h_ant"])
+        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert torch.allclose(torch.stack(has_, 1), ha, atol=1e-4)
+        pk = m.peek(st, q[:, -1:], t_out=t_out[:, -1:])
+        assert torch.allclose(pk[:, 0], hs[-1], atol=1e-4)
+    m.train()
+    h, ha = m.forward_all(x, s, dt, q, wg, t_in=t_in, t_out=t_out)
+    y = torch.rand(B, T, dtype=torch.float64) * 2 - 1
+    y[:, ::2] = torch.randint(97, 104, (B, T // 2)).double()
+    w_, c_ = m.anticipation_nll(ha, s, q)
+    loss = m.nll(h, s, y).mean() + w_.mean() + c_.mean()
+    assert torch.isfinite(loss)
+    loss.backward()
+    for name in ("copy_gain", "gate_b", "gate_km", "sea_gain", "clock_in", "mem_beta", "again"):
+        g = getattr(m, name).grad
+        assert g is not None and torch.isfinite(g).all() and float(g.abs().sum()) > 0, name

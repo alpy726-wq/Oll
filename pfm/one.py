@@ -352,6 +352,9 @@ class OneMachine(nn.Module):
         h = self.features(hq)
         if self.seasonal and t_out is not None and "sP" in st:
             h = h + self.sea_gain * self._seasonal_query(st, t_out)
+        if self.copy_out:
+            hc, km = st["copy"]
+            h = self.copy_features(h, hc[:, None].expand(*h.shape[:2], -1), km[:, None].expand(*h.shape[:2], -1))
         return h
 
     def trunk_from(self, e, dt, q):
@@ -556,7 +559,8 @@ class OneMachine(nn.Module):
             h = h + self.sea_gain * self._seasonal_query(out, t_out[:, None])[:, 0]
         if self.copy_out:
             out["Km"] = Km + st["prev"].conj()
-            h = self.copy_features(h, torch.cat([rc.real, rc.imag], -1), torch.stack(km, -1).float())
+            out["copy"] = (torch.cat([rc.real, rc.imag], -1), torch.stack(km, -1).float())  # about the next event, any q
+            h = self.copy_features(h, *out["copy"])
         return h, out
 
     def _seasonal_write(self, ph, t_in, st, out):
