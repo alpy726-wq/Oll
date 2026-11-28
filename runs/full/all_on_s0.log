@@ -6,3 +6,5 @@ Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pyto
 {'step': 200, 'domain': 'text', 'loss': 1.5897653102874756, 'sec': 688.7283756732941}
 {'step': 300, 'domain': 'text', 'loss': 1.3226737976074219, 'sec': 1026.3313484191895}
 {'step': 400, 'domain': 'grid', 'loss': 1.074853777885437, 'sec': 1375.6910858154297}
+{'step': 500, 'domain': 'text', 'loss': 1.1016044616699219, 'sec': 1721.065955400467}
+{'step': 600, 'domain': 'text', 'loss': 0.9237180352210999, 'sec': 2267.5169699192047}

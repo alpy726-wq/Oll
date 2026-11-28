@@ -7,3 +7,4 @@ Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pyto
 {'step': 300, 'domain': 'market', 'loss': -2.3597519397735596, 'sec': 934.1474936008453}
 {'step': 400, 'domain': 'market', 'loss': -2.0427958965301514, 'sec': 1249.1309123039246}
 {'step': 500, 'domain': 'audio', 'loss': -2.9138026237487793, 'sec': 1559.4301838874817}
+{'step': 600, 'domain': 'market', 'loss': -2.5803682804107666, 'sec': 1936.16414809227}
