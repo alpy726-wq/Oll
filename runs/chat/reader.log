@@ -1,3 +1,23 @@
 /home/user/Oll/gpu/reader.py:209: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
 Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
   tot += float(loss); nb_ += 1; kept += len(exs)
+epoch 0 batch 200 loss 2.918 kept 9272 157s
+epoch 0 batch 400 loss 2.771 kept 18498 292s
+epoch 0 batch 600 loss 2.684 kept 27709 422s
+epoch 0 batch 800 loss 2.645 kept 37012 554s
+epoch 0 batch 1000 loss 2.605 kept 46255 682s
+epoch 0 batch 1200 loss 2.568 kept 55529 810s
+{'epoch': 0, 'loss': 2.545947359198632, 'trainable_questions': 63367, 'seconds': 921.118456363678}
+epoch 1 batch 200 loss 1.537 kept 9295 1053s
+epoch 1 batch 400 loss 1.527 kept 18593 1181s
+epoch 1 batch 600 loss 1.520 kept 27823 1310s
+epoch 1 batch 800 loss 1.519 kept 37025 1439s
+epoch 1 batch 1000 loss 1.517 kept 46329 1572s
+epoch 1 batch 1200 loss 1.513 kept 55539 1705s
+{'epoch': 1, 'loss': 1.5114356045134316, 'trainable_questions': 63367, 'seconds': 1813.4457440376282}
+epoch 2 batch 200 loss 1.154 kept 9280 1952s
+epoch 2 batch 400 loss 1.178 kept 18520 2079s
+epoch 2 batch 600 loss 1.186 kept 27770 2208s
+epoch 2 batch 800 loss 1.187 kept 36966 2341s
+epoch 2 batch 1000 loss 1.192 kept 46217 2478s
+epoch 2 batch 1200 loss 1.192 kept 55484 2607s
