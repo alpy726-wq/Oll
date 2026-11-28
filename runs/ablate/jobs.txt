@@ -1,0 +1,7 @@
+no_meaning --mem_orders 1,4,8,12 --copy_out --clock --anticipate --query --seasonal
+no_ctxorders --mem_orders 0,1 --copy_out --clock --anticipate --query --seasonal
+no_copy --mem_orders 0,1,4,8,12 --clock --anticipate --query --seasonal
+no_query --mem_orders 0,1,4,8,12 --copy_out --clock --anticipate --seasonal
+no_anticipate --mem_orders 0,1,4,8,12 --copy_out --clock --query --seasonal
+no_seasonal --mem_orders 0,1,4,8,12 --copy_out --clock --anticipate --query
+no_clock_seasonal --mem_orders 0,1,4,8,12 --copy_out --anticipate --query
