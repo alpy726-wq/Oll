@@ -2,3 +2,8 @@
 Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
   log.append(dict(step=step, domain=b["domains"][0], loss=float(loss), sec=time.time() - t0)); print(log[-1], flush=True)
 {'step': 0, 'domain': 'market', 'loss': 5.03433895111084, 'sec': 4.806338548660278}
+{'step': 100, 'domain': 'grid', 'loss': 3.4368014335632324, 'sec': 316.74784445762634}
+{'step': 200, 'domain': 'text', 'loss': 1.5224487781524658, 'sec': 624.5694272518158}
+{'step': 300, 'domain': 'market', 'loss': -2.3597519397735596, 'sec': 934.1474936008453}
+{'step': 400, 'domain': 'market', 'loss': -2.0427958965301514, 'sec': 1249.1309123039246}
+{'step': 500, 'domain': 'audio', 'loss': -2.9138026237487793, 'sec': 1559.4301838874817}
