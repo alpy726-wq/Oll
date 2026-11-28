@@ -6,6 +6,12 @@ import torch
 from pfm.one import OneMachine
 from pfm.realworld import STREAMS_REAL as STREAMS, RealData, make_batch
 
+
+def close(a, b):
+    """streaming == full up to float32 round-off at the scale of the vector: the memory read sums RM complex terms,
+    so its error grows with the magnitude of the read, not of each element (CPU kernels differ in summation order)."""
+    return float((a - b).abs().max()) <= 1e-4 + 1e-5 * float(b.abs().max())
+
 _DATA = RealData("train")
 
 
@@ -152,7 +158,7 @@ def test_anticipation_streaming_equals_full_and_no_leak():
         st = m.init_state(B); hs, has_ = [], []
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st); hs.append(o); has_.append(st["h_ant"])
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert close(torch.stack(hs, 1), h)
         assert torch.allclose(torch.stack(has_, 1), ha, atol=1e-4)
         w, c = m.anticipation_nll(ha, s, q)
         assert torch.isfinite(w).all() and torch.isfinite(c).all()
@@ -171,7 +177,7 @@ def test_salience_gated_memory_streaming_equals_full():
         st = m.init_state(B); hs = []
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, wg[:, t]); hs.append(o)
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert close(torch.stack(hs, 1), h)
 
 
 def test_clock_streaming_equals_full():
@@ -189,7 +195,7 @@ def test_clock_streaming_equals_full():
         st = m.init_state(B); hs = []
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert close(torch.stack(hs, 1), h)
 
 
 def test_query_head_streaming_peek_and_state_independence():
@@ -205,7 +211,7 @@ def test_query_head_streaming_peek_and_state_independence():
         st = m.init_state(B); hs = []
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)  # streaming == full
+        assert close(torch.stack(hs, 1), h)  # streaming == full
         # the state does not depend on the asked time: same events, other queries -> same state
         st2 = m.init_state(B)
         for t in range(T):
@@ -237,10 +243,10 @@ def test_seasonal_memory_streaming_equals_full_and_recalls_same_hour():
             st = m.init_state(B); hs = []
             for t in range(T):
                 o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o)
-            assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+            assert close(torch.stack(hs, 1), h)
             if qh:  # peek == step read-out, seasonal part included
                 pk = m.peek(st, torch.tensor([[5.0]] * B), t_out=t_out[:, -1:])
-                assert torch.allclose(pk[:, 0], hs[-1], atol=1e-4)
+                assert close(pk[:, 0], hs[-1])
     # recall: a value seen at 15:00 on earlier days is what the seasonal read returns at 15:00 today
     m = OneMachine(STREAMS_REAL, R=64, L=1, M=4, RM=64, clock=True, seasonal=True).eval()
     t = torch.arange(0, 24 * 5, dtype=torch.float64)[None] + 4e5 * 24  # hourly, five days, midnight aligned
@@ -290,10 +296,10 @@ def test_full_model_every_feature_on():
         st = m.init_state(B); hs, has_ = [], []
         for t in range(T):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st, wg[:, t], t_in=t_in[:, t], t_out=t_out[:, t]); hs.append(o); has_.append(st["h_ant"])
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert close(torch.stack(hs, 1), h)
         assert torch.allclose(torch.stack(has_, 1), ha, atol=1e-4)
         pk = m.peek(st, q[:, -1:], t_out=t_out[:, -1:])
-        assert torch.allclose(pk[:, 0], hs[-1], atol=1e-4)
+        assert close(pk[:, 0], hs[-1])
     m.train()
     h, ha = m.forward_all(x, s, dt, q, wg, t_in=t_in, t_out=t_out)
     y = torch.rand(B, T, dtype=torch.float64) * 2 - 1
@@ -323,7 +329,7 @@ def test_meaning_memory_streaming_equals_full_and_counts_shared_words():
         st = m.init_state(1); hs = []
         for t in range(x.shape[1]):
             o, st = m.step(x[:, t], s[:, t], dt[:, t], q[:, t], st); hs.append(o)
-        assert torch.allclose(torch.stack(hs, 1), h, atol=1e-4)
+        assert close(torch.stack(hs, 1), h)
         K = m.word_keys(x, s, dt)[0]
         ends = [txt.index(b"Istanbul.") + 8, txt.index(b"dollars.") + 7, txt.index(b"night.") + 5]
         qk = K[-1]
